@@ -1,0 +1,35 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+%\usepackage{mathtools}
+\usepackage{ifthen}
+\usepackage{xcolor}
+\usepackage{graphicx}
+
+%\usepackage{url}
+
+\newcommand{\CEDRE}{\emph{CEDRE}}
+\newcommand{\PETSc}{\emph{PETSc}}
+
+%\newcommand{\transpose}[2][-3mu]{\ensuremath{\mskip1mu\prescript{\smash{\mathrm t\mkern#1}}{}{\mathstrut#2}}}
+\newcommand{\matrixsymb}[2]{\mathcal{M}_{#1}\left(\mathbb{#2}\right)}
+%\newcommand{\orthogroup}[2]{\operatorname{O}_{#1}\left(\mathbb{#2}\right)}
+%\newcommand{\adj}[1]{{#1}^*}
+\newcommand{\krylov}[2][]{\ifthenelse{\equal{#1}{}}{\mathcal{K}_{#2}}{\mathcal{K}_{#2}\left({#1}\right)}}
+%\newcommand{\norm}[2][]{\ifthenelse{\equal{#1}{}}{\left\|{#2}\right\|}{\left\|{#2}\right\|_{{#1}}}}
+% \renewcommand{\parallel}{{\mathbin{/\mkern-5mu/}}}
+
+
+\newcommand{\GP}[1]{{\color{red}   #1}}
+\newcommand{\LM}[1]{{\color{green} #1}}
+\newcommand{\PS}[1]{{\color{blue}  #1}}
+
+
+\title{Rapport bibliographique :\\[\baselineskip]\large Évaluation de librairies d'algèbre linéaire pour l'obtention efficace de solutions stationnaires dans les domaines de l'énergétique et de la multi-physique}
+\author{Pierre Seize}
+\date{}

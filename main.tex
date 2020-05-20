@@ -1,42 +1,6 @@
-\documentclass[a4paper]{article}
-\usepackage[utf8]{inputenc}
-\usepackage[french]{babel}
-\usepackage[T1]{fontenc}
-\usepackage{geometry}
-
-\usepackage{amssymb}
-\usepackage{amsmath}
-%\usepackage{mathtools}
-\usepackage{ifthen}
-\usepackage{xcolor}
-
-%\usepackage{url}
-
-\newcommand{\CEDRE}{\emph{CEDRE}}
-\newcommand{\PETSc}{\emph{PETSc}}
-
-%\newcommand{\transpose}[2][-3mu]{\ensuremath{\mskip1mu\prescript{\smash{\mathrm t\mkern#1}}{}{\mathstrut#2}}}
-\newcommand{\matrixsymb}[2]{\mathcal{M}_{#1}\left(\mathbb{#2}\right)}
-%\newcommand{\orthogroup}[2]{\operatorname{O}_{#1}\left(\mathbb{#2}\right)}
-%\newcommand{\adj}[1]{{#1}^*}
-\newcommand{\krylov}[2][]{\ifthenelse{\equal{#1}{}}{\mathcal{K}_{#2}}{\mathcal{K}_{#2}\left({#1}\right)}}
-%\newcommand{\norm}[2][]{\ifthenelse{\equal{#1}{}}{\left\|{#2}\right\|}{\left\|{#2}\right\|_{{#1}}}}
-% \renewcommand{\parallel}{{\mathbin{/\mkern-5mu/}}}
-
-
-\newcommand{\GP}[1]{{\color{red}   #1}}
-\newcommand{\LM}[1]{{\color{green} #1}}
-\newcommand{\PS}[1]{{\color{blue}  #1}}
-
-
-\title{Rapport bibliographique :\\[\baselineskip]\large Évaluation de librairies d'algèbre linéaire pour l'obtention efficace de solutions stationnaires dans les domaines de l'énergétique et de la multi-physique}
-\author{Pierre Seize}
-\date{}
-
-
+\input{header.tex}
 \begin{document}
 \maketitle
-
 
 \section{Introduction}
 
@@ -157,11 +121,17 @@
 	Certaines méthodes de résolution ne sont alors plus compatibles, comme en particulier les méthodes directes.
 	Cette famille de méthodes, dont fait partie par exemple la méthode du pivot de Gauss, calcule exactement la solution du système linéaire, mais nécessite un temps de calcul très important et un espace mémoire déraisonnable. À l'inverse, les méthodes itératives
 
-	Les méthodes itératives, en revanche, vont produire une suite de valeurs qui converge vers la solution, et dont la précision s'afine le long du calcul ce qui permet à l'utilisateur d'arréter le calcul dès qu'il a atteint une estimation convenable.
+	Les méthodes itératives, en revanche, vont produire une suite de valeurs qui converge vers la solution, et dont la précision s’affine le long du calcul ce qui permet à l'utilisateur d’arrêter le calcul dès qu'il a atteint une estimation convenable.
+
+	\begin{figure}
+		\includegraphics[width=\textwidth]{images/direct-iterative.png}
+		\caption{Convergence des méthodes directes et itératives, issu de \cite{TrefethenBau1997}}
+		\label{fig:direct-iterative}
+	\end{figure}
+
 
 
 	Methodes iteratives\cite{OlshanskiiTyrtyshnikov2014, Saad2003}
-	Algebre lineaire threfeten \cite{TrefethenBau1997}
 %
 % \paragraph{}
 % Parmi les méthodes itértives, les plus prometteuses sont les méthodes dites \emph{de Krylov} : ce sont des méthodes qui vont chercher l'estimation à l'itération $k$ dans l'espace de Krylov de dimension $k$ :
@@ -180,6 +150,7 @@
 % Pour aider à l'implémentation de ces méthodes, j'utilise la bibliothèque \PETSc\footnote{https://www.mcs.anl.gov/petsc/}. Maintenant que cette bibliothèque a été ajoutée à \CEDRE, un grand nombre de techniques sont devenues accessibles. \PETSc fournit un grand nombre de méthodes de résolutions, de préconditionneurs, et fait le lien avec d'autres librairies comme \emph{Hypre}\footnote{https://computing.llnl.gov/projects/hypre-scalable-linear-solvers-multigrid-methods}.
 
 
+\pagebreak
 \bibliography{bibliography.bib}
 \bibliographystyle{plain}
 
