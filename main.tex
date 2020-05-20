@@ -6,40 +6,49 @@
 
 	\subsection{Contexte}
 
-		\paragraph{} La nécessité de la simulation numérique est aujourd'hui bien admise, tant dans le monde industriel que le monde académique.
+		\paragraph{}
+		La nécessité de la simulation numérique est aujourd'hui bien admise, tant dans le monde industriel que le monde académique.
 		Les entreprises comme les laboratoires de recherche ont besoin de pouvoir accéder à certaines grandeurs physiques associées à des phénomènes et à des régimes de fonctionnement qui ne sont pas possible de réaliser à notre échelle, la limitation pouvant être matérielle ou bien financière.
 		On peut prendre comme exemple l'étude du givrage qui à lieu sur la voilure d'un avion, qui est réalisable expérimentalement mais représente un budget imposant pour l’avionneur, ou bien l'étude des transferts thermiques d'une capsule de rentrée atmosphérique, bien plus difficile à réaliser expérimentalement.
 		Pour contourner ces limitations, la simulation numérique est la meilleure option, car elle permet de modéliser un tel cas d'étude par l’exécution d'un programme informatique, et d'obtenir un ensemble important de données qui seront analysées par la suite pour répondre aux questions souhaitées.
 
-		\paragraph{} La simulation numérique n'est pas non plus un outil absolu ou parfait : si elle rend possible l'obtention de données inaccessible par l'expérimentation, elle nécessite cependant un travail de modélisation et de développement, des connaissances, et surtout un important travail de calcul informatique.
+		\paragraph{}
+		La simulation numérique n'est pas non plus un outil absolu ou parfait : si elle rend possible l'obtention de données inaccessible par l'expérimentation, elle nécessite cependant un travail de modélisation et de développement, des connaissances, et surtout un important travail de calcul informatique.
 		Par travail on peut entendre ici une puissance de calcul multiplié par un temps de calcul : n'importe quelle machine ne peut pas réaliser n'importe quelle simulation, certains cas nécessitent des machines très puissantes, et même avec ces machines la simulation numérique n'est pas instantanée, et il est courant de lancer des calculs durant plusieurs semaines.
 		Pour éviter de se retrouver avec des calculs qui s'exécuteraient trop longtemps sur des machines trop puissantes, ce qui coûterait trop cher, on va réaliser des choix pour optimiser l'efficacité du calcul.
 		On va privilégier un type d'algorithme pour un type de calcul, choisir une mise en donnée plus adaptée qu'une autre pour notre architecture logicielle, ..., tout cela pour réduire le coût en temps et en puissance de calcul de notre simulation numérique.
 		C'est pour pouvoir effectuer ces choix qu'il faut posséder des connaissances dans ce domaine.
 		L'objectif de ma thèse est d'identifier et de comparer de tels choix qui vont rendre plus efficace la simulation de phénomènes physiques s'inscrivant dans un cadre donné : les problèmes stationnaires en énergétique et multi-physique.
 
-		\paragraph{} Il est d'usage de séparer les problèmes de simulation numérique en deux grandes classes : les problèmes instationnaires qui vont décrire l'évolution d'un système au cours du temps, et les problèmes stationnaires qui cherchent la valeur d'un état convergé du même système.
+		\paragraph{}
+		Il est d'usage de séparer les problèmes de simulation numérique en deux grandes classes : les problèmes instationnaires qui vont décrire l'évolution d'un système au cours du temps, et les problèmes stationnaires qui cherchent la valeur d'un état convergé du même système.
 		Cette distinction est déjà bien connue, et engendre déjà des différents choix dans la résolution des problèmes : un problème instationnaire aura un faible pas de temps pour bien capter l'évolution temporelle de chacune des physiques mises en jeu, et utilisera des méthodes d'intégration temporelles explicites, alors qu'un problème stationnaire permet une montée en CFL qui s'accompagne de l'utilisation de méthodes implicites.
 		Ma thèse s'intéresse au second type : les problèmes stationnaires.
 
 
 	\subsection{Le problème stationnaire}
 
-		\paragraph{} On considère un problème type de simulation numérique en dynamique des fluides (CFD), qui consiste à résoudre sur un domaine spatial donné une ou un ensemble d'équations décrivant les lois d'évolution du modèle physique. Typiquement, on cherche à résoudre une équation aux dérivées partielles :
+		\paragraph{}
+		On considère un problème type de simulation numérique en dynamique des fluides (CFD), qui consiste à résoudre sur un domaine spatial donné une ou un ensemble d'équations décrivant les lois d'évolution du modèle physique.
+		Typiquement, on cherche à résoudre une équation aux dérivées partielles :
 		$$\frac{\partial W}{\partial t} = \operatorname{f}\left(W\right)$$
 		sur un domaine spatial $\mathcal{D}$.
 		On note $W$ l'état du système en un point de l'espace.
 		Pour un problème stationnaire, l'état du système n'évolue pas, et donc l'équation à résoudre devient :
-		\begin{equation}\label{eq:f=0}\operatorname{f}\left(W\right) = 0\end{equation}
+		\begin{equation}\label{eq:f=0}
+			\operatorname{f}\left(W\right) = 0
+		\end{equation}
 		Concrètement, $W$ représente les grandeurs physiques du système en un point de l'espace et $\operatorname{f}$ une fonction dépendant de l'état du système, mais pouvant également dépendre de ses dérivées spatiales.
 		Puisqu'on cherche une solution stationnaire, on l'exprime comme un zéro de cette fonction.
 		Pour obtenir cette solution, on introduit la notion de pseudo-temps\cite{KelleyKeyes1996}.
 		Par exemple, pour résoudre les équations de Navier-Stokes, les dérivées spatiales d'ordre un et deux interviennent.
 
-		\paragraph{} Résoudre l'évolution du système en fonction du temps depuis un état initial connu s'avère souvent plus coûteux que nécessaire, car les états intermédiaires ne nous intéressent pas.
+		\paragraph{}
+		Résoudre l'évolution du système en fonction du temps depuis un état initial connu s'avère souvent plus coûteux que nécessaire, car les états intermédiaires ne nous intéressent pas.
 		Inversement, utiliser un algorithme tel que la méthode de Newton de manière brute sur la fonction $\operatorname{f}$ n'aboutit pas.
 		Le procédé de plus courant est donc  d'utiliser une méthode introduisant un pseudo-temps (Pseudo-transient continuation method).
-		On cherche à résoudre l'équation (\ref{eq:f=0}), et on dispose d'un itéré initial $W_0$. On va chercher la solution comme étant la limite en $t = +\infty$ de
+		On cherche à résoudre l'équation (\ref{eq:f=0}), et on dispose d'un itéré initial $W_0$.
+		On va chercher la solution comme étant la limite en $t = +\infty$ de
 		\begin{equation}\label{eq:edp}
 			\left\{\begin{aligned}
 				\frac{\partial W}{\partial t}\left(t, x\right) = \operatorname{f}\left(W\right) \\
@@ -51,10 +60,12 @@
 
 	\subsection{Discrétisation}
 
-		\paragraph{} Lorsque l'on résout une équation aux dérivées partielles avec une méthode numérique, il est nécessaire de réaliser une discrétisation du problème, ne serait-ce que pour pouvoir représenter l'état du système dans tout le domaine dans un ordinateur.
+		\paragraph{}
+		Lorsque l'on résout une équation aux dérivées partielles avec une méthode numérique, il est nécessaire de réaliser une discrétisation du problème, ne serait-ce que pour pouvoir représenter l'état du système dans tout le domaine dans un ordinateur.
 		En pratique, on réalise deux niveaux de discrétisation : temporel et spatial.
 
-		\paragraph{} La discrétisation spatiale consiste à diviser le domaine d'étude $\mathcal{D}$ en un ensemble de cellules qui forment un maillage.
+		\paragraph{}
+		La discrétisation spatiale consiste à diviser le domaine d'étude $\mathcal{D}$ en un ensemble de cellules qui forment un maillage.
 		Les grandeurs physiques étudiées comme la vitesse du fluide, sa température, sa densité, ..., sont alors représentés dans chaque cellules, par leur valeur moyenne, ou leur valeur sur chaque interface, ou de manière plus complexe en fonction du choix de discrétisation pris par l'utilisateur.
 		Sans rentrer dans les détails, puisque cette problématique de discrétisation spatiale ne rentre pas dans le cadre de ma thèse, l'état physique dans l'ensemble du domaine est représenté non plus par une fonction $W : \mathcal{D} \rightarrow \mathbb{R}^n$ mais par un vecteur $W \in \mathbb{R}^{N\times n}$, en notant $n$ le nombre de degrés de liberté et $N$ le nombre de cellules du maillage.
 		La discrétisation spatiale donne également un moyen de calculer les dérivées spatiales de l'état en fonction de l'état.
@@ -68,11 +79,13 @@
 		Puisque ma thèse ne s'intéresse pas à la discrétisation spatiale, nous nous placerons dans le cas général et chercherons à résoudre l'équation (\ref{eq:edo}).
 
 
-		\paragraph{} La discrétisation temporelle permet de représenter le temps continu par une succession de temps discrets.
+		\paragraph{}
+		La discrétisation temporelle permet de représenter le temps continu par une succession de temps discrets.
 		On va donc représenter et calculer la solution non pas sur l'ensemble du temps mais en ces instants discrets.
 		Concrètement, à l'instant $t_n$ on transforme l'équation aux dérivées partielles en relation de récurrence, entre l'état suivant à calculer $W_{n+1}$, l'état actuel $W_n$ et d'éventuels états précédents $W_i$.
 
-		\paragraph{} Si on peut exprimer l'état suivant $W_{n+1}$ directement à partir de l'état courant (et éventuellement des précédents), la méthode d'intégration temporelle est dite explicite.
+		\paragraph{}
+		Si on peut exprimer l'état suivant $W_{n+1}$ directement à partir de l'état courant (et éventuellement des précédents), la méthode d'intégration temporelle est dite explicite.
 		L'intérêt d'une telle méthode est qu'elle permet de calculer l'état suivant très rapidement, souvent par la simple évaluation d'une fonction.
 		Cependant, ces méthodes ont tendance à devenir instable dès que le nombre de Courant devient un peu grand (typiquement 1) et imposent donc l'utilisation de très faibles pas de temps.
 		Puisque l'on cherche la solution au bout d'un temps long pour le problème stationnaire, l'utilisation de ces méthodes ne s'avère pas rentable : il vaut mieux payer plus cher l'itération mais converger plus rapidement, et c'est pour cela qu'on utilise les méthodes implicites.
@@ -84,7 +97,8 @@
 
 	\subsection{Étapes}
 
-		\paragraph{} Nous cherchons à résoudre l'équation (\ref{eq:edo}) en utilisant une méthode d'intégration implicite.
+		\paragraph{}
+		Nous cherchons à résoudre l'équation (\ref{eq:edo}) en utilisant une méthode d'intégration implicite.
 		Pour comprendre le fonctionnement des méthodes d'intégration temporelles implicites, on peut regarder la plus simple : la méthode d'Euler implicite.
 		Elle consiste à intégrer entre $t_n$ et $t_{n+1}$ l'équation en gardant un second membre constant à $t = t_{n+1}$.
 		Alors, en notant $\Delta t = t_{n+1} - t_n$ et $\Delta W = W_{n+1} - W_n$:
@@ -96,58 +110,49 @@
 		\end{equation}
 		Nous allons donc devoir résoudre une équation non-linéaire à chaque itération.
 
-		\paragraph{} Pour résoudre l'équation (\ref{eq:non_linear}), on utilise par exemple la méthode de Newton.
+		\paragraph{}
+		Pour résoudre l'équation (\ref{eq:non_linear}), on utilise par exemple la méthode de Newton.
 		On part d'une valeur initiale de l'incrément $\delta W_0 = 0$, mais on peut envisager de prendre d'autres valeurs, comme $\Delta t f\left(W_n\right)$ qui est l'incrément donné par la méthode d'Euler explicite.
 		On va ensuite itérer pour trouver le zéro de $\operatorname{F}$.
 		La linéarisation à l'ordre 1 de l'équation (\ref{eq:non_linear}) s'écrit :
 		$$F(\delta W) = -\Delta t f\left(W_n\right) + \left(\mathrm{I} - \Delta t J_n\right)\delta W = 0$$
 		où $J_n$ est la matrice jacobienne de $f$, et on exprime donc l'incrément comme étant la solution d'un système linéaire :
-		\begin{equation}\label{eq:linear}A\delta W = b\end{equation}
+		\begin{equation}\label{eq:linear}
+			A\delta W = b
+		\end{equation}
 		avec la matrice $A = \mathrm{I} - \Delta t J_n$ et le second membre $b = \Delta t f\left(W_n\right)$.
 		A chaque étape de l'algorithme de Newton, il faut résoudre un système linéaire.
 
-		\paragraph{} Pour toutes les méthodes d'intégration temporelles implicites, on retrouve la même idée : pour chaque itération on résout une équation non-linéaire (\ref{eq:non_linear}), en résolvant un ou plusieurs systèmes linéaires (\ref{eq:linear}).
+		\paragraph{}
+		Pour toutes les méthodes d'intégration temporelles implicites, on retrouve la même idée : pour chaque itération on résout une équation non-linéaire (\ref{eq:non_linear}), en résolvant un ou plusieurs systèmes linéaires (\ref{eq:linear}).
 		Les performances d'un code de calcul sont donc très étroitement liées à sa capacité à résoudre efficacement ces systèmes linéaires.
 
 
 
 \section{Résolution du système linéaire}
 
-	\paragraph{} On s'intéresse ici à la résolution numérique d'un système linéaire $Ax = b$, de taille $N$, c'est à dire que l'on cherche $x\in\mathbb{K}^N$ avec le second membre $b\in\mathbb{K}^N$ et la matrice $A\in\matrixsymb{N}{K}$ connus.
+	\paragraph{}
+	On s'intéresse ici à la résolution numérique d'un système linéaire $Ax = b$, de taille $N$, c'est à dire que l'on cherche $x\in\mathbb{K}^N$ avec le second membre $b\in\mathbb{K}^N$ et la matrice $A\in\matrixsymb{N}{K}$ connus.
 	Dans le cadre de l'énergétique et de la multi-physique, les équations sont réelles mais pour plus de généralité on prend le corps $\mathbb{K} = \mathbb{R}\textrm{ ou }\mathbb{C}$.
 
-	\paragraph{} Il existe un grand nombre de méthodes pour inverser un problème linéaire.
+	\paragraph{}
+	Il existe un grand nombre de méthodes pour inverser un problème linéaire.
 	Cependant, en simulation numérique de la dynamique des fluides, la taille des maillage est souvent très importante (\PS{PAR EXEMPLE ?}), ce qui engendre des systèmes de très grande taille.
 	Certaines méthodes de résolution ne sont alors plus compatibles, comme en particulier les méthodes directes.
-	Cette famille de méthodes, dont fait partie par exemple la méthode du pivot de Gauss, calcule exactement la solution du système linéaire, mais nécessite un temps de calcul très important et un espace mémoire déraisonnable. À l'inverse, les méthodes itératives
-
-	Les méthodes itératives, en revanche, vont produire une suite de valeurs qui converge vers la solution, et dont la précision s’affine le long du calcul ce qui permet à l'utilisateur d’arrêter le calcul dès qu'il a atteint une estimation convenable.
+	Cette famille de méthodes, dont fait partie par exemple la méthode du pivot de Gauss, calcule exactement la solution du système linéaire, mais nécessite un temps de calcul très important et un espace mémoire déraisonnable pour les tailles de nos problèmes.
+	À l'inverse, les méthodes itératives produisent une suite de vecteurs qui convergent vers la solution du système linéaire.
+	L'erreur sur la résolution du système décroît à mesure que l'algorithme itère et cela permet d'atteindre la précision souhaitée, non nulle mais suffisamment petite, pour un temps de calcul et une consommation mémoire maîtrisé.
 
 	\begin{figure}
-		\includegraphics[width=\textwidth]{images/direct-iterative.png}
+		\centering
+		\includegraphics[width=.8\textwidth]{images/direct-iterative.png}
 		\caption{Convergence des méthodes directes et itératives, issu de \cite{TrefethenBau1997}}
 		\label{fig:direct-iterative}
 	\end{figure}
 
 
-
 	Methodes iteratives\cite{OlshanskiiTyrtyshnikov2014, Saad2003}
 %
-% \paragraph{}
-% Parmi les méthodes itértives, les plus prometteuses sont les méthodes dites \emph{de Krylov} : ce sont des méthodes qui vont chercher l'estimation à l'itération $k$ dans l'espace de Krylov de dimension $k$ :
-% \begin{equation}\label{eq:krylov}
-% \krylov{k} = \operatorname{Vect}\left(b, Ab, \dots, A^{k-1}b\right)
-% \end{equation}
-% Ces méthodes s'appliquent particulièrement bien à notre problème car ils permettent d'utiliser à leur avantage une caractéristiques des matrices rencontrées : la creusité. En effet, les matrices sont composées en grande partie de zéros, et sont donc astucieusement stockées en mémoire pour économiser la mémoire déjà très solicitée. Si ce stockage est un frein aux méthodes directes, il permet d'accéder rapidement à l'effet de la matrice sur un vecteur, ce qui est la seule chose requise par les méthodes de Krylov.
-%
-% \paragraph{}
-% Dans le code \CEDRE, la méthode presque exclusivement utilisée est la méthode \emph{GMRES}, une méthode de Krylov. Cependant, elle est plutôt sommaire et ne bénéficie pas des améliorations qui existent. Je prévoie donc durant ma thèse de développer ces améliorations à \emph{GMRES} dans \CEDRE. Pour l'instant, j'ai ajouté une méthode utilisant le \emph{préconditionnement flexible} DEFINIR LE PRECONDITIONNEMENT QUELQUE PART AVANT : \emph{FGMRES}.
-%
-% \paragraph{}
-% Une analyse théorique en python des méthodes de résolution de système linéaire m'a donné plusieurs pistes : en plus du préconditionnement flexible, je compte par exemple ajouter au \emph{GMRES} de \CEDRE l'augmentation avec les méthodes \emph{GMRES-DR}.
-%
-% \paragraph{}
-% Pour aider à l'implémentation de ces méthodes, j'utilise la bibliothèque \PETSc\footnote{https://www.mcs.anl.gov/petsc/}. Maintenant que cette bibliothèque a été ajoutée à \CEDRE, un grand nombre de techniques sont devenues accessibles. \PETSc fournit un grand nombre de méthodes de résolutions, de préconditionneurs, et fait le lien avec d'autres librairies comme \emph{Hypre}\footnote{https://computing.llnl.gov/projects/hypre-scalable-linear-solvers-multigrid-methods}.
 
 
 \pagebreak
