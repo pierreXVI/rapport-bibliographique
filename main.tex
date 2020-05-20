@@ -202,7 +202,84 @@
 		\subsection{Méthodes itératives}
 
 			\paragraph{}
-			Les méthodes itératives sont encore aujourd'hui très étudiées dans la communauté des mathématiques appliquées \cite{OlshanskiiTyrtyshnikov2014, Saad2003}.
+			Les méthodes itératives sont encore aujourd'hui très étudiées dans la communauté des mathématiques appliquées \cite{OlshanskiiTyrtyshnikov2014, Saad2003, TrefethenBau1997}.
+			Une première classe de méthode intervient : les méthodes itératives classiques.
+			Si ces méthodes sont plutôt anciennes et plutôt écartées pour leurs mauvaises performances, elles peuvent s'utiliser en se combinant avec des méthodes plus efficaces, et c'est pour cela qu'il est important de comprendre leur fonctionnement.
+			Ce sont des méthodes de relaxation, parmi lesquelles on compte les méthode de Jacobi, Gauss-Seidel ou encore SOR (successive over relaxation).
+			Leur fonctionnement réside dans une décomposition $A = M - N$ avec $M$ une matrice facile à inverser, où le choix des matrices est propre à la méthode.
+			Pour la méthode de Jacobi on prendra pour $M$ la diagonale de $A$.
+			Il suffit ensuite, à partir d'un itéré initial $x_0$ d'appliquer la formule de récurrence $x_{k+1} = M^{-1}\left(Nx_k + b\right)$.
+
+
+
+			\subsubsection{Méthodes de Krylov}
+		\paragraph{}
+		Plus récemment, les méthodes au centre de l'attention sont les méthodes itératives de Krylov
+		\cite{TrefethenBau1997, Saad2003, SimonciniSzyld2007, OlshanskiiTyrtyshnikov2014, Vasseur2016}.
+
+		\paragraph{}
+		Ces méthodes vont construire une base de l'espace de Krylov, en l'enrichissant à chaque itération, puis résoudre le système linéaire projeté sur cet espace.
+		Pour l'itération $k$, on appelle résidu le vecteur $r_k = b - Ax_k$.
+		On considère dans ce qui suit que la matrice $A$ est de taille $N\times N$,
+		et que dans l'esprit des algorithmes : $n\ll N$, même si la suite reste vraie avec $n$ quelconque.
+
+		\paragraph{}
+		On appelle l'espace de Krylov de dimension $n$ le sous espace vectoriel engendré par les puissances successives de $A$ appliquées à $r_0$ :
+		\begin{equation}\label{eqn:krylov}
+			\krylov[A, r_0]{n} = \operatorname{Vect}\left(r_0, Ar_0, \dots, A^{n-1}r_0\right)
+		\end{equation}
+		On remarque que $\krylov[A, r_0]{n}\subset\krylov[A, r_0]{n+1}$
+
+		\paragraph{}
+		À chaque itération de l'algorithme, on va calculer le vecteur de base à ajouter à $\krylov{n}$ pour engendrer $\krylov{n+1}$.
+		On cherche ensuite l'itéré sur $\krylov{n}$ qui s'approche de la solution voulue :
+		\begin{equation}\label{eqn:x_n}
+			x_n \in x_0 + \krylov[A, r_0]{n}
+		\end{equation}
+
+	\paragraph{}
+	La convergence des méthode itératives, classiques comme de Krylov, est très fortement liée au conditionnement de l'opérateur $A$.
+	La définition du conditionnement dépend de la norme choisie, et pour la norme $\norm[2]{\cdot}$ on a, pour une matrice $A$ inversible :
+	\begin{equation}\label{eqn:conditionnement}
+		\kappa\left(A\right) = \frac{\sigma_{\max}}{\sigma_{\min}} = \frac{\left|\lambda_{\max}\right|}{\left|\lambda_{\min}\right|}
+	\end{equation}
+	où $\sigma_{\min}$ et $\sigma_{\max}$ sont les valeurs singulières minimales et maximales de $A$,
+	$\lambda_{\min}$ et $\lambda_{\max}$ sont les valeurs propres de $A$ de plus petit et de plus grand module,
+	et où $\kappa\left(A\right)\geq1$ est le conditionnement de $A$.
+	Une matrice bien conditionnée, du point de vue des algorithmes itératifs, a un conditionnement $\kappa\sim1$.
+	Au contraire, une matrice mal conditionnée a des valeurs propres éloignées, et $\kappa\gg1$.
+
+\section{TODO}
+
+Résolution par gmres autre domaines que CFD \cite{Mercier2015}.
+
+FGMRES \cite{SimonciniSzyld2002, Pinel2010, Vasseur2016, CoulaudGiraudRametEtAl2013}.
+
+Pas possible d'utiliser le spectre pour matrice non-normale \cite{GreenbaumStrakos1994, GreenbaumPtakStrakos1996, Trefethen1999}.
+
+Préconditionnement polynomial \cite{DuboisGreenbaumRodrigue1979}.
+
+GMRES augmentation/deflation \cite{ChapmanSaad1997, RamosKehlNabben, Pinel2010, Vasseur2016, Morgan2002, CoulaudGiraudRametEtAl2013}.
+
+AMG \cite{Vasseur2016}.
+
+JFNK \cite{LiuZhangZhongEtAl2015, Turpault2003, KnollKeyes2004},
+
+AD \cite{Griewank2000} utilisé en CFD \cite{BilanceriBeuxElmahiEtAl2011, KenwayMaderHeEtAl2019}.
+
+Autre que implicite classique :
+méthodes IMEX (rk \cite{HuangPerssonZahr2019}),
+relaxation \cite{CouletteFranckHelluyEtAl2019},
+multiphysique \cite{WongKwokHorneEtAl2019},
+exponentiel \cite{BhattKhaliqWade2018} implicite \cite{NieZhangZhao2006}.
+
+CEDRE \cite{Selva1998}.
+
+\section{Programmes et bibliothèques}
+	\subsection{PETSc}
+		\cite{petsc-web-page, petsc-user-ref, petsc-efficient, abhyankar2018petsc}
+	\subsection{Maquette}
+	\subsection{CEDRE}
 
 
 

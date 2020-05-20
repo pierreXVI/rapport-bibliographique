@@ -387,7 +387,7 @@ PETSc},
   volume   = {188},
   abstract = {In this work, we are interested in the implicit discretization of compressible fluid models. When applied to this type of models, standard implicit schemes suffer from a lack of efficiency due to the ill-conditioning of the associated matrices. In this paper we propose an alternative strategy based on a relaxation method coupled with an implicit scheme. This method allows us to approximate the full complex problem by a collection of simpler ones that can be solved with standard methods. We obtain eventually a second order implicit method with some additional parallelism able to treat hyperbolic systems with small diffusion.},
   comment  = {Validation, pas perfo ni parallélisation,
-Relaxation},
+Relaxation au niveau de l'EDP},
   doi      = {10.1016/j.compfluid.2019.05.009},
   file     = {:Implicit Time Schemes for Compressible Fluid Models Based on Relaxation Methods - CouletteFranckHelluyEtAl.pdf:PDF},
   keywords = {Implicit method, Hyperbolic systems, Conditioning, Relaxation, High-order, prio2},
@@ -505,7 +505,7 @@ Relaxation},
   pages      = {962--984},
   volume     = {26},
   comment    = {Rapide revue algos,
-On augmente l'espace de recherche avec les k derniers incréments de la solution x_{i} - x_{i-1} où x_i est la'approximation après le i-ème rerémarrage.
+On augmente l'espace de recherche avec les k derniers incréments de la solution x_{i} - x_{i-1} où x_i est l'approximation après le i-ème redémarrage.
 Ca suppose que l'erreur e_{i} = sol - x_{i} est approximée par x_{i} - x_{i-1}, mais pourquoi je sais pas.},
   doi        = {10.1137/S0895479803422014},
   eprint     = {https://doi.org/10.1137/S0895479803422014},
@@ -568,7 +568,7 @@ Ca suppose que l'erreur e_{i} = sol - x_{i} est approximée par x_{i} - x_{i-1},
 }
 
 @Article{GreenbaumPtakStrakos1996,
-  author     = {Greenbaum, Anne. and Pták, Vlastimil. and Strakoš, Zdenve˘k.},
+  author     = {Greenbaum, Anne. and Pták, Vlastimil. and Strakos, Zdenvek.},
   journal    = {SIAM Journal on Matrix Analysis and Applications},
   title      = {Any Nonincreasing Convergence Curve is Possible for GMRES},
   year       = {1996},
@@ -651,6 +651,42 @@ Ca suppose que l'erreur e_{i} = sol - x_{i} est approximée par x_{i} - x_{i-1},
   file      = {:A Study of ILU Factorization for Schwarz Preconditioners with Application to Computational Fluid Dynamics - PacullAubertBuisson.pdf:PDF},
   isbn      = {978-1-905088-44-7},
   journal   = {Civil-Comp Proceedings},
+}
+
+@Article{abhyankar2018petsc,
+  author  = {Abhyankar, Shrirang and Brown, Jed and Constantinescu, Emil M and Ghosh, Debojyoti and Smith, Barry F and Zhang, Hong},
+  journal = {arXiv preprint arXiv:1806.01437},
+  title   = {{PETS}c/{TS}: A Modern Scalable ODE/DAE Solver Library},
+  year    = {2018},
+  comment = {PETSc TS},
+}
+
+@Misc{petsc-web-page,
+  author  = {Satish Balay and Shrirang Abhyankar and Mark~F. Adams and Jed Brownand Peter Brune and Kris Buschelman and Lisandro Dalcin and Alp Dener and Victor Eijkhoutand William~D. Gropp and Dinesh Kaushik and Matthew~G. Knepley and Dave~A. Mayand Lois Curfman McInnes and Richard Tran Mills and Todd Munson and Karl Ruppand Patrick Sanan and Barry~F. Smith and Stefano Zampini and Hong Zhang and Hong Zhang},
+  note    = {https://www.mcs.anl.gov/petsc},
+  title   = {{PETS}c {W}eb page},
+  year    = {2020},
+  comment = {PETSc},
+}
+
+@TechReport{petsc-user-ref,
+  author      = {Satish Balay and Shrirang Abhyankar and Mark~F. Adams and Jed Brownand Peter Brune and Kris Buschelman and Lisandro Dalcin and Alp Dener and Victor Eijkhoutand William~D. Gropp and Dinesh Kaushik and Matthew~G. Knepley and Dave~A. Mayand Lois Curfman McInnes and Richard Tran Mills and Todd Munson and Karl Ruppand Patrick Sanan and Barry~F. Smith and Stefano Zampini and Hong Zhang and Hong Zhang},
+  institution = {Argonne National Laboratory},
+  title       = {{PETS}c Users Manual},
+  year        = {2020},
+  number      = {ANL-95/11 - Revision 3.13},
+  comment     = {PETSc},
+}
+
+@InProceedings{petsc-efficient,
+  author    = {Satish Balay and William D. Gropp and Lois C. McInnes and Barry F. Smith},
+  booktitle = {Modern Software Tools in Scientific Computing},
+  title     = {Efficient Management of Parallelism in Object OrientedNumerical Software Libraries},
+  year      = {1997},
+  editor    = {E. Arge and A. M. Bruaset and H. P. Langtangen},
+  pages     = {163--202},
+  publisher = {Birkhauser Press},
+  comment   = {PETSc},
 }
 
 @Comment{jabref-meta: databaseType:bibtex;}
