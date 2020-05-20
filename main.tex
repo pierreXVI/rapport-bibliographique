@@ -40,7 +40,7 @@
 		\end{equation}
 		Concrètement, $W$ représente les grandeurs physiques du système en un point de l'espace et $\operatorname{f}$ une fonction dépendant de l'état du système, mais pouvant également dépendre de ses dérivées spatiales.
 		Puisqu'on cherche une solution stationnaire, on l'exprime comme un zéro de cette fonction.
-		Pour obtenir cette solution, on introduit la notion de pseudo-temps\cite{KelleyKeyes1996}.
+		Pour obtenir cette solution, on introduit la notion de pseudo-temps \cite{KelleyKeyes1996}.
 		Par exemple, pour résoudre les équations de Navier-Stokes, les dérivées spatiales d'ordre un et deux interviennent.
 
 		\paragraph{}
@@ -135,137 +135,74 @@
 	On s'intéresse ici à la résolution numérique d'un système linéaire $Ax = b$, de taille $N$, c'est à dire que l'on cherche $x\in\mathbb{K}^N$ avec le second membre $b\in\mathbb{K}^N$ et la matrice $A\in\matrixsymb{N}{K}$ connus.
 	Dans le cadre de l'énergétique et de la multi-physique, les équations sont réelles mais pour plus de généralité on prend le corps $\mathbb{K} = \mathbb{R}\textrm{ ou }\mathbb{C}$.
 
-	\paragraph{}
-	Il existe un grand nombre de méthodes pour inverser un problème linéaire.
-	Cependant, en simulation numérique de la dynamique des fluides, la taille des maillage est souvent très importante (\PS{PAR EXEMPLE ?}), ce qui engendre des systèmes de très grande taille.
-	Certaines méthodes de résolution ne sont alors plus compatibles, comme en particulier les méthodes directes.
-	Cette famille de méthodes, dont fait partie par exemple la méthode du pivot de Gauss, calcule exactement la solution du système linéaire, mais nécessite un temps de calcul très important et un espace mémoire déraisonnable pour les tailles de nos problèmes.
-	À l'inverse, les méthodes itératives produisent une suite de vecteurs qui convergent vers la solution du système linéaire.
-	L'erreur sur la résolution du système décroît à mesure que l'algorithme itère et cela permet d'atteindre la précision souhaitée, non nulle mais suffisamment petite, pour un temps de calcul et une consommation mémoire maîtrisé.
-	C'est l'idée que l'on retrouve sur la figure \ref{fig:direct-iterative} : la méthode directe ne fait aucun progrès avant $O\left(N^3\right)$ opérations, alors que la norme de l'erreur décroît pour la méthode itérative.
 
-	\begin{figure}
-		\centering
-		\includegraphics[width=.8\textwidth]{images/direct-iterative.png}
-		\caption{Convergence des méthodes directes et itératives, issu de \cite{TrefethenBau1997}}
-		\label{fig:direct-iterative}
-	\end{figure}
+	\subsection{Système linéaire creux}
 
+		\paragraph{}
+		Comme cela a été mentionné, la taille des matrices rencontrées dans un problème typique de la simulation numérique de la dynamique des fluides est très grande.
+		Les matrices ont également une autre propriété : la creusité.
+		Puisque les matrices des systèmes linéaires à résoudre sont liées à une matrice jacobienne (voir équation (\ref{eq:linear})), un coefficient de la matrice symbolise une interaction entre deux points du maillage.
+		On comprend alors que si le graphe de ces interactions dépend du schéma de discrétisation et d'intégration spatiale, deux points éloignés dans le maillage ne seront pas reliés.
+		Ainsi, les matrices présentent cette caractéristique notable qu'est la creusité et que l'on peut observer sur la figure \ref{fig:sparse}.
+		On y voit en effet que la majorité des coefficients du système linéaire sont 0.
+		En pratique, les matrices rencontrées sont tellement grandes qu'il n'est pas possible de les stocker et de les utiliser sous leur forme dense.
+		La propriété de creusité permettra d'utiliser des représentation astucieuses pour stocker les matrices en mémoire, telle que le format CSR (Compressed Sparse Row) \cite{Saad2003}.
+		Ces formats permettent à la fois d'économiser de l'espace en mémoire lors du stockage de la matrice, mais également de réaliser des opérations telles que le produit matrice vecteur plus efficacement qu'avec une matrice dense de même taille.
 
-	\paragraph{}
-	Comme cela a été mentionné, la taille des matrices rencontrées dans un problème typique de la simulation numérique de la dynamique des fluides est très grande.
-	Les matrices ont également une autre propriété : la creusité.
-	Puisque les matrices des systèmes linéaires à résoudre sont liées à une matrice jacobienne (voir équation (\ref{eq:linear})), un coefficient de la matrice symbolise une interaction entre deux points du maillage.
-	On comprend alors que si le graphe de ces interactions dépend du schéma de discrétisation et d'intégration spatiale, deux points éloignés dans le maillage ne seront pas reliés.
-	Ainsi, les matrices présentent cette caractéristique notable qu'est la creusité.
-	En pratique, cela permettra d'utiliser des représentation astucieuses pour stocker les matrices en mémoire, telle que le format CSR (Compressed Sparse Row).
-	Ces formats permettent à la fois d'économiser de l'espace en mémoire lors du stockage de la matrice, mais également de réaliser des opérations telles que le produit matrice vecteur plus efficacement.
-
-Engleman fidap manuals
-
-	\begin{figure}
-		\centering
-		\begin{subfigure}[t]{0.3\textwidth}
+		\begin{figure}
 			\centering
-			\includegraphics[width=\textwidth]{images/GT01R.png}
-			\caption{GT01R - écoulement 2D non visqueux à travers un étage d'aubes de turbomachine}
-			\label{fig:sparse.GT01R}
-		\end{subfigure}
-		\hfill
-		\begin{subfigure}[t]{0.3\textwidth}
-			\centering
-			\includegraphics[width=\textwidth]{images/HV15R.png}
-			\caption{HV15R - écoulement RANS 3D dans la soufflante d'un moteur}
-			\label{fig:sparse.HV15R}
-		\end{subfigure}
-		\hfill
-		\begin{subfigure}[t]{0.3\textwidth}
-			\centering
-			\includegraphics[width=\textwidth]{images/RM07R.png}
-			\caption{RM07R - écoulement 3D visqueux dans le compresseur d'un turbopropulseur}
-			\label{fig:sparse.RM07R}
-		\end{subfigure}
-		\caption{Représentation de matrices issues de problèmes de CFD, utilisant une méthode spatiale Volumes Finis\cite{PacullAubertBuisson2011}. Les points de couleurs correspondent à des valeurs non nulles, et les points blancs à des zéros.}
-		\label{fig:sparse}
-	\end{figure}
+			\begin{subfigure}[t]{0.3\textwidth}
+				\centering
+				\includegraphics[width=\textwidth]{images/GT01R.png}
+				\caption{GT01R : écoulement 2D non visqueux à travers un étage d'aubes de turbomachine}
+				\label{fig:sparse.GT01R}
+			\end{subfigure}
+			\hfill
+			\begin{subfigure}[t]{0.3\textwidth}
+				\centering
+				\includegraphics[width=\textwidth]{images/HV15R.png}
+				\caption{HV15R : écoulement RANS 3D dans la soufflante d'un moteur}
+				\label{fig:sparse.HV15R}
+			\end{subfigure}
+			\hfill
+			\begin{subfigure}[t]{0.3\textwidth}
+				\centering
+				\includegraphics[width=\textwidth]{images/RM07R.png}
+				\caption{RM07R : écoulement 3D visqueux dans le compresseur d'un turbopropulseur}
+				\label{fig:sparse.RM07R}
+			\end{subfigure}
+			\caption{Représentation de matrices issues de problèmes de CFD \cite{PacullAubertBuisson2011}, utilisant une méthode spatiale Volumes Finis, les points de couleurs correspondant aux valeurs non nulles}
+			\label{fig:sparse}
+		\end{figure}
 
 
-% 	\subsubsection{Matrice creuse}
-%
-% 		\paragraph{}
-% 		Dans les problèmes de dynamique des fluides numérique, les matrices construites ont une caractéristique notable : elles sont creuses.
-% 		Cela signifie qu'elles comportent beaucoup de zéros parmi leurs coefficients.
-% 		Pour avoir une idée de l'origine de la creusité, on peut se dire que le coefficient $A_{i, j}$ correspond à l'interaction de la maille $i$ vers la maille $j$,
-% 		et que donc seules les mailles "proches" de la maille $i$ vont avoir un coefficient non nul. Ainsi, les coefficients non nuls sont bien moins nombreux.
-%
-%
-% 		\paragraph{}
-% 		Par exemple, la matrice représentée sur la figure~\ref{fig:ex11} correspond à un problème de dynamique des fluides.
-% 		Cette matrice provient de la base de donnée FIDAP de l'Université de Floride \footnote{\url{https://sparse.tamu.edu/FIDAP/ex11}}, et est utilisée comme exemple dans \cite{Pinel2010}.
-% 		On observe sur la figure que la majorité de l'espace est blanc : c'est l'expression de la creusité sur cette représentation.
-% 		Au contraire, les valeurs non nulles de la matrice sont concentrées sur la diagonale : c'est une caractéristique des problèmes de dynamique des fluides,
-% 		car une zone du maillage est principalement affectée par les zones physiquement proches,
-% 		et avec une numération naturelle des sommets on se retrouve avec des valeurs concentrées sur la diagonale.
-%
-% 		\paragraph{}
-% 		Cette matrice est une matrice carrée de taille $N = 16,614$ avec $n_{nz} = 1,096,948$ entrées non nulles, soit un taux de remplissage de 0.40\%.
-% 		Dans un tel cas, on voit qu'il serait déraisonnable de stocker entièrement la matrice, car 99,60\% de la mémoire ne servirait qu'à stocker des zéros.
-% 		On va alors utiliser des méthodes de stockage de la matrice plus astucieuses \cite{Saad2003}, comme le format \emph{Compressed Sparse Row} (CSR).
-% 		Avec ce format, plutôt que de stocker $N\times N = 276,024,996$ nombres pour représenter $A$, on va n'en stocker que $N + 2n_{nz} = 2,210,582$.
-% 		Puisque les matrices que nous manipulons sont de très grande taille, il est nécessaire de porter attention à l'utilisation de la mémoire,
-% 		et d'utiliser de telles représentations des matrices.
-%
-% \paragraph{}
-% Il existe différents algorithmes pour résoudre un système linéaire. On les regroupe généralement en deux catégories :
-% les algorithmes correspondants à des méthodes \emph{directes}, qui au bout d'un calcul plus ou moins long donnent une valeur de la solution,
-% et ceux correspondants à des méthodes \emph{itératives}, qui construisent à chaque itération une valeur approchée de la solution, supposée converger vers la solution exacte.
+		\subsection{Type de méthode}
+			\paragraph{}
+			Il existe un grand nombre de méthodes pour inverser un problème linéaire.
+			Cependant, en simulation numérique de la dynamique des fluides, la taille des maillage est souvent très importante (\PS{PAR EXEMPLE ?}), ce qui engendre des systèmes de très grande taille.
+			Certaines méthodes de résolution ne sont alors plus compatibles, comme en particulier les méthodes directes.
+			Cette famille de méthodes, dont fait partie par exemple la méthode du pivot de Gauss, calcule exactement la solution du système linéaire, mais nécessite un temps de calcul très important et un espace mémoire déraisonnable pour les tailles de nos problèmes.
+			À l'inverse, les méthodes itératives produisent une suite de vecteurs qui convergent vers la solution du système linéaire.
+			L'erreur sur la résolution du système décroît à mesure que l'algorithme itère et cela permet d'atteindre la précision souhaitée, non nulle mais suffisamment petite, pour un temps de calcul et une consommation mémoire maîtrisé.
+			C'est l'idée que l'on retrouve sur la figure \ref{fig:direct-iterative} : la méthode directe ne fait aucun progrès avant $O\left(N^3\right)$ opérations, alors que la norme de l'erreur décroît pour la méthode itérative.
+
+			\begin{figure}
+				\centering
+				\includegraphics[width=.8\textwidth]{images/direct-iterative.png}
+				\caption{Convergence des méthodes directes et itératives, issu de \cite{TrefethenBau1997}}
+				\label{fig:direct-iterative}
+			\end{figure}
+
+			\paragraph{}
+			Les méthodes itératives sont donc les plus adaptées pour inverser des systèmes linéaires creux de grande taille.
+			Cependant, il peut arriver qu'on utilise une méthode directe : on peut envisager par exemple la résolution d'un système linéaire avec une succession d'étage multigrille, pour arriver à un système grossier de petite taille (ou du moins de taille raisonnable), qu'on résoudrait avec une méthode directe comme la décomposition LU.
+			Ces méthodes sont bien connues \cite{TrefethenBau1997}, et ne seront pas détaillées ici.
 
 
+		\subsection{Méthodes itératives}
 
-
-
-	% \subsection{Méthodes Directes}
-	%
-	%  \paragraph{}
-	%  Le premier type de méthodes de résolution d'un système linéaire regroupe les méthodes dites directes.
-	%  Par exemple, on y retrouve l'élimination de Gauss, ou méthode du pivot de Gauss \cite{TrefethenBau1997}.
-	%  Ces méthodes utilisent des décompositions astucieuses de la matrice à inverser pour se ramener à un système $Ty = c$ avec $T$ une matrice triangulaire.
-	%  En effet l'inversion de ce système est immédiate.
-	%  Ces méthodes, intuitives, sont souvent étudiées dans le cadre académique, et sont celles utilisées pour inverser "à la main" une matrice de faible taille.
-	%
-	%  \subsubsection{Méthode d'élimination de Gauss}
-	% 		La méthode de Gauss équivaut à écrire la décomposition $A=LU$ où $L$ est triangulaire inférieure avec des coefficients diagonaux égaux à 1
-	% 		et $U$ est triangulaire supérieure avec des coefficients diagonaux non nuls.
-	% 		On résout ensuite $Ly = b$ puis $Ux = y$.
-	% 		Cette méthode a une complexité algorithmique asymptotique en $O\left(N^3\right)$ pour une matrice de taille $N$.
-	% 		De plus, elle ne présente aucun avantage dans le cas ou la matrice à inverser est creuse.
-	%
-	%  \subsubsection{Factorisation de Cholesky}
-	% 	 Si $A$ est symétrique définie positive, il existe alors $L$ triangulaire inférieure, inversible, telle que $A=L\transpose{L}$.
-	% 	 C'est un cas particulier de la méthode d'élimination de Gauss pour $U = \transpose{L}$.
-	% 	 La méthode de Cholesky à un côut de $\frac{1}{3}N^3$.
-	%
-	%  \subsubsection{Méthode de Householder}
-	% 	 Cette méthode utilise la décomposition $QR$ de la matrice :
-	% 	 c'est une décomposition de la forme $A=QR$ où $Q$ est une matrice orthogonale $\transpose{Q}Q=I$, et $R$ une matrice triangulaire supérieure.
-	% 	 On résout alors $Rx = \transpose{Q}b$.
-	% 	 La méthode de Householder à un coût de $\frac{4}{3}N^3$.
-	%
-	%  \paragraph{}
-	%  Il existe d'autres méthodes utilisant ces décompositions LU, de Cholesky ou QR de la matrice $A$, mais elles ont toutes le même inconvénient :
-	%  elles sont beaucoup trop coûteuses pour des matrices de grande taille.
-	%  Il est nécessaire d'aller jusqu'au bout de l'algorithme pour avoir la solution, et dans le cas ou la taille de la matrice est très grande,
-	%  aller au bout de ces algorithmes est quelque chose qu'on ne peut pas se permettre.
-	%  Pour pallier à ce problème, il faut se tourner vers les méthodes itératives.
-
-
-
-	\paragraph{}
-	Les méthodes itératives sont encore aujourd'hui très étudiées dans la communauté des mathématiques appliquées.
-
-
-
-	Methodes iteratives\cite{OlshanskiiTyrtyshnikov2014, Saad2003}
+			\paragraph{}
+			Les méthodes itératives sont encore aujourd'hui très étudiées dans la communauté des mathématiques appliquées \cite{OlshanskiiTyrtyshnikov2014, Saad2003}.
 
 
 
