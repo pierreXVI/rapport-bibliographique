@@ -176,111 +176,141 @@
 		\end{figure}
 
 
-		\subsection{Type de méthode}
-			\paragraph{}
-			Il existe un grand nombre de méthodes pour inverser un problème linéaire.
-			Cependant, en simulation numérique de la dynamique des fluides, la taille des maillage est souvent très importante (\PS{PAR EXEMPLE ?}), ce qui engendre des systèmes de très grande taille.
-			Certaines méthodes de résolution ne sont alors plus compatibles, comme en particulier les méthodes directes.
-			Cette famille de méthodes, dont fait partie par exemple la méthode du pivot de Gauss, calcule exactement la solution du système linéaire, mais nécessite un temps de calcul très important et un espace mémoire déraisonnable pour les tailles de nos problèmes.
-			À l'inverse, les méthodes itératives produisent une suite de vecteurs qui convergent vers la solution du système linéaire.
-			L'erreur sur la résolution du système décroît à mesure que l'algorithme itère et cela permet d'atteindre la précision souhaitée, non nulle mais suffisamment petite, pour un temps de calcul et une consommation mémoire maîtrisé.
-			C'est l'idée que l'on retrouve sur la figure \ref{fig:direct-iterative} : la méthode directe ne fait aucun progrès avant $O\left(N^3\right)$ opérations, alors que la norme de l'erreur décroît pour la méthode itérative.
-
-			\begin{figure}
-				\centering
-				\includegraphics[width=.8\textwidth]{images/direct-iterative.png}
-				\caption{Convergence des méthodes directes et itératives, issu de \cite{TrefethenBau1997}}
-				\label{fig:direct-iterative}
-			\end{figure}
-
-			\paragraph{}
-			Les méthodes itératives sont donc les plus adaptées pour inverser des systèmes linéaires creux de grande taille.
-			Cependant, il peut arriver qu'on utilise une méthode directe : on peut envisager par exemple la résolution d'un système linéaire avec une succession d'étage multigrille, pour arriver à un système grossier de petite taille (ou du moins de taille raisonnable), qu'on résoudrait avec une méthode directe comme la décomposition LU.
-			Ces méthodes sont bien connues \cite{TrefethenBau1997}, et ne seront pas détaillées ici.
-
-
-		\subsection{Méthodes itératives}
-
-			\paragraph{}
-			Les méthodes itératives sont encore aujourd'hui très étudiées dans la communauté des mathématiques appliquées \cite{OlshanskiiTyrtyshnikov2014, Saad2003, TrefethenBau1997}.
-			Une première classe de méthode intervient : les méthodes itératives classiques.
-			Si ces méthodes sont plutôt anciennes et plutôt écartées pour leurs mauvaises performances, elles peuvent s'utiliser en se combinant avec des méthodes plus efficaces, et c'est pour cela qu'il est important de comprendre leur fonctionnement.
-			Ce sont des méthodes de relaxation, parmi lesquelles on compte les méthode de Jacobi, Gauss-Seidel ou encore SOR (successive over relaxation).
-			Leur fonctionnement réside dans une décomposition $A = M - N$ avec $M$ une matrice facile à inverser, où le choix des matrices est propre à la méthode.
-			Pour la méthode de Jacobi on prendra pour $M$ la diagonale de $A$.
-			Il suffit ensuite, à partir d'un itéré initial $x_0$ d'appliquer la formule de récurrence $x_{k+1} = M^{-1}\left(Nx_k + b\right)$.
-
-
-
-			\subsubsection{Méthodes de Krylov}
+	\subsection{Type de méthode}
 		\paragraph{}
-		Plus récemment, les méthodes au centre de l'attention sont les méthodes itératives de Krylov
-		\cite{TrefethenBau1997, Saad2003, SimonciniSzyld2007, OlshanskiiTyrtyshnikov2014, Vasseur2016}.
+		Il existe un grand nombre de méthodes pour inverser un problème linéaire.
+		Cependant, en simulation numérique de la dynamique des fluides, la taille des maillage est souvent très importante (\PS{PAR EXEMPLE ?}), ce qui engendre des systèmes de très grande taille.
+		Certaines méthodes de résolution ne sont alors plus compatibles, comme en particulier les méthodes directes.
+		Cette famille de méthodes, dont fait partie par exemple la méthode du pivot de Gauss, calcule exactement la solution du système linéaire, mais nécessite un temps de calcul très important et un espace mémoire déraisonnable pour les tailles de nos problèmes.
+		À l'inverse, les méthodes itératives produisent une suite de vecteurs qui convergent vers la solution du système linéaire.
+		L'erreur sur la résolution du système décroît à mesure que l'algorithme itère et cela permet d'atteindre la précision souhaitée, non nulle mais suffisamment petite, pour un temps de calcul et une consommation mémoire maîtrisé.
+		C'est l'idée que l'on retrouve sur la figure \ref{fig:direct-iterative} : la méthode directe ne fait aucun progrès avant $O\left(N^3\right)$ opérations, alors que la norme de l'erreur décroît pour la méthode itérative.
+
+		\begin{figure}
+			\centering
+			\includegraphics[width=.7\textwidth]{images/direct-iterative.png}
+			\caption{Convergence des méthodes directes et itératives, issu de \cite{TrefethenBau1997}}
+			\label{fig:direct-iterative}
+		\end{figure}
 
 		\paragraph{}
-		Ces méthodes vont construire une base de l'espace de Krylov, en l'enrichissant à chaque itération, puis résoudre le système linéaire projeté sur cet espace.
-		Pour l'itération $k$, on appelle résidu le vecteur $r_k = b - Ax_k$.
-		On considère dans ce qui suit que la matrice $A$ est de taille $N\times N$,
-		et que dans l'esprit des algorithmes : $n\ll N$, même si la suite reste vraie avec $n$ quelconque.
+		Les méthodes itératives sont donc les plus adaptées pour inverser des systèmes linéaires creux de grande taille.
+		Cependant, il peut arriver qu'on utilise une méthode directe : on peut envisager par exemple la résolution d'un système linéaire avec une succession d'étages d'un algorithme multigrille, pour arriver à un système grossier de petite taille (ou du moins de taille raisonnable), qu'on résoudrait avec une méthode directe comme la décomposition LU.
+		Ces méthodes sont bien connues \cite{TrefethenBau1997}, et ne seront pas détaillées ici.
+
+
+	\subsection{Méthodes itératives}
 
 		\paragraph{}
-		On appelle l'espace de Krylov de dimension $n$ le sous espace vectoriel engendré par les puissances successives de $A$ appliquées à $r_0$ :
+		Les méthodes itératives sont encore aujourd'hui très étudiées dans la communauté des mathématiques appliquées \cite{OlshanskiiTyrtyshnikov2014, Saad2003, TrefethenBau1997}.
+		Une première classe de méthode intervient : les méthodes itératives classiques.
+		Si ces méthodes sont plutôt anciennes et plutôt écartées pour leurs mauvaises performances, elles peuvent s'utiliser en se combinant avec des méthodes plus efficaces, et c'est pour cela qu'il est important de comprendre leur fonctionnement.
+		Ce sont des méthodes de relaxation, parmi lesquelles on compte les méthode de Jacobi, Gauss-Seidel ou encore SOR (successive over relaxation).
+		Leur fonctionnement réside dans une décomposition $A = M - N$ avec $M$ une matrice facile à inverser, où le choix des matrices est propre à la méthode.
+		Pour la méthode de Jacobi on prendra pour $M$ la diagonale de $A$.
+		Il suffit ensuite, à partir d'un itéré initial $x_0$ d'appliquer la formule de récurrence $x_{k+1} = M^{-1}\left(Nx_k + b\right)$.
+		Cependant, comme dit précédemment, ces méthodes n'offrent pas une convergence satisfaisante pour la communauté de CFD.
+		Ainsi, il faut se tourner vers un autre type de méthodes itératives pour résoudre le système linéaire.
+
+	\subsection{Méthodes de Krylov}
+
+		\paragraph{}
+		Les méthodes de Krylov apparaissent comme étant la norme dans le domaine de la dynamique des fluides numérique.
+		Le principe d'une méthode de Krylov est de projeter le système linéaire sur un espace restreint appelé espace de Krylov, et d'y résoudre le système maintenant qu'il est plus petit.
+		L'astuce va être dans le fait que ces espaces de Krylov sont emboîtés, et qu'a chaque nouvelle itération on utilise l'information accumulée lors des précédentes.
+
+		\paragraph{}
+		Dans ce qui suit, on notera à l'itération $n$ le résidu $r_n = b - Ax_n$, où $x_n$ est l'itéré produit par l'algorithme à l'itération $n$.
+		Dans la pratique, on se restreint à un nombre d'itérations $n\ll N$ pour des raisons évoquées précédemment, mais la suite reste vraie pour $n\le N$.
+		On supposera également que l'équation (\ref{eq:linear}) admet une solution.
+		Enfin, on notera que résoudre $Ax = b$ avec un itéré initial $x_0$ est équivalent ici à résoudre $A\tilde{x} = b - Ax_0$ avec un itéré initial nul, puis prendre $x_0 + \tilde{x}$ comme vecteur solution.
+
+		\paragraph{}
+		Pour résoudre $Ax = b$ en partant d'un itéré initial $x_0$ et donc d'un résidu $r_0 = b - Ax_0$, on définit l'espace de Krylov à l'itération $n$:
 		\begin{equation}\label{eqn:krylov}
 			\krylov[A, r_0]{n} = \operatorname{Vect}\left(r_0, Ar_0, \dots, A^{n-1}r_0\right)
 		\end{equation}
-		On remarque que $\krylov[A, r_0]{n}\subset\krylov[A, r_0]{n+1}$
+		On constate alors que $\krylov{0}\subset\krylov{1}\subset\dots\subset\krylov{n-1}\subset\krylov{n}$.
+		On cherche ensuite l'itéré sur $\krylov{n}$ qui garantit une condition de Petrov-Galerkin \cite{SimonciniSzyld2007} :
+		\begin{equation}\label{eqn:x_n}
+			x_n \in x_0 + \krylov[A, r_0]{n}\quad\textrm{tel que}\quad x_n \perp \mathcal{L}_n
+		\end{equation}
+		où $\mathcal{L}_n$ est un sous-espace vectoriel de dimension $n$.
+		Pour $\mathcal{L}_n = \krylov{n}$ on parle de condition de Galerkin, et pour $\mathcal{L}_n = A\krylov{n}$ de minimisation du résidu.
+		On voit donc que si $A$ est inversible, alors l'algorithme termine en au plus $N$ itérations.
+		Cette remarque reste informative puisqu'en pratique on arrêtera l'algorithme bien avant.
 
 		\paragraph{}
-		À chaque itération de l'algorithme, on va calculer le vecteur de base à ajouter à $\krylov{n}$ pour engendrer $\krylov{n+1}$.
-		On cherche ensuite l'itéré sur $\krylov{n}$ qui s'approche de la solution voulue :
-		\begin{equation}\label{eqn:x_n}
-			x_n \in x_0 + \krylov[A, r_0]{n}
-		\end{equation}
-
-	\paragraph{}
-	La convergence des méthode itératives, classiques comme de Krylov, est très fortement liée au conditionnement de l'opérateur $A$.
-	La définition du conditionnement dépend de la norme choisie, et pour la norme $\norm[2]{\cdot}$ on a, pour une matrice $A$ inversible :
-	\begin{equation}\label{eqn:conditionnement}
-		\kappa\left(A\right) = \frac{\sigma_{\max}}{\sigma_{\min}} = \frac{\left|\lambda_{\max}\right|}{\left|\lambda_{\min}\right|}
-	\end{equation}
-	où $\sigma_{\min}$ et $\sigma_{\max}$ sont les valeurs singulières minimales et maximales de $A$,
-	$\lambda_{\min}$ et $\lambda_{\max}$ sont les valeurs propres de $A$ de plus petit et de plus grand module,
-	et où $\kappa\left(A\right)\geq1$ est le conditionnement de $A$.
-	Une matrice bien conditionnée, du point de vue des algorithmes itératifs, a un conditionnement $\kappa\sim1$.
-	Au contraire, une matrice mal conditionnée a des valeurs propres éloignées, et $\kappa\gg1$.
+		Il existe donc beaucoup de méthodes de Krylov pour résoudre un système linéaire, la distinction entre elle se faisant par le choix à chaque itération du sous-espace $\mathcal{L}_n$.
+		La condition de minimisation du résidu donne la méthode GMRES, qui est l'une des plus utilisée par les communautés de CFD et de mathématiques appliquées.
+		Elle permet, après des itérations un peu plus coûteuses que ses consœurs telles que la méthode Bi-CG \cite{TrefethenBau1997}, de minimiser le résidu obtenu et donc de garantir une décroissance de l'erreur.
+		De plus, la méthode GMRES est beaucoup étudiée et de nombreuses variantes et améliorations ont été développées au fil des années.
+		Pour ces raisons, et parce que son implémentation est relativement simple, c'est sur cette méthode que j'ai décidé de m'orienter.
 
 \section{TODO}
 
-Résolution par gmres autre domaines que CFD \cite{Mercier2015}.
 
-FGMRES \cite{SimonciniSzyld2002, Pinel2010, Vasseur2016, CoulaudGiraudRametEtAl2013}.
+	%
+	% 	\paragraph{}
+	% 	Plus récemment, les méthodes au centre de l'attention sont les méthodes itératives de Krylov
+	% 	\cite{TrefethenBau1997, Saad2003, SimonciniSzyld2007, OlshanskiiTyrtyshnikov2014, Vasseur2016}.
+	%
+	% 	\paragraph{}
+	% 	Ces méthodes vont construire une base de l'espace de Krylov, en l'enrichissant à chaque itération, puis résoudre le système linéaire projeté sur cet espace.
+	% 	Pour l'itération $k$, on appelle résidu le vecteur $r_k = b - Ax_k$.
+	% 	On considère dans ce qui suit que la matrice $A$ est de taille $N\times N$,
+	% 	et que dans l'esprit des algorithmes : $n\ll N$, même si la suite reste vraie avec $n$ quelconque.
+	%
+	%
+	% 	\paragraph{}
+	% 	À chaque itération de l'algorithme, on va calculer le vecteur de base à ajouter à $\krylov{n}$ pour engendrer $\krylov{n+1}$.
+	% 	On cherche ensuite l'itéré sur $\krylov{n}$ qui s'approche de la solution voulue :
+	% 	\begin{equation}\label{eqn:x_n}
+	% 		x_n \in x_0 + \krylov[A, r_0]{n}
+	% 	\end{equation}
+	%
+	% \paragraph{}
+	% La convergence des méthode itératives, classiques comme de Krylov, est très fortement liée au conditionnement de l'opérateur $A$.
+	% La définition du conditionnement dépend de la norme choisie, et pour la norme $\norm[2]{\cdot}$ on a, pour une matrice $A$ inversible :
+	% \begin{equation}\label{eqn:conditionnement}
+	% 	\kappa\left(A\right) = \frac{\sigma_{\max}}{\sigma_{\min}} = \frac{\left|\lambda_{\max}\right|}{\left|\lambda_{\min}\right|}
+	% \end{equation}
+	% où $\sigma_{\min}$ et $\sigma_{\max}$ sont les valeurs singulières minimales et maximales de $A$,
+	% $\lambda_{\min}$ et $\lambda_{\max}$ sont les valeurs propres de $A$ de plus petit et de plus grand module,
+	% et où $\kappa\left(A\right)\geq1$ est le conditionnement de $A$.
+	% Une matrice bien conditionnée, du point de vue des algorithmes itératifs, a un conditionnement $\kappa\sim1$.
+	% Au contraire, une matrice mal conditionnée a des valeurs propres éloignées, et $\kappa\gg1$.
 
-Pas possible d'utiliser le spectre pour matrice non-normale \cite{GreenbaumStrakos1994, GreenbaumPtakStrakos1996, Trefethen1999}.
-
-Préconditionnement polynomial \cite{DuboisGreenbaumRodrigue1979}.
-
-GMRES augmentation/deflation \cite{ChapmanSaad1997, RamosKehlNabben, Pinel2010, Vasseur2016, Morgan2002, CoulaudGiraudRametEtAl2013}.
-
-AMG \cite{Vasseur2016}.
-
-JFNK \cite{LiuZhangZhongEtAl2015, Turpault2003, KnollKeyes2004},
-
-AD \cite{Griewank2000} utilisé en CFD \cite{BilanceriBeuxElmahiEtAl2011, KenwayMaderHeEtAl2019}.
-
-Autre que implicite classique :
-méthodes IMEX (rk \cite{HuangPerssonZahr2019}),
-relaxation \cite{CouletteFranckHelluyEtAl2019},
-multiphysique \cite{WongKwokHorneEtAl2019},
-exponentiel \cite{BhattKhaliqWade2018} implicite \cite{NieZhangZhao2006}.
-
-CEDRE \cite{Selva1998}.
-
-\section{Programmes et bibliothèques}
-	\subsection{PETSc}
-		\cite{petsc-web-page, petsc-user-ref, petsc-efficient}, PETSc TS \cite{AbhyankarBrownConstantinescuEtAl2018}
-	\subsection{Maquette}
-	\subsection{CEDRE}
-
+% Résolution par gmres autre domaines que CFD \cite{Mercier2015}.
+%
+% FGMRES \cite{SimonciniSzyld2002, Pinel2010, Vasseur2016, CoulaudGiraudRametEtAl2013}.
+%
+% Pas possible d'utiliser le spectre pour matrice non-normale \cite{GreenbaumStrakos1994, GreenbaumPtakStrakos1996, Trefethen1999}.
+%
+% Préconditionnement polynomial \cite{DuboisGreenbaumRodrigue1979}.
+%
+% GMRES augmentation/deflation \cite{ChapmanSaad1997, RamosKehlNabben, Pinel2010, Vasseur2016, Morgan2002, CoulaudGiraudRametEtAl2013}.
+%
+% AMG \cite{Vasseur2016}.
+%
+% JFNK \cite{LiuZhangZhongEtAl2015, Turpault2003, KnollKeyes2004},
+%
+% AD \cite{Griewank2000} utilisé en CFD \cite{BilanceriBeuxElmahiEtAl2011, KenwayMaderHeEtAl2019}.
+%
+% Autre que implicite classique :
+% méthodes IMEX (rk \cite{HuangPerssonZahr2019}),
+% relaxation \cite{CouletteFranckHelluyEtAl2019},
+% multiphysique \cite{WongKwokHorneEtAl2019},
+% exponentiel \cite{BhattKhaliqWade2018} implicite \cite{NieZhangZhao2006}.
+%
+% CEDRE \cite{Selva1998}.
+%
+% \section{Programmes et bibliothèques}
+% 	\subsection{PETSc}
+% 		\cite{petsc-web-page, petsc-user-ref, petsc-efficient}, PETSc TS \cite{AbhyankarBrownConstantinescuEtAl2018}
+% 	\subsection{Maquette}
+% 	\subsection{CEDRE}
+%
 
 
 
