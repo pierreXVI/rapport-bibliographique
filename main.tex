@@ -230,7 +230,7 @@
 		\begin{equation}\label{eqn:krylov}
 			\krylov[A, r_0]{n} = \operatorname{Vect}\left(r_0, Ar_0, \dots, A^{n-1}r_0\right)
 		\end{equation}
-		On constate alors que $\krylov{0}\subset\krylov{1}\subset\dots\subset\krylov{n-1}\subset\krylov{n}$.
+		On constate alors que $\krylov{1}\subset\krylov{2}\subset\dots\subset\krylov{n-1}\subset\krylov{n}$.
 		On cherche ensuite l'itéré sur $\krylov{n}$ qui garantit une condition de Petrov-Galerkin \cite{SimonciniSzyld2007} :
 		\begin{equation}\label{eqn:x_n}
 			x_n \in x_0 + \krylov[A, r_0]{n}\quad\textrm{tel que}\quad x_n \perp \mathcal{L}_n
