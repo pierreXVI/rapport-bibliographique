@@ -238,7 +238,29 @@
 		où $\mathcal{L}_n$ est un sous-espace vectoriel de dimension $n$.
 		Pour $\mathcal{L}_n = \krylov{n}$ on parle de condition de Galerkin, et pour $\mathcal{L}_n = A\krylov{n}$ de minimisation du résidu.
 		On voit donc que si $A$ est inversible, alors l'algorithme termine en au plus $N$ itérations.
-		Cette remarque reste informative puisqu'en pratique on arrêtera l'algorithme bien avant.
+		n+1Cette remarque reste informative puisqu'en pratique on arrêtera l'algorithme bien avant.
+
+		\paragraph{}
+		Pour construire les différents espaces de Krylov, on utilise l'itération d'Arnoldi \cite{TrefethenBau1997}.
+		La matrice $A$ est semblable à une matrice de Hessenberg $H$ :
+		\begin{equation}\label{eq:hessenberg}
+			A = \adj{V}HV\quad\textrm{avec}\quad H=
+			\begin{pmatrix}
+				h_{1,1}&h_{1,2}&h_{1,3}&\cdots &h_{1,N}\\
+				h_{2,1}&h_{2,2}&h_{2,3}&\cdots &h_{2,N}\\
+				0      &h_{3,2}&h_{3,3}&\cdots &h_{3,N}\\
+				\vdots &\ddots &\ddots &\ddots &\vdots \\
+				0      &\cdots &0      &h_{N,N-1}&h_{N,N}
+			\end{pmatrix}
+		\end{equation}
+		Dans (\ref{eq:hessenberg}), $V$ est une matrice orthonormale de taille $N$.
+		On notera $v_i$ sa $i^{\textrm{ème}}$ colonne.
+		On notera également $V_n\in\matrixsymb{N, n}{K}$ la matrice constituée des $n$ premières colonnes de $V$.
+		On notera enfin $\widetilde{H}_n\in\matrixsymb{n+1, n}{K}$ le bloc supérieur gauche de $H$, qui est également de Hessenberg.
+
+		\paragraph{}
+		En considérant les $n \le N$ premières colonnes de (\ref{eq:hessenberg}), on obtient l'équation
+
 
 		\paragraph{}
 		Il existe donc beaucoup de méthodes de Krylov pour résoudre un système linéaire, la distinction entre elle se faisant par le choix à chaque itération du sous-espace $\mathcal{L}_n$.
@@ -246,6 +268,19 @@
 		Elle permet, après des itérations un peu plus coûteuses que ses consœurs telles que la méthode Bi-CG \cite{TrefethenBau1997}, de minimiser le résidu obtenu et donc de garantir une décroissance de l'erreur.
 		De plus, la méthode GMRES est beaucoup étudiée et de nombreuses variantes et améliorations ont été développées au fil des années.
 		Pour ces raisons, et parce que son implémentation est relativement simple, c'est sur cette méthode que j'ai décidé de m'orienter.
+
+
+	\subsection{GMRES}
+
+	\paragraph{}
+	La méthode GMRES consiste donc, à chaque itération $n$, à :
+	\begin{itemize}
+		\item calculer le nouvel espace de Krylov $\krylov{n}$ à partir de $\krylov{n-1}$
+		\item trouver $x_n$ qui minimise la norme de $r_n = b - Ax_n$.
+	\end{itemize}
+
+
+
 
 \section{TODO}
 
