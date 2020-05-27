@@ -689,6 +689,20 @@ Ca suppose que l'erreur e_{i} = sol - x_{i} est approximée par x_{i} - x_{i-1},
   comment   = {PETSc},
 }
 
+@Article{FrancoCamierAndrejEtAl2020,
+  author   = {Michael Franco and Jean-Sylvain Camier and Julian Andrej and Will Pazner},
+  journal  = {Computers \& Fluids},
+  title    = {High-order matrix-free incompressible flow solvers with {GPU} acceleration and low-order refined preconditioners},
+  year     = {2020},
+  issn     = {0045-7930},
+  pages    = {104541},
+  volume   = {203},
+  abstract = {We present a matrix-free flow solver for high-order finite element discretizations of the incompressible Navier-Stokes and Stokes equations with GPU acceleration. For high polynomial degrees, assembling the matrix for the linear systems resulting from the finite element discretization can be prohibitively expensive, both in terms of computational complexity and memory. For this reason, it is necessary to develop matrix-free operators and preconditioners, which can be used to efficiently solve these linear systems without access to the matrix entries themselves. The matrix-free operator evaluations utilize GPU-accelerated sum-factorization techniques to minimize memory movement and maximize throughput. The preconditioners developed in this work are based on a low-order refined methodology with parallel subspace corrections, as described for diffusion problems in [1]. The saddle-point Stokes system is solved using block-preconditioning techniques, which are robust in mesh size, polynomial degree, time step, and viscosity. For the incompressible Navier-Stokes equations, we make use of projection (fractional step) methods, which require Helmholtz and Poisson solves at each time step. The performance of our flow solvers is assessed on several benchmark problems in two and three spatial dimensions.},
+  doi      = {10.1016/j.compfluid.2020.104541},
+  file     = {:High Order Matrix Free Incompressible Flow Solvers with GPU Acceleration and Low Order Refined Preconditioners - FrancoCamierAndrejEtAl.pdf:PDF},
+  url      = {http://www.sciencedirect.com/science/article/pii/S0045793020301134},
+}
+
 @Comment{jabref-meta: databaseType:bibtex;}
 
 @Comment{jabref-meta: fileDirectoryLatex-pierre-ubuntu-XVI:/home/pierre/latex;}

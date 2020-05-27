@@ -238,13 +238,13 @@
 		où $\mathcal{L}_n$ est un sous-espace vectoriel de dimension $n$.
 		Pour $\mathcal{L}_n = \krylov{n}$ on parle de condition de Galerkin, et pour $\mathcal{L}_n = A\krylov{n}$ de minimisation du résidu.
 		On voit donc que si $A$ est inversible, alors l'algorithme termine en au plus $N$ itérations.
-		n+1Cette remarque reste informative puisqu'en pratique on arrêtera l'algorithme bien avant.
+		Cette remarque reste informative puisqu'en pratique on arrêtera l'algorithme bien avant.
 
 		\paragraph{}
 		Pour construire les différents espaces de Krylov, on utilise l'itération d'Arnoldi \cite{TrefethenBau1997}.
 		La matrice $A$ est semblable à une matrice de Hessenberg $H$ :
 		\begin{equation}\label{eq:hessenberg}
-			A = \adj{V}HV\quad\textrm{avec}\quad H=
+			A = VH\adj{V}\Leftrightarrow AV = VH\quad\textrm{avec}\quad H=
 			\begin{pmatrix}
 				h_{1,1}&h_{1,2}&h_{1,3}&\cdots &h_{1,N}\\
 				h_{2,1}&h_{2,2}&h_{2,3}&\cdots &h_{2,N}\\
@@ -259,8 +259,17 @@
 		On notera enfin $\widetilde{H}_n\in\matrixsymb{n+1, n}{K}$ le bloc supérieur gauche de $H$, qui est également de Hessenberg.
 
 		\paragraph{}
-		En considérant les $n \le N$ premières colonnes de (\ref{eq:hessenberg}), on obtient l'équation
-
+		En considérant les $n \le N$ premières colonnes de (\ref{eq:hessenberg}), de par la structure de Hessenberg de $H$, on obtient la relation d'Arnoldi :
+		\begin{equation}\label{eq:arnoldi}
+			AV_n = V_{n+1}\widetilde{H}_n
+		\end{equation}
+		et en considérant la dernière colonne de l'équation (\ref{eq:arnoldi}) :
+		\begin{equation}\label{eq:arnoldi_n+1}
+			Av_n = h_{1,n}v_1 + \dots + h_{n,n}v_n + h_{n+1,n}v_{n+1}
+		\end{equation}
+		Puisque $\krylov{1} = \operatorname{Vect}\left(r_0\right)$, on pose $v_1 = \frac{r_0}{\norm{r_0}}$.
+		On itère ensuite sur $n$ : en connaissant $V_n$, la relation (\ref{eq:arnoldi_n+1}) permet de trouver le nouveau vecteur de base et une nouvelle colonne de $H$, c'est à dire de trouver $V_{n+1}$ et $\widetilde{H}_n$.
+		Les espaces vectoriels $\operatorname{Im}\left(V_n\right)$ sont alors par construction les espaces de Krylov $\krylov{n}$.
 
 		\paragraph{}
 		Il existe donc beaucoup de méthodes de Krylov pour résoudre un système linéaire, la distinction entre elle se faisant par le choix à chaque itération du sous-espace $\mathcal{L}_n$.
@@ -275,11 +284,27 @@
 	\paragraph{}
 	La méthode GMRES consiste donc, à chaque itération $n$, à :
 	\begin{itemize}
-		\item calculer le nouvel espace de Krylov $\krylov{n}$ à partir de $\krylov{n-1}$
-		\item trouver $x_n$ qui minimise la norme de $r_n = b - Ax_n$.
+		\item calculer le nouvel espace de Krylov $\krylov{n+1}$ à partir de $\krylov{n}$, donc d'après (\ref{eq:arnoldi_n+1}) de calculer le produit $Av_n$, puis de l'orthonormaliser sur les colonnes de $V_n$ pour obtenir $\widetilde{H}_n$ et $V_{n+1}$
+		\item trouver $x_n \in x_0 + \krylov{n}$ qui minimise la norme de $r_n = b - Ax_n$.
 	\end{itemize}
+	Puisque $x_n \in x_0 + \krylov{n}$, $x_n = x_0 + V_n y_n$ pour un certain $y_n\in\mathbb{K}^n$.
+	On dispose de la relation d'Arnoldi (\ref{eq:arnoldi}), donc :
+	\begin{align*}
+		\norm{r_n} &= \norm{b - Ax_n} \\
+		&= \norm{r_0 - AV_ny_n} \\
+		&= \norm{r_0 - V_{n+1}\widetilde{H}_ny_n} \\
+		&= \norm{\norm{r_0} e_1 - \widetilde{H}_ny_n}\qquad\textrm{avec $e_1$ le premier vecteur de la base canonique de $\mathbb{K}^{n+1}$}
+	\end{align*}
+	La condition de minimisation du résidu est remplie en résolvant un problème de minimisation de taille $n$.
+	En pratique ce problème est résolu par décomposition QR de la matrice de Hessenberg.
 
-
+	\paragraph{}
+	Mon choix s'est porté sur la méthode GMRES pour plusieurs raisons.
+	Tout d'abord, c'est une méthode de Krylov, et le choix de ce type de méthode a déjà été argumenté précédemment.
+	Ensuite, cette méthode permet un contrôle du résidu, car la norme de celui ci décroît entre chaque itération.
+	Ce n'est pas le cas pour toutes les méthodes de Krylov.
+	GMRES est un algorithme relativement simple qui ne nécessite pas (ou peu) de réglages, que ce soit de la part du développeur ou bien de l'utilisateur.
+	Cette méthode de résolution du système linéaire est encore aujourd'hui bien présente au sein de la communauté de mathématiques appliquées \cite{Vasseur2016}, de CFD \cite{FrancoCamierAndrejEtAl2020} et est utilisée dans bien d'autres domaines, comme par exemple l'électromagnétisme \cite{ErnstGander2012} ou la mécanique du solide \cite{Mercier2015}.
 
 
 \section{TODO}
@@ -351,6 +376,6 @@
 
 \pagebreak
 \bibliography{bibliography.bib}
-\bibliographystyle{plain}
+\bibliographystyle{ieeetr}
 
 \end{document}
