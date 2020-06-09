@@ -67,8 +67,7 @@
 	\subsection{Discrétisation}
 
 		\paragraph{}
-		Lorsque l'on résout une équation aux dérivées partielles avec une méthode numérique, il est nécessaire de réaliser une discrétisation du problème, ne serait-ce que pour pouvoir représenter l'état du système dans un domaine \GP{borné
-		représentable dans la mémoire d'}un ordinateur.
+		Lorsque l'on résout une équation aux dérivées partielles avec une méthode numérique, il est nécessaire de réaliser une discrétisation du problème, ne serait-ce que pour pouvoir représenter l'état du système dans un domaine borné, représentable dans la mémoire d'un ordinateur.
 		En pratique, on réalise deux niveaux de discrétisation : temporel et spatial.
 
 		\paragraph{}
@@ -213,7 +212,7 @@
 		Une première classe de méthode intervient : les méthodes itératives classiques.
 		Si ces méthodes sont plutôt anciennes et plutôt écartées pour leurs mauvaises performances, elles peuvent s'utiliser en se combinant avec des méthodes plus efficaces, et c'est pour cela qu'il est important de comprendre leur fonctionnement.
 		Ce sont des méthodes de relaxation, parmi lesquelles on compte les méthode de Jacobi, Gauss-Seidel ou encore SOR (successive over relaxation).
-		Leur fonctionnement réside dans une décomposition $A = M - N$ avec $M$ une matrice facile à inverser, où le choix des matrices est propre à la méthode.
+		Leur fonctionnement réside dans une décomposition $A = M - N$ avec $M$ une matrice facile à inverser, où le choix de la décomposition est propre à la méthode.
 		Pour la méthode de Jacobi on prendra pour $M$ la diagonale de $A$.
 		Il suffit ensuite, à partir d'un itéré initial $x_0$ d'appliquer la formule de récurrence $x_{k+1} = M^{-1}\left(Nx_k + b\right)$.
 		Cependant, comme dit précédemment, ces méthodes n'offrent pas une convergence satisfaisante pour la communauté de CFD.
@@ -230,18 +229,18 @@
 		Dans ce qui suit, on notera à l'itération $n$ le résidu $r_n = b - Ax_n$, où $x_n$ est l'itéré produit par l'algorithme à l'itération $n$.
 		Dans la pratique, on se restreint à un nombre d'itérations $n\ll N$ pour des raisons évoquées précédemment, mais la suite reste vraie pour $n\le N$.
 		On supposera également que l'équation (\ref{eq:linear}) admet une solution.
-		Enfin, on notera que résoudre $Ax = b$ avec un itéré initial $x_0$ est équivalent ici à résoudre $A\tilde{x} = b - Ax_0$ avec un itéré initial nul, puis prendre $x_0 + \tilde{x}$ comme vecteur solution.
+		Enfin, on notera que résoudre $Ax = b$ avec un itéré initial $x_0$ est équivalent ici à résoudre $A\tilde{x} = b - Ax_0$ avec un itéré initial nul, puis à prendre $x_0 + \tilde{x}$ comme vecteur solution.
 
 		\paragraph{}
 		Pour résoudre $Ax = b$ en partant d'un itéré initial $x_0$ et donc d'un résidu $r_0 = b - Ax_0$, on définit l'espace de Krylov à l'itération $n$:
 		\begin{equation}\label{eqn:krylov}
 			\krylov[A, r_0]{n} = \operatorname{Vect}\left(r_0, Ar_0, \dots, A^{n-1}r_0\right)
 		\end{equation}
-		On constate alors que $\krylov{1}\subset\krylov{2}\subset\dots\subset\krylov{n-1}\subset\krylov{n}$.
+		On constate alors que par définition $\krylov{1}\subset\krylov{2}\subset\dots\subset\krylov{n-1}\subset\krylov{n}$.
 		On cherche ensuite l'itéré sur $\krylov{n}$ qui garantit une condition de Petrov-Galerkin \cite{SimonciniSzyld2007} :
 		\begin{equation}\label{eqn:x_n}
 			x_n \in x_0 + \krylov[A, r_0]{n}\quad\textrm{tel que}\quad x_n \perp \mathcal{L}_n
-		\end{equation}
+		\end{equation}On constate alors que
 		où $\mathcal{L}_n$ est un sous-espace vectoriel de dimension $n$.
 		Pour $\mathcal{L}_n = \krylov{n}$ on parle de condition de Galerkin, et pour $\mathcal{L}_n = A\krylov{n}$ de minimisation du résidu.
 		On voit donc que si $A$ est inversible, alors l'algorithme termine en au plus $N$ itérations.
@@ -274,12 +273,18 @@
 		\begin{equation}\label{eq:arnoldi_n+1}
 			Av_n = h_{1,n}v_1 + \dots + h_{n,n}v_n + h_{n+1,n}v_{n+1}
 		\end{equation}
+		On peut maintenant décrire l'algorithme :
 		Puisque $\krylov{1} = \operatorname{Vect}\left(r_0\right)$, on pose $v_1 = \frac{r_0}{\norm{r_0}}$.
-		On itère ensuite sur $n$ : en connaissant $V_n$, la relation (\ref{eq:arnoldi_n+1}) permet de trouver le nouveau vecteur de base et une nouvelle colonne de $H$, c'est à dire de trouver $V_{n+1}$ et $\widetilde{H}_n$.
+		On itère ensuite sur $n$ : en connaissant $V_n$, la relation (\ref{eq:arnoldi_n+1}) permet de trouver le nouveau vecteur de base et la $n$\textsuperscript{ième} colonne de $H$, c'est à dire de trouver $V_{n+1}$ et $\widetilde{H}_n$.
 		Les espaces vectoriels $\operatorname{Im}\left(V_n\right)$ sont alors par construction les espaces de Krylov $\krylov{n}$.
 
 		\paragraph{}
-		Il existe donc beaucoup de méthodes de Krylov pour résoudre un système linéaire, la distinction entre elle se faisant par le choix à chaque itération du sous-espace $\mathcal{L}_n$.
+		On remarque que la matrice $A$ n'intervient que dans la relation (\ref{eq:arnoldi_n+1}) à travers le produit $Av_n$.
+		Il n'est donc pas nécessaire de former explicitement la matrice du système linéaire, mais seulement de pouvoir calculer son action sur un vecteur.
+		Cette propriété des méthodes de Krylov sera utilisée par la suite.
+
+		\paragraph{}
+		Il existe donc beaucoup de méthodes de Krylov pour résoudre un système linéaire, la distinction entre elle se faisant par le choix du sous-espace $\mathcal{L}_n$.
 		La condition de minimisation du résidu donne la méthode GMRES, qui est l'une des plus utilisée par les communautés de CFD et de mathématiques appliquées.
 		Elle permet, après des itérations un peu plus coûteuses que ses consœurs telles que la méthode Bi-CG \cite{TrefethenBau1997}, de minimiser le résidu obtenu et donc de garantir une décroissance de l'erreur.
 		De plus, la méthode GMRES est beaucoup étudiée et de nombreuses variantes et améliorations ont été développées au fil des années.
