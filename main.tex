@@ -14,8 +14,9 @@
 
 		\paragraph{}
 		La simulation numérique n'est pas non plus un outil absolu ou parfait : si elle rend possible l'obtention de données inaccessible par l'expérimentation, elle nécessite cependant un travail de modélisation et de développement, des connaissances, et surtout un important travail de calcul informatique.
-		Par travail, on peut entendre ici une puissance de calcul multipliée par un temps de calcul : n'importe quelle machine ne peut pas réaliser n'importe quelle simulation, certains cas nécessitent des machines très puissantes, et même avec ces machines la simulation numérique n'est pas instantanée, et il est courant de lancer des calculs durant plusieurs 
-		semaines\footnote{\GP{Les simulations turbulentes à grand nombre de Reynolds sont inaccessibles...}}.
+		Par travail, on peut entendre ici une puissance de calcul multipliée par un temps de calcul : n'importe quelle machine ne peut pas réaliser n'importe quelle simulation, certains cas nécessitent des machines très puissantes, et même avec ces machines la simulation numérique n'est pas instantanée, et il est courant de lancer des calculs durant plusieurs semaines.
+		Dans certains cas, comme pour les écoulements turbulents à grands nombres de Reynolds, la simulation est même inaccessible.
+		\footnote{\GP{Les simulations turbulentes à grand nombre de Reynolds sont inaccessibles...}\PS{J'ai rajouté une ligne.}}.
 		Pour éviter de se retrouver avec des calculs qui s'exécuteraient trop longtemps sur des machines trop puissantes, ce qui coûterait trop cher, on va réaliser des choix pour optimiser l'efficacité du calcul.
 		On va privilégier un type d'algorithme pour un type de calcul, choisir une mise en donnée plus adaptée qu'une autre pour notre architecture logicielle, ..., tout cela pour réduire le coût en temps et en puissance de calcul de notre simulation numérique.
 		C'est pour pouvoir effectuer ces choix qu'il faut posséder des connaissances dans ce domaine.
@@ -29,27 +30,28 @@
 
 	\subsection{Le problème stationnaire}
 
-
 		\GP{Il y a un peu de redite... Cela rend le paragraphe pas aisé à suivre...}
+		\PS{En effet, je n'avais pas dû l'écrire d'une traite et je me suis emmêlé ! J'ai corrigé}
 
 		\paragraph{}
 		On considère un problème type de simulation numérique en dynamique des fluides (CFD), qui consiste à résoudre sur un domaine spatial donné une ou un ensemble d'équations décrivant les lois d'évolution du modèle physique.
 		Typiquement, on cherche à résoudre une équation aux dérivées partielles :
 		$$\frac{\partial W}{\partial t} = \operatorname{f}\left(W\right)$$
 		sur un domaine spatial $\mathcal{D}$.
-		On note $W$ l'état du système en un point de l'espace.
-		Pour un problème stationnaire, l'état du système n'évolue pas, et donc l'équation à résoudre devient :
-		\begin{equation}\label{eq:f=0}
-			\operatorname{f}\left(W\right) = 0
-		\end{equation}
 		Concrètement, $W$ représente les grandeurs physiques du système en un point de l'espace et $\operatorname{f}$ une fonction dépendant de l'état du système, mais pouvant également dépendre de ses dérivées spatiales.
 		Par exemple, pour résoudre les équations de Navier-Stokes, les dérivées spatiales d'ordre un et deux interviennent.
 
 		\paragraph{}
-		\GP{Puisqu'on cherche une solution stationnaire, on l'exprime comme un zéro de cette fonction.}\\
-		\GP{Pour obtenir cette solution, on introduit la notion de pseudo-temps \cite{KelleyKeyes1996}.}
+		Pour un problème stationnaire, l'état du système n'évolue pas, et donc l'équation à résoudre devient :
+		\begin{equation}\label{eq:f=0}
+			\operatorname{f}\left(W\right) = 0
+		\end{equation}
+		Puisqu'on cherche une solution stationnaire, on l'exprime comme un zéro de cette fonction $\operatorname{f}$.
+
+		\paragraph{}
+		Pour obtenir une solution de (\ref{eq:f=0}), on introduit la notion de pseudo-temps \cite{KelleyKeyes1996}.
 		Résoudre l'évolution du système en fonction du temps depuis un état initial connu s'avère souvent plus coûteux que nécessaire, car les états intermédiaires ne nous intéressent pas.
-		Inversement, utiliser un algorithme tel que la méthode de Newton de manière brute sur la fonction $\operatorname{f}$ n'aboutit pas\footnote{\GP{C'est toujours vrai???}}.
+		Inversement, utiliser un algorithme tel que la méthode de Newton de manière brute sur la fonction $\operatorname{f}$ ne permet pas d'obtenir la solution en général. \footnote{\GP{C'est toujours vrai???} \PS{Pas TOUJOURS, mais en général, voir \cite{KelleyKeyes1996}. J'ai nuancé.}}
 		Le procédé de plus courant est donc  d'utiliser une méthode introduisant un pseudo-temps (Pseudo-transient continuation method).
 		On cherche à résoudre l'équation (\ref{eq:f=0}), et on dispose d'un itéré initial $W_0$.
 		On va chercher la solution comme étant la limite en $t = +\infty$ de
@@ -65,7 +67,7 @@
 	\subsection{Discrétisation}
 
 		\paragraph{}
-		Lorsque l'on résout une équation aux dérivées partielles avec une méthode numérique, il est nécessaire de réaliser une discrétisation du problème, ne serait-ce que pour pouvoir représenter l'état du système dans un domaine \GP{borné 
+		Lorsque l'on résout une équation aux dérivées partielles avec une méthode numérique, il est nécessaire de réaliser une discrétisation du problème, ne serait-ce que pour pouvoir représenter l'état du système dans un domaine \GP{borné
 		représentable dans la mémoire d'}un ordinateur.
 		En pratique, on réalise deux niveaux de discrétisation : temporel et spatial.
 
