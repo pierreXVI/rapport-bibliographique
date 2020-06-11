@@ -8,7 +8,7 @@
 
 		\paragraph{}
 		La nécessité de la simulation numérique est aujourd'hui bien admise, tant dans le monde industriel que le monde académique.
-		Les entreprises comme les laboratoires de recherche ont besoin de pouvoir accéder à certaines grandeurs physiques associées à des phénomènes et à des régimes de fonctionnement \GP{qui ne sont pas possible de réaliser à notre échelle, la limitation pouvant être matérielle ou bien financière}\footnote{\GP{Pas super bien dit...}}.
+		Les entreprises comme les laboratoires de recherche ont besoin de pouvoir accéder à certaines grandeurs physiques associées à des phénomènes et à des régimes de fonctionnement \GP{qui ne sont pas possible de réaliser à notre échelle, la limitation pouvant être matérielle ou bien financière}\footnote{\GP{Pas super bien dit... EN DEUX PHRASES}}.
 		On peut prendre comme exemple l'étude du givrage qui a lieu sur la voilure d'un avion, qui est réalisable expérimentalement mais représente un budget imposant pour l’avionneur, ou bien l'étude des transferts thermiques d'une capsule de rentrée atmosphérique, bien plus difficile à réaliser expérimentalement.
 		Pour contourner ces limitations, la simulation numérique est la meilleure option, car elle permet de modéliser un tel cas d'étude par l’exécution d'un programme informatique, et d'obtenir un ensemble important de données qui seront analysées par la suite pour répondre aux questions souhaitées.
 
@@ -36,15 +36,19 @@
 		\paragraph{}
 		On considère un problème type de simulation numérique en dynamique des fluides (CFD), qui consiste à résoudre sur un domaine spatial donné une ou un ensemble d'équations décrivant les lois d'évolution du modèle physique.
 		Typiquement, on cherche à résoudre une équation aux dérivées partielles :
-		$$\frac{\partial W}{\partial t} = \operatorname{f}\left(W\right)$$
+		\begin{equation}\label{eq:edp}
+		    \frac{\partial \textup{w}}{\partial t} = \operatorname{f}\left(\textup{w}\right)    
+		\end{equation}
 		sur un domaine spatial $\mathcal{D}$.
-		Concrètement, $W$ représente les grandeurs physiques du système en un point de l'espace et $\operatorname{f}$ une fonction dépendant de l'état du système, mais pouvant également dépendre de ses dérivées spatiales.
+		Concrètement, $\textup{w}$ représente les grandeurs physiques du système en un point de l'espace et $\operatorname{f}$ une fonction dépendant de l'état du système, mais pouvant également dépendre de ses dérivées spatiales.
+		
+		\paragraph{}
 		Par exemple, pour résoudre les équations de Navier-Stokes, les dérivées spatiales d'ordre un et deux interviennent.
 
 		\paragraph{}
 		Pour un problème stationnaire, l'état du système n'évolue pas, et donc l'équation à résoudre devient :
 		\begin{equation}\label{eq:f=0}
-			\operatorname{f}\left(W\right) = 0
+			\operatorname{f}\left(\textup{w}\right) = 0
 		\end{equation}
 		Puisqu'on cherche une solution stationnaire, on l'exprime comme un zéro de cette fonction $\operatorname{f}$.
 
@@ -52,13 +56,15 @@
 		Pour obtenir une solution de (\ref{eq:f=0}), on introduit la notion de pseudo-temps \cite{KelleyKeyes1996}.
 		Résoudre l'évolution du système en fonction du temps depuis un état initial connu s'avère souvent plus coûteux que nécessaire, car les états intermédiaires ne nous intéressent pas.
 		Inversement, utiliser un algorithme tel que la méthode de Newton de manière brute sur la fonction $\operatorname{f}$ ne permet pas d'obtenir la solution en général. \footnote{\GP{C'est toujours vrai???} \PS{Pas TOUJOURS, mais en général, voir \cite{KelleyKeyes1996}. J'ai nuancé.}}
+		
+		\paragraph{}
 		Le procédé de plus courant est donc  d'utiliser une méthode introduisant un pseudo-temps (Pseudo-transient continuation method).
-		On cherche à résoudre l'équation (\ref{eq:f=0}), et on dispose d'un itéré initial $W_0$.
+		On cherche à résoudre l'équation (\ref{eq:f=0}), et on dispose d'un itéré initial $\textup{w}_0$.
 		On va chercher la solution comme étant la limite en $t = +\infty$ de
 		\begin{equation}\label{eq:edp}
 			\left\{\begin{aligned}
-				\frac{\partial W}{\partial t}\left(t, x\right) = \operatorname{f}\left(W\right) \\
-				W\left(t_0, x\right) = W_0\left(x\right)
+				\frac{\partial \textup{w}}{\partial t}\left(t, x\right) = \operatorname{f}\left(\textup{w}\right) \\
+				\textup{w}\left(t_0, x\right) = \textup{w}_0\left(x\right)
 			\end{aligned}\right.,\qquad \forall x\in\mathcal{D}
 		\end{equation}
 		La différence avec la résolution d'un problème instationnaire et que les états intermédiaires ne nous intéressent pas, et donc on peut se permettre de calculer des états non physiques, ou des transitions différentes du vrai système physique, du moment que l'état convergé est correct.
@@ -73,7 +79,7 @@
 		\paragraph{}
 		La discrétisation spatiale consiste à diviser le domaine d'étude $\mathcal{D}$ en un ensemble de cellules qui forment un maillage.
 		Les grandeurs physiques étudiées comme la vitesse du fluide, sa température, sa densité, ..., sont alors représentées dans chaque cellule, par leur valeur moyenne, ou leur valeur sur chaque interface, ou de manière plus complexe en fonction du choix de discrétisation pris par l'utilisateur.
-		Sans rentrer dans les détails, puisque cette problématique de discrétisation spatiale ne rentre pas dans le cadre de ma thèse, l'état physique dans l'ensemble du domaine est représenté non plus par une fonction $W : \mathcal{D} \rightarrow \mathbb{R}^n$ mais par un vecteur $W \in \mathbb{R}^{N\times n}$, en notant $n$ le nombre de degrés de liberté et $N$ le nombre de cellules du maillage.
+		Sans rentrer dans les détails, puisque cette problématique de discrétisation spatiale ne rentre pas dans le cadre de ma thèse, l'état physique dans l'ensemble du domaine est représenté non plus par une fonction $\textup{w} : \mathcal{D} \rightarrow \mathbb{R}^n$ mais par un vecteur $W \in \mathbb{R}^{N\times n}$, en notant $n$ le nombre de degrés de liberté et $N$ le nombre de cellules du maillage.
 		La discrétisation spatiale donne également un moyen de calculer les dérivées spatiales de l'état en fonction de l'état.
 		Ainsi l'équation aux dérivées partielles (\ref{eq:edp}) peut se réécrire comme une équation différentielle ordinaire :
 		\begin{equation}\label{eq:edo}
