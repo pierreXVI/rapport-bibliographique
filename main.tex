@@ -218,6 +218,7 @@
 		Cependant, comme dit précédemment, ces méthodes n'offrent pas une convergence satisfaisante pour la communauté de CFD.
 		Ainsi, il faut se tourner vers un autre type de méthodes itératives pour résoudre le système linéaire.
 
+
 	\subsection{Méthodes de Krylov}
 
 		\paragraph{}
@@ -293,30 +294,30 @@
 
 	\subsection{GMRES}
 
-	\paragraph{}
-	La méthode GMRES consiste donc, à chaque itération $n$, à :
-	\begin{itemize}
-		\item calculer le nouvel espace de Krylov $\krylov{n+1}$ à partir de $\krylov{n}$, donc d'après (\ref{eq:arnoldi_n+1}) de calculer le produit $Av_n$, puis de l'orthonormaliser sur les colonnes de $V_n$ pour obtenir $\widetilde{H}_n$ et $V_{n+1}$
-		\item trouver $x_n \in x_0 + \krylov{n}$ qui minimise la norme de $r_n = b - Ax_n$.
-	\end{itemize}
-	Puisque $x_n \in x_0 + \krylov{n}$, $x_n = x_0 + V_n y_n$ pour un certain $y_n\in\mathbb{K}^n$.
-	On dispose de la relation d'Arnoldi (\ref{eq:arnoldi}), donc :
-	\begin{align*}
-		\norm{r_n} &= \norm{b - Ax_n} \\
-		&= \norm{r_0 - AV_ny_n} \\
-		&= \norm{r_0 - V_{n+1}\widetilde{H}_ny_n} \\
-		&= \norm{\norm{r_0} e_1 - \widetilde{H}_ny_n}\qquad\textrm{avec $e_1$ le premier vecteur de la base canonique de $\mathbb{K}^{n+1}$}
-	\end{align*}
-	La condition de minimisation du résidu est remplie en résolvant un problème de minimisation de taille $n$.
-	En pratique ce problème est résolu par décomposition QR de la matrice de Hessenberg.
+		\paragraph{}
+		La méthode GMRES consiste donc, à chaque itération $n$, à :
+		\begin{itemize}
+			\item calculer le nouvel espace de Krylov $\krylov{n+1}$ à partir de $\krylov{n}$, donc d'après (\ref{eq:arnoldi_n+1}) de calculer le produit $Av_n$, puis de l'orthonormaliser sur les colonnes de $V_n$ pour obtenir $\widetilde{H}_n$ et $V_{n+1}$
+			\item trouver $x_n \in x_0 + \krylov{n}$ qui minimise la norme de $r_n = b - Ax_n$.
+		\end{itemize}
+		Puisque $x_n \in x_0 + \krylov{n}$, $x_n = x_0 + V_n y_n$ pour un certain $y_n\in\mathbb{K}^n$.
+		On dispose de la relation d'Arnoldi (\ref{eq:arnoldi}), donc :
+		\begin{align*}
+			\norm{r_n} &= \norm{b - Ax_n} \\
+			&= \norm{r_0 - AV_ny_n} \\
+			&= \norm{r_0 - V_{n+1}\widetilde{H}_ny_n} \\
+			&= \norm{\norm{r_0} e_1 - \widetilde{H}_ny_n}\qquad\textrm{avec $e_1$ le premier vecteur de la base canonique de $\mathbb{K}^{n+1}$}
+		\end{align*}
+		La condition de minimisation du résidu est remplie en résolvant un problème de minimisation de taille $n$.
+		En pratique ce problème est résolu par décomposition QR de la matrice de Hessenberg.
 
-	\paragraph{}
-	Mon choix s'est porté sur la méthode GMRES pour plusieurs raisons.
-	Tout d'abord, c'est une méthode de Krylov, et le choix de ce type de méthode a déjà été argumenté précédemment.
-	Ensuite, cette méthode permet un contrôle du résidu, car la norme de celui ci décroît entre chaque itération.
-	Ce n'est pas le cas pour toutes les méthodes de Krylov.
-	GMRES est un algorithme relativement simple qui ne nécessite pas (ou peu) de réglages, que ce soit de la part du développeur ou bien de l'utilisateur.
-	Cette méthode de résolution du système linéaire est encore aujourd'hui bien présente au sein de la communauté de mathématiques appliquées \cite{Vasseur2016}, de CFD \cite{FrancoCamierAndrejEtAl2020} et est utilisée dans bien d'autres domaines, comme par exemple l'électromagnétisme \cite{ErnstGander2012} ou la mécanique du solide \cite{Mercier2015}.
+		\paragraph{}
+		Mon choix s'est porté sur la méthode GMRES pour plusieurs raisons.
+		Tout d'abord, c'est une méthode de Krylov, et le choix de ce type de méthode a déjà été argumenté précédemment.
+		Ensuite, cette méthode permet un contrôle du résidu, car la norme de celui ci décroît entre chaque itération.
+		Ce n'est pas le cas pour toutes les méthodes de Krylov.
+		GMRES est un algorithme relativement simple qui ne nécessite pas (ou peu) de réglages, que ce soit de la part du développeur ou bien de l'utilisateur.
+		Cette méthode de résolution du système linéaire est encore aujourd'hui bien présente au sein de la communauté de mathématiques appliquées \cite{Vasseur2016}, de CFD \cite{FrancoCamierAndrejEtAl2020} et est utilisée dans bien d'autres domaines, comme par exemple l'électromagnétisme \cite{ErnstGander2012} ou la mécanique du solide \cite{Mercier2015}.
 
 
 \section{TODO}
@@ -353,7 +354,6 @@
 	% Une matrice bien conditionnée, du point de vue des algorithmes itératifs, a un conditionnement $\kappa\sim1$.
 	% Au contraire, une matrice mal conditionnée a des valeurs propres éloignées, et $\kappa\gg1$.
 
-% Résolution par gmres autre domaines que CFD \cite{Mercier2015}.
 %
 % FGMRES \cite{SimonciniSzyld2002, Pinel2010, Vasseur2016, CoulaudGiraudRametEtAl2013}.
 %
