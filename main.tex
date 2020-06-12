@@ -2,110 +2,11 @@
 \begin{document}
 \maketitle
 
-\section{Introduction}
+\input{introduction.tex}
 
-	\subsection{Contexte}
+\input{integration_temporelle.tex}
 
-		\paragraph{}
-		La nécessité de la simulation numérique est aujourd'hui bien admise, tant dans le monde industriel que le monde académique.
-		Les entreprises comme les laboratoires de recherche ont besoin de pouvoir accéder à certaines grandeurs physiques associées à des phénomènes et à des régimes de fonctionnement \GP{qui ne sont pas possible de réaliser à notre échelle, la limitation pouvant être matérielle ou bien financière}\footnote{\GP{Pas super bien dit... EN DEUX PHRASES}}.
-		On peut prendre comme exemple l'étude du givrage qui a lieu sur la voilure d'un avion, qui est réalisable expérimentalement mais représente un budget imposant pour l’avionneur, ou bien l'étude des transferts thermiques d'une capsule de rentrée atmosphérique, bien plus difficile à réaliser expérimentalement.
-		Pour contourner ces limitations, la simulation numérique est la meilleure option, car elle permet de modéliser un tel cas d'étude par l’exécution d'un programme informatique, et d'obtenir un ensemble important de données qui seront analysées par la suite pour répondre aux questions souhaitées.
-
-		\paragraph{}
-		La simulation numérique n'est pas non plus un outil absolu ou parfait : si elle rend possible l'obtention de données inaccessible par l'expérimentation, elle nécessite cependant un travail de modélisation et de développement, des connaissances, et surtout un important travail de calcul informatique.
-		Par travail, on peut entendre ici une puissance de calcul multipliée par un temps de calcul : n'importe quelle machine ne peut pas réaliser n'importe quelle simulation, certains cas nécessitent des machines très puissantes, et même avec ces machines la simulation numérique n'est pas instantanée, et il est courant de lancer des calculs durant plusieurs semaines.
-		Dans certains cas, comme pour les écoulements turbulents à grands nombres de Reynolds, la simulation est même inaccessible.
-		\footnote{\GP{Les simulations turbulentes à grand nombre de Reynolds sont inaccessibles...}\PS{J'ai rajouté une ligne.}}.
-		Pour éviter de se retrouver avec des calculs qui s'exécuteraient trop longtemps sur des machines trop puissantes, ce qui coûterait trop cher, on va réaliser des choix pour optimiser l'efficacité du calcul.
-		On va privilégier un type d'algorithme pour un type de calcul, choisir une mise en donnée plus adaptée qu'une autre pour notre architecture logicielle, ..., tout cela pour réduire le coût en temps et en puissance de calcul de notre simulation numérique.
-		C'est pour pouvoir effectuer ces choix qu'il faut posséder des connaissances dans ce domaine.
-		L'objectif de ma thèse est d'identifier et de comparer de tels choix qui vont rendre plus efficace la simulation de phénomènes physiques s'inscrivant dans un cadre donné : les problèmes stationnaires en énergétique et multi-physique.
-
-		\paragraph{}
-		Il est d'usage de séparer les problèmes de simulation numérique en deux grandes classes : les problèmes instationnaires qui vont décrire l'évolution d'un système au cours du temps, et les problèmes stationnaires qui cherchent la valeur d'un état convergé du même système.
-		Cette distinction est déjà bien connue, et engendre déjà différents choix dans la résolution des problèmes : un problème instationnaire aura un faible pas de temps pour bien capter l'évolution temporelle de chacune des physiques mises en jeu, et utilisera des méthodes d'intégration temporelles explicites, alors qu'un problème stationnaire permet une montée en CFL qui s'accompagne de l'utilisation de méthodes implicites.
-		Ma thèse s'intéresse au second type : les problèmes stationnaires.
-
-
-	\subsection{Le problème stationnaire}
-
-		\GP{Il y a un peu de redite... Cela rend le paragraphe pas aisé à suivre...}
-		\PS{En effet, je n'avais pas dû l'écrire d'une traite et je me suis emmêlé ! J'ai corrigé}
-
-		\paragraph{}
-		On considère un problème type de simulation numérique en dynamique des fluides (CFD), qui consiste à résoudre sur un domaine spatial donné une ou un ensemble d'équations décrivant les lois d'évolution du modèle physique.
-		Typiquement, on cherche à résoudre une équation aux dérivées partielles :
-		\begin{equation}\label{eq:edp}
-		    \frac{\partial \textup{w}}{\partial t} = \operatorname{f}\left(\textup{w}\right)    
-		\end{equation}
-		sur un domaine spatial $\mathcal{D}$.
-		Concrètement, $\textup{w}$ représente les grandeurs physiques du système en un point de l'espace et $\operatorname{f}$ une fonction dépendant de l'état du système, mais pouvant également dépendre de ses dérivées spatiales.
-		
-		\paragraph{}
-		Par exemple, pour résoudre les équations de Navier-Stokes, les dérivées spatiales d'ordre un et deux interviennent.
-
-		\paragraph{}
-		Pour un problème stationnaire, l'état du système n'évolue pas, et donc l'équation à résoudre devient :
-		\begin{equation}\label{eq:f=0}
-			\operatorname{f}\left(\textup{w}\right) = 0
-		\end{equation}
-		Puisqu'on cherche une solution stationnaire, on l'exprime comme un zéro de cette fonction $\operatorname{f}$.
-
-		\paragraph{}
-		Pour obtenir une solution de (\ref{eq:f=0}), on introduit la notion de pseudo-temps \cite{KelleyKeyes1996}.
-		Résoudre l'évolution du système en fonction du temps depuis un état initial connu s'avère souvent plus coûteux que nécessaire, car les états intermédiaires ne nous intéressent pas.
-		Inversement, utiliser un algorithme tel que la méthode de Newton de manière brute sur la fonction $\operatorname{f}$ ne permet pas d'obtenir la solution en général. \footnote{\GP{C'est toujours vrai???} \PS{Pas TOUJOURS, mais en général, voir \cite{KelleyKeyes1996}. J'ai nuancé.}}
-		
-		\paragraph{}
-		Le procédé de plus courant est donc  d'utiliser une méthode introduisant un pseudo-temps (Pseudo-transient continuation method).
-		On cherche à résoudre l'équation (\ref{eq:f=0}), et on dispose d'un itéré initial $\textup{w}_0$.
-		On va chercher la solution comme étant la limite en $t = +\infty$ de
-		\begin{equation}\label{eq:edp}
-			\left\{\begin{aligned}
-				\frac{\partial \textup{w}}{\partial t}\left(t, x\right) = \operatorname{f}\left(\textup{w}\right) \\
-				\textup{w}\left(t_0, x\right) = \textup{w}_0\left(x\right)
-			\end{aligned}\right.,\qquad \forall x\in\mathcal{D}
-		\end{equation}
-		La différence avec la résolution d'un problème instationnaire et que les états intermédiaires ne nous intéressent pas, et donc on peut se permettre de calculer des états non physiques, ou des transitions différentes du vrai système physique, du moment que l'état convergé est correct.
-
-
-	\subsection{Discrétisation}
-
-		\paragraph{}
-		Lorsque l'on résout une équation aux dérivées partielles avec une méthode numérique, il est nécessaire de réaliser une discrétisation du problème, ne serait-ce que pour pouvoir représenter l'état du système dans un domaine borné, représentable dans la mémoire d'un ordinateur.
-		En pratique, on réalise deux niveaux de discrétisation : temporel et spatial.
-
-		\paragraph{}
-		La discrétisation spatiale consiste à diviser le domaine d'étude $\mathcal{D}$ en un ensemble de cellules qui forment un maillage.
-		Les grandeurs physiques étudiées comme la vitesse du fluide, sa température, sa densité, ..., sont alors représentées dans chaque cellule, par leur valeur moyenne, ou leur valeur sur chaque interface, ou de manière plus complexe en fonction du choix de discrétisation pris par l'utilisateur.
-		Sans rentrer dans les détails, puisque cette problématique de discrétisation spatiale ne rentre pas dans le cadre de ma thèse, l'état physique dans l'ensemble du domaine est représenté non plus par une fonction $\textup{w} : \mathcal{D} \rightarrow \mathbb{R}^n$ mais par un vecteur $W \in \mathbb{R}^{N\times n}$, en notant $n$ le nombre de degrés de liberté et $N$ le nombre de cellules du maillage.
-		La discrétisation spatiale donne également un moyen de calculer les dérivées spatiales de l'état en fonction de l'état.
-		Ainsi l'équation aux dérivées partielles (\ref{eq:edp}) peut se réécrire comme une équation différentielle ordinaire :
-		\begin{equation}\label{eq:edo}
-			\left\{\begin{aligned}
-				\frac{\mathrm{d} W}{\mathrm{d} t}\left(t\right) = f\left(W\right) \\
-				W_0 \in \mathbb{R}^{N\times n}
-			\end{aligned}\right.
-		\end{equation}
-		Puisque ma thèse ne s'intéresse pas à la discrétisation spatiale, nous nous placerons dans le cas général et chercherons à résoudre l'équation (\ref{eq:edo}).
-
-
-		\paragraph{}
-		La discrétisation temporelle permet de représenter le temps continu par une succession de temps discrets.
-		On va donc représenter et calculer la solution non pas sur l'ensemble du temps mais en ces instants discrets.
-		Concrètement, à l'instant $t_n$ on transforme l'équation aux dérivées partielles en relation de récurrence, entre l'état suivant à calculer $W_{n+1}$, l'état actuel $W_n$ et d'éventuels états précédents $W_i$.
-
-		\paragraph{}
-		Si on peut exprimer l'état suivant $W_{n+1}$ directement à partir de l'état courant (et éventuellement des précédents), la méthode d'intégration temporelle est dite explicite.
-		L'intérêt d'une telle méthode est qu'elle permet de calculer l'état suivant très rapidement, souvent par la simple évaluation d'une fonction.
-		Cependant, ces méthodes ont tendance à devenir instable dès que le nombre de Courant devient un peu grand (typiquement 1) et imposent donc l'utilisation de très faibles pas de temps.
-		Puisque l'on cherche la solution au bout d'un temps long pour le problème stationnaire, l'utilisation de ces méthodes ne s'avère pas rentable : il vaut mieux payer plus cher l'itération mais converger plus rapidement, et c'est pour cela qu'on utilise les méthodes implicites.
-		Elles se caractérisent par le fait que l'état suivant ne s'exprime pas explicitement à partir des états connus, mais qu'il est solution d'une équation, par exemple le zéro d'une fonction.
-
-
-
-\section{Résolution implicite d'une Équation aux Dérivées Partielles}
+\section{Résolution implicite d'une Équation Différentielle}
 
 	\subsection{Étapes}
 
