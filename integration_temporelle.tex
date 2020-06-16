@@ -1,8 +1,89 @@
 \chapter{Intégration temporelle}
 
 \paragraph{}
-Nous avons vu dans l'introduction que lorsqu'on résout un problème de simulation numérique de la dynamique des fluides, on se ramène à résoudre
+Nous avons vu dans l'introduction que lorsqu'on résout un problème de simulation numérique de la dynamique des fluides, on se ramène à résoudre une équation différentielle ordinaire de la forme (\ref{eq:edo}).
+Il existe différents algorithmes permettant de résoudre une telle équation, et la plupart de ces algorithmes se rangent dans deux catégories : les méthodes explicites, et les méthodes implicites.
+
+\section{Stabilité des méthodes}
+
+  \paragraph{}
+  Un critère important dans le choix d'une méthode d'intégration est la stabilité.
+  En fonction de notre cas d'application, on exigera certains niveaux de stabilité pour éviter une divergence d'origine numérique du calcul.
+  Nous cherchons dans cette section à analyser la stabilité d'une méthode d'intégration de l'équation (\ref{eq:edo}).
+  Pour simplifier, on considère ici que le pas de temps $\Delta t = t_{n+1} - t_n$ ne dépend pas du numéro de l'itération $n$.
+  La taille du problème est notée $N$.
+
+  \paragraph{}
+  Pour étudier la stabilité d'une méthode, on utilise en général l'équation différentielle ordinaire avec un second membre linéaire \cite{HairerWanner1996}.
+  En effet, si on dispose d'une solution $\tilde{W}$ de (\ref{eq:edo}), on peut linéariser $F$ en $\tilde{W}$ :
+  $$\frac{\mathrm{d}W}{\mathrm{d}t} = F\left(\tilde{W}\right) + \frac{\partial F}{\partial W}\left(\tilde{W}\right)\cdot\left(W - \tilde{W}\right)$$
+  Si on note ensuite $y = W - \tilde{W}$ et $A = \frac{\partial F}{\partial W}\left(\tilde{W}\right)$, on obtient :
+  \begin{equation}\label{eq:stab}
+    \frac{\mathrm{d}y}{\mathrm{d}t} = Ay
+  \end{equation}
+  C'est donc avec cette équation, également appelée équation de Dahlquist, que l'on étudie la stabilité de la méthode.
+  Nous l'étudions dans $\mathbb{C}$.
+
+  \paragraph{}
+  Pour une méthode d'intégration donnée, on note :
+  $$y_{n+1} = G\left(\Delta tA\right)y_n$$
+  la relation qui donne l'état suivant en fonction de l'état actuel.
+  Pour la plupart des méthodes d'intégration temporelle, et en particulier pour celles présentées ici, on peut se ramener à cette écriture avec $G$ une fonction analytique.
+  On peut choisir une base de vecteurs propres de $A$ $v_1, \dots, v_N$ associés aux valeurs propres $\alpha_1, \dots, \alpha_N$.
+  Si on décompose l'itéré initial sur cette base, c'est à dire $y_0 = \sum_{i=1}^N\lambda_iv_i$, on voit que puisque $G$ est une fonction analytique :
+  $$y_n = \sum_{i=1}^N\lambda_iG\left(\Delta t\alpha_i\right)^nv_i$$
+
+  \paragraph{}
+  Il découle de l'équation précédente que si $G\left(\Delta t\alpha_i\right)^n$, alors $y_n$ tend vers 0.
+  C'est ainsi qu'on définit le domaine de stabilité d'une méthode d'intégration temporelle :
+  $$\left\{\,z\in\mathbb{C}\;\mid\;\left|G\left(z\right)\right| < 1\,\right\}$$
+  Si toutes les valeurs propres de $A$ sont à partie réelle négatives, alors la solution de l'équation (\ref{eq:stab}) converge vers 0.
+  On comprend alors tout de suite que pour que l'algorithme soit stable, il faut que les valeurs propres de $A$ soient toutes dans le domaine de stabilité de la méthode.
+
+  \paragraph{}
+  La propriété clef découlant de cette étude de stabilité est la "A-stabilité" \cite{Dahlquist1963}.
+  Une méthode d'intégration temporelle est dite A-stable si son domaine de stabilité inclut le demi-plan des complexe à partie réelle négative.
+  Autrement dit, une méthode est A-stable si elle converge bien vers 0 lorsqu'elle le devrait, et ne fait donc pas diverger l'erreur numérique.
+
 
 \section{Méthodes explicites}
+
+  \paragraph{}
+  Les méthodes explicites cherchent l'état suivant $W_{n+1}$ en fonction des états précédents :
+  $$W_{n+1} = F_e\left(W_n, W_{n-1}, \dots, W_0\right)$$
+  Ces méthodes sont généralement utilisées dans les simulations numériques instationnaires de la dynamique des fluides.
+  L'avantage de ces méthodes est d'une part leur facilité d'implémentation, et d'autre part leur faible coût numérique.
+  En effet, puisque l'état recherché est accessible à partir des états précédents, la seule écriture d'une fonction est nécessaire au développement de la méthode, et le coût numérique à chaque itération se résume à l'évaluation de cette fonction.
+
+  \subsection{Méthode d'Euler}
+
+    \paragraph{}
+    La méthode d'Euler, ou Euler explicite, est la méthode la plus simple qui soit.
+    Elle consiste à intégrer (\ref{eq:edo}) entre $t_n$ et $t_{n+1} = t_n + \Delta t$ en supposant le second membre constant égal à $F\left(W_n\right)$, ou de manière équivalente à remplacer la dérivée dans (\ref{eq:edo}) par le taux d'accroissement : $\frac{\mathrm{d}W}{\mathrm{d}t}\simeq\frac{W_{n+1}-W_n}{\Delta t}$.
+    Ainsi, cette méthode donne la relation de récurrence explicite :
+    $$W_{n+1} = W_n + \Delta t F\left(W_n\right)$$
+
+
+  \subsection{Méthodes de Runge-Kutta}
+
+  \subsection{Méthodes d'Adams-Bashforth}
+
+    \paragraph{}
+    Les méthodes d'Adams-Bashforth sont des méthodes de type "multi-pas", c'est à dire qu'elles utilisent plusieurs états précédents pour déterminer l'état suivant.
+    Pour une méthode d'ordre $k$, on utilise donc les états $W_n, \dots, W_{n-k+1}$ pour déterminer $W_{n+1}$.
+    L'idée est d'interpoler le second membre de (\ref{eq:edo}) en ces $k$ points calculés précédemment.
+    Il existe en effet un unique polynôme $F_k$ tel que pour $0 \leq i < k$ on ait $F_k\left(t_{n-i}\right) = F\left(W_{n-i}\right)$.
+    On fait ensuite l'hypothèse $F_k\left(t\right) \simeq F\left(W\left(t\right)\right)$.
+    On peut intégrer l'équation (\ref{eq:edo}) :
+    $$W_{n+1} = W_n + \int_{t_n}^{t_{n+1}}F_k\left(t\right)\mathrm{d}t$$
+
+    \paragraph{}
+    Contrairement aux méthodes de Runge-Kutta, puisqu'on réutilise les pas précédents, une unique évaluation du second membre de (\ref{eq:edo}) est nécessaire à chaque itération.
+    Le coût de calcul est donc très faible pour de telles méthodes.
+    Cependant, les propriétés de stabilité de ces méthodes sont moindres, ce qui explique le fait qu'elles ne sont pas souvent utilisées en pratique dans des codes de calcul pour la dynamique des fluides.
+
+
+
+
 
 \section{Méthodes implicites}

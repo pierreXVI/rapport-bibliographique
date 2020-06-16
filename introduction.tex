@@ -128,7 +128,7 @@
 
 		\paragraph{}
 		La formulation du schéma va ensuite indiquer la manière de calculer l'intégrale du flux sur la surface des cellules.
-		L'important est que l'équation aux dérivées partielles est maintenant une équation différentielle ordinaire.
+		L'important est que l'équation aux dérivées partielles est maintenant une équation différentielle ordinaire \cite{TrefethenBirkissonDriscoll2017}.
 		Si on regroupe dans un seul grand vecteur les vecteurs d'états de chaque cellule, on peut de même regrouper les seconds membres ensemble pour n'avoir qu'une équation.
 		Ainsi l'équation aux dérivées partielles (\ref{eq:edp}) peut se réécrire comme une équation différentielle ordinaire :
 		\begin{equation}\label{eq:edo}
@@ -138,16 +138,17 @@
 			\end{aligned}\right.
 		\end{equation}
 		Il est important de préciser que cette nouvelle équation (\ref{eq:edo}) est purement numérique, contrairement à l'équation (\ref{eq:edp_0}) qui découlait de la physique.
-		Puisque ma thèse ne s'intéresse pas à la discrétisation spatiale, nous nous placerons dans le cas général et chercherons à résoudre l'équation (\ref{eq:edo}).
+		Puisque ma thèse ne s'intéresse pas à la discrétisation spatiale, nous nous placerons dans ce cas général et chercherons à résoudre l'équation (\ref{eq:edo}).
 
 	\subsection{Discrétisation temporelle}
 
 		\paragraph{}
 		La discrétisation temporelle permet de représenter le temps continu par une succession de temps discrets.
 		On va donc représenter et calculer la solution non pas sur l'ensemble du temps mais en ces instants discrets.
-		Concrètement, à l'instant $t_n$ on transforme l'équation différentielle en relation de récurrence, entre l'état suivant à calculer $W_{n+1}$, l'état actuel $W_n$ et d'éventuels états précédents $W_{i,i<n}$.
+		Concrètement, à l'itération $n+1$ on transforme l'équation différentielle en relation de récurrence, entre l'état suivant à calculer $W_{n+1}$, l'état actuel $W_n$ et d'éventuels états précédents $W_{i,i<n}$.
 
 		\paragraph{}
+		\PS{Peut être moins détailler ou même enlever ce paragraphe car mieux expliqué dans le chapitre suivant ?}
 		Si on peut exprimer l'état suivant $W_{n+1}$ directement à partir de l'état courant (et éventuellement des précédents), la méthode d'intégration temporelle est dite explicite.
 		L'intérêt d'une telle méthode est qu'elle permet de calculer l'état suivant très rapidement, souvent par la simple évaluation d'une fonction.
 		Cependant, ces méthodes ont tendance à devenir instable dès que le nombre de Courant devient un peu grand (typiquement 1) et imposent donc l'utilisation de très faibles pas de temps.
