@@ -119,24 +119,41 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     \paragraph{}
     Une méthode de Runge-Kutta est donc caractérisée par sa taille $k$ et par les valeurs $a_{ij, 1\leq j<i\leq k}$, $b_{i, 1\leq i\leq k}$ et $c_{i, 1\leq i\leq k}$.
     Ces valeurs de quadrature sont souvent représentées dans le tableau de Butcher :
+    \[\begin{array}{c|ccccc}
+      0\\
+      c_2    & a_{21} \\
+      c_3    & a_{31} & a_{32} \\
+      \vdots & \vdots &        & \ddots\\
+      c_k    & a_{k1} & a_{k2} & \hdots & a_{k,k-1}\\
+      \hline & b_1    & b_2    & \hdots & b_{k-1} & b_k
+    \end{array}\]
 
-    $$
-    \begin{array}{c|cccc}
-0\\
-\frac{1}{2} & \frac{1}{2}\\
-\frac{1}{2} &0 &\frac{1}{2} \\
-1& 0& 0& 1\\
-\hline
-& \frac{1}{6} &\frac{1}{3} &\frac{1}{3} &\frac{1}{6}
-\end{array}
-$$
+    On rappelle ici les tableau de Butcher des méthodes les plus connues :
+    \begin{table*}[h]\begin{tabular}{P{.15\textwidth}P{.3\textwidth}P{.4\textwidth}}
+      \begin{tabular}{c|c}
+        0 \\ \hline & 1
+      \end{tabular} &
+      \begin{tabular}{c|cc}
+        0 \\ 1/2 & 1/2 \\ \hline & 0 & 1
+      \end{tabular} &
+      \begin{tabular}{c|cccc}
+        0 \\ 1/2 & 1/2 \\ 1/2 & 0 & 1/2 \\ 1 & 0 & 0 & 1 \\ \hline & 1/6 & 1/3 & 1/3 & 1/6
+      \end{tabular} \\
+      RK1 & RK2 & RK4 \\
+    \end{tabular}\end{table*}
+
+    \paragraph{}
+    La méthode RK1 est équivalente à la méthode Euler explicite présentée précédemment.
+    Cette méthode RK2 est également appelée méthode du point milieu.
+    Cette méthode RK4 est d'ordre 4, et est l'une des plus utilisées pour l'intégration explicite des équations différentielles.
 
     \paragraph{}
     On peut montrer que l'ordre de la méthode $p$ est tel que $p \leq k$.
     Jusqu'à $k = 4$ on a $k = p$.
     Pour les ordres supérieurs, obtenir une borne entre l'ordre et la taille de la méthode est encore un problème ouvert.
-
-
+    Pour une méthode de Runge-Kutta d'ordre $p$, la fonction $G$ de l'équation (\ref{eq:stab_req}) est telle que \cite{HairerWanner1996}:
+    $$G\left(z\right) = 1 + z + \frac{z^2}{2} + \dots + \frac{z^p}{p!} + O\left(z^{p+1}\right)$$
+    Lorsque la méthode est telle que l'ordre $p$ est égal à la taille $k$, le terme en $O\left(z^{p+1}\right)$ est nul.
 
   \subsection{Méthodes d'Adams-Bashforth}
 
@@ -157,9 +174,6 @@ $$
     Le coût de calcul est donc très faible pour de telles méthodes.
     Cependant, les propriétés de stabilité de ces méthodes sont moindres, ce qui explique le fait qu'elles ne sont pas souvent utilisées en pratique dans des codes de calcul pour la dynamique des fluides.
     De manière générale, il n'existe pas de méthodes multi-pas explicites qui sont A-stables.
-
-
-
 
 
 \section{Méthodes implicites}

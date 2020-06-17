@@ -27,6 +27,8 @@
 \newcommand{\norm}[2][]{\ifthenelse{\equal{#1}{}}{\left\|{#2}\right\|}{\left\|{#2}\right\|_{{#1}}}}
 % \renewcommand{\parallel}{{\mathbin{/\mkern-5mu/}}}
 
+\usepackage{array}
+\newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}}
 
 \newcommand{\GP}[1]{\textbf{\color{BurntOrange}{#1}}}
 \newcommand{\LM}[1]{\textbf{\color{ForestGreen}{#1}}}
