@@ -15,7 +15,7 @@
 		Pour comprendre le fonctionnement des méthodes d'intégration temporelles implicites, on peut regarder la plus simple : la méthode d'Euler implicite.
 		Elle consiste à intégrer entre $t_n$ et $t_{n+1}$ l'équation en gardant un second membre constant à $t = t_{n+1}$.
 		Alors, en notant $\Delta t = t_{n+1} - t_n$ et $\Delta W = W_{n+1} - W_n$:
-		$$\Delta W = \Delta t f\left(W_{n+1}\right)$$
+		\[\Delta W = \Delta t f\left(W_{n+1}\right)\]
 		On voit que l'incrément de l'état $\Delta W$ peut s'exprimer comme le zéro d'une fonction : on cherche le zéro de $\delta W \mapsto \delta W - \Delta t f\left(W_n + \delta W\right)$.
 		En notant $\operatorname{F}$ cette fonction, on obtient l'équation non-linéaire :
 		\begin{equation}\label{eq:non_linear}
@@ -28,7 +28,7 @@
 		On part d'une valeur initiale de l'incrément $\delta W_0 = 0$, mais on peut envisager de prendre d'autres valeurs, comme $\Delta t f\left(W_n\right)$ qui est l'incrément donné par la méthode d'Euler explicite.
 		On va ensuite itérer pour trouver le zéro de $\operatorname{F}$.
 		La linéarisation à l'ordre 1 de l'équation (\ref{eq:non_linear}) s'écrit :
-		$$F(\delta W) = -\Delta t f\left(W_n\right) + \left(\mathrm{I} - \Delta t J_n\right)\delta W = 0$$
+		\[F(\delta W) = -\Delta t f\left(W_n\right) + \left(\mathrm{I} - \Delta t J_n\right)\delta W = 0\]
 		où $J_n$ est la matrice jacobienne de $f$, et on exprime donc l'incrément comme étant la solution d'un système linéaire :
 		\begin{equation}\label{eq:linear}
 			A\delta W = b

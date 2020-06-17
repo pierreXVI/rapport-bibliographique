@@ -43,7 +43,7 @@
 		Un autre exemple, qui est lui dans le thème de ma thèse, est le cas des équations d'Euler sans terme source pour un gaz parfait.
 		Si pour simplifier on se place dans un cas à une dimension, on prend l'état du système comme $\textup{w} = \transpose{\left(\rho, \rho u, \rho E\right)} = \transpose{\left(\textup{w}_1, \textup{w}_2, \textup{w}_3\right)}$.
 		Dans ce cas, avec la relation de fermeture $\rho E = \frac{p}{\gamma - 1} + \frac{\rho u^2}{2}$, le second membre s'écrit :
-		$$\operatorname{f}\left(\begin{aligned}\textup{w}_1\\\textup{w}_2\\\textup{w}_2\end{aligned}\right)
+		\[\operatorname{f}\left(\begin{aligned}\textup{w}_1\\\textup{w}_2\\\textup{w}_2\end{aligned}\right)
 			= -\partial_x\begin{pmatrix}
 				\rho u\\
 				\rho u^2 + p\\
@@ -54,7 +54,7 @@
 				\frac{\left(3 - \gamma\right)\textup{w}_2^2}{\textup{w}_1} + \left(\gamma - 1\right)\textup{w}_3\\
 				\left(\gamma\textup{w}_3 - \left(\gamma - 1\right)\frac{\textup{w}_2^2}{2\textup{w}_1}\right)\frac{\textup{w}_2}{\textup{w}_1}
 			\end{pmatrix}
-		$$
+		\]
 
 		\paragraph{}
 		Dans notre cadre d'étude, le second membre intervenant dans l'équation (\ref{eq:edp_0}) met en jeu des dérivées spatiales, comme on peut le voir sur les deux exemples donnés précédemment.
@@ -116,7 +116,7 @@
 		La discrétisation spatiale donne également un moyen de calculer les dérivées spatiales de l'état en fonction de l'état.
 		Pour mieux décrire ceci, prenons le cas utilisé dans ma thèse : la formulation volumes finis \cite{EymardGallouetHerbin2000}.
 		Cette formulation ne s'applique que lorsque l'équation (\ref{eq:edp_0}) est une loi de conservation, c'est à dire que le second membre s'exprime comme la divergence d'un flux :
-		$$\operatorname{f}\left(\textup{w}\right) = \nabla\operatorname{g}\left(\textup{w}\right)$$
+		\[\operatorname{f}\left(\textup{w}\right) = \nabla\operatorname{g}\left(\textup{w}\right)\]
 		La méthode des volumes finis consiste à intégrer l'équation (\ref{eq:edp}) pour chaque cellule du maillage.
 		En notant $\mathcal{V}_i$ le volume et $\mathcal{S}_i$ la surface de la cellule $i$:
 		\begin{align*}
@@ -124,7 +124,7 @@
 			\Rightarrow&&\frac{\mathrm{d}}{\mathrm{d}t}\int_{\mathcal{V}_i}\textup{w}\mathrm{d}v &= \oint_{\mathcal{S}_i}\operatorname{g}\left(\textup{w}\right)\cdot\mathrm{d}s\quad\textrm{d'après le théorème de Stokes}
 		\end{align*}
 		Si on note $\bar{\textup{w}}_i = \frac{1}{\mathcal{V}_i}\int_{\mathcal{V}_i}\textup{w}\mathrm{d}v$ la moyenne de l'état dans la cellule $i$, alors :
-		$$\frac{\mathrm{d}\bar{\textup{w}}_i}{\mathrm{d}t} = \frac{1}{\mathcal{V}_i}\oint_{\mathcal{S}_i}\operatorname{g}\left(\textup{w}\right)\cdot\mathrm{d}s$$
+		\[\frac{\mathrm{d}\bar{\textup{w}}_i}{\mathrm{d}t} = \frac{1}{\mathcal{V}_i}\oint_{\mathcal{S}_i}\operatorname{g}\left(\textup{w}\right)\cdot\mathrm{d}s\]
 
 		\paragraph{}
 		La formulation du schéma va ensuite indiquer la manière de calculer l'intégrale du flux sur la surface des cellules.

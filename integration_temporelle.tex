@@ -17,11 +17,11 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     Pour définir cette notion, on se place dans le cadre de l'équation (\ref{eq:edo}).
     Après un pas, la méthode numérique donne une valeur $W_1$ que l'on souhaite proche de la valeur exacte $W\left(t_0 + \Delta\right)$.
     La méthode est dite consistante si :
-    $$\lim_{\Delta t \rightarrow 0} \frac{W_1 - W\left(t_0 + \Delta t\right)}{\Delta t} = 0$$
+    \[\lim_{\Delta t \rightarrow 0} \frac{W_1 - W\left(t_0 + \Delta t\right)}{\Delta t} = 0\]
 
     \paragraph{}
     De plus, on dira que la méthode est d'ordre $p$ si l'erreur locale est en $\Delta t^{p+1}$ :
-    $$W_1 - W\left(t_0 + \Delta t\right) = O\left(\Delta t^{p+1}\right)$$
+    \[W_1 - W\left(t_0 + \Delta t\right) = O\left(\Delta t^{p+1}\right)\]
 
 
   \section{Stabilité}
@@ -36,7 +36,7 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     \paragraph{}
     Pour étudier la stabilité d'une méthode, on utilise en général l'équation différentielle ordinaire avec un second membre linéaire \cite{HairerWanner1996}.
     En effet, si on dispose d'une solution $\tilde{W}$ de (\ref{eq:edo}), on peut linéariser $F$ en $\tilde{W}$ :
-    $$\frac{\mathrm{d}W}{\mathrm{d}t} = F\left(\tilde{W}\right) + \frac{\partial F}{\partial W}\left(\tilde{W}\right)\cdot\left(W - \tilde{W}\right)$$
+    \[\frac{\mathrm{d}W}{\mathrm{d}t} = F\left(\tilde{W}\right) + \frac{\partial F}{\partial W}\left(\tilde{W}\right)\cdot\left(W - \tilde{W}\right)\]
     Si on note ensuite $y = W - \tilde{W}$ et $A = \frac{\partial F}{\partial W}\left(\tilde{W}\right)$, on obtient :
     \begin{equation}\label{eq:stab}
       \frac{\mathrm{d}y}{\mathrm{d}t} = Ay
@@ -53,12 +53,12 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     Pour la plupart des méthodes d'intégration temporelle, et en particulier pour celles présentées ici, on peut se ramener à cette écriture avec $G$ une fonction analytique.
     On peut choisir une base de vecteurs propres de $A$ $v_1, \dots, v_N$ associés aux valeurs propres $\alpha_1, \dots, \alpha_N$.
     Si on décompose l'itéré initial sur cette base, c'est à dire $y_0 = \sum_{i=1}^N\lambda_iv_i$, on voit que puisque $G$ est une fonction analytique :
-    $$y_n = \sum_{i=1}^N\lambda_iG\left(\Delta t\alpha_i\right)^nv_i$$
+    \[y_n = \sum_{i=1}^N\lambda_iG\left(\Delta t\alpha_i\right)^nv_i\]
 
     \paragraph{}
     Il découle de l'équation précédente que si $G\left(\Delta t\alpha_i\right)^n$, alors $y_n$ tend vers 0.
     C'est ainsi qu'on définit le domaine de stabilité d'une méthode d'intégration temporelle :
-    $$\left\{\,z\in\mathbb{C}\;\mid\;\left|G\left(z\right)\right| < 1\,\right\}$$
+    \[\left\{\,z\in\mathbb{C}\;\mid\;\left|G\left(z\right)\right| < 1\,\right\}\]
     Si toutes les valeurs propres de $A$ sont à partie réelle négatives, alors la solution de l'équation (\ref{eq:stab}) converge vers 0.
     On comprend alors tout de suite que pour que l'algorithme soit stable, il faut que les valeurs propres de $A$ soient toutes dans le domaine de stabilité de la méthode.
 
@@ -78,7 +78,7 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
 
   \paragraph{}
   Les méthodes explicites cherchent l'état suivant $W_{n+1}$ en fonction des états précédents :
-  $$W_{n+1} = F_e\left(W_n, W_{n-1}, \dots, W_0\right)$$
+  \[W_{n+1} = F_e\left(W_n, W_{n-1}, \dots, W_0\right)\]
   Ces méthodes sont généralement utilisées dans les simulations numériques instationnaires de la dynamique des fluides.
   L'avantage de ces méthodes est d'une part leur facilité d'implémentation, et d'autre part leur faible coût numérique.
   En effet, puisque l'état recherché est accessible à partir des états précédents, la seule écriture d'une fonction est nécessaire au développement de la méthode, et le coût numérique à chaque itération se résume à l'évaluation de cette fonction.
@@ -87,9 +87,9 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
 
     \paragraph{}
     La méthode d'Euler, ou Euler explicite, est la méthode la plus simple qui soit.
-    Elle consiste à intégrer (\ref{eq:edo}) entre $t_n$ et $t_{n+1} = t_n + \Delta t$ en supposant le second membre constant égal à $F\left(W_n\right)$, ou de manière équivalente à remplacer la dérivée dans (\ref{eq:edo}) par le taux d'accroissement : $\frac{\mathrm{d}W}{\mathrm{d}t}\simeq\frac{W_{n+1}-W_n}{\Delta t}$.
+    Elle consiste à intégrer (\ref{eq:edo}) entre $t_n$ et $t_{n+1} = t_n + \Delta t$ en supposant le second membre constant égal à $F\left(W_n\right)$, ou de manière équivalente à remplacer la dérivée dans (\ref{eq:edo}) par le taux d'accroissement : $\frac{\mathrm{d}W}{\mathrm{d}t}\approx\frac{W_{n+1}-W_n}{\Delta t}$.
     Ainsi, cette méthode donne la relation de récurrence explicite :
-    $$W_{n+1} = W_n + \Delta t F\left(W_n\right)$$
+    \[W_{n+1} = W_n + \Delta t F\left(W_n\right)\]
 
     \paragraph{}
     Lorsqu'on réalise l'analyse de stabilité de cette méthode, on voit que la fonction $G$ de l'équation (\ref{eq:stab_req}) est $z\mapsto 1 + z$.
@@ -105,18 +105,52 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
 
     \paragraph{}
     Le principe général est le suivant.
-    En supposant qu'en $t_n$ on dispose d'une valeur de la solution $W_n$, on introduit les étapes intermédiaires $t_i = t_n + c_i\Delta t$ pour $1\leq i\leq k$, avec $k$ fixé.
+    En supposant qu'en $t_n$ on dispose d'une valeur de la solution $W_n$, on introduit les étapes intermédiaires $t_{n,i} = t_n + c_i\Delta t$ pour $1\leq i\leq k$, avec $k$ fixé.
+    On peut intégrer entre $t_n$ et $t_{n,i}$ l'équation (\ref{eq:edo}) de manière exacte :
+    \[W\left(t_{n,i}\right) = W\left(t_n\right) + \Delta t \int_0^{c_i}F\left(W\left(t_n + s\Delta t\right)\right)\mathrm{d}s\]
+    L'intégrale est ensuite approchée par une quadrature sur les points $j<i$ :
+    \[\int_0^{c_i}F\left(W\left(t_n + s\Delta t\right)\right)\mathrm{d}s \approx \sum_{j = 1}^{i-1}a_{ij}F\left(W\left(t_{n,j}\right)\right)\]
+    Les étapes déjà calculées permettent donc de calculer la quadrature afin d'obtenir l'étape suivante.
+    Une fois qu'on a obtenu toutes les étapes intermédiaires, on intègre (\ref{eq:edo}) entre $t_n$ et $t_{n+1}$ :
+    \[W_{n+1} = W_n + \Delta t \int_0^1F\left(W\left(t_n + s\Delta t\right)\right)\mathrm{d}s\]
+    que l'on approche de nouveau par la quadrature :
+    \[\int_0^1F\left(W\left(t_n + s\Delta t\right)\right)\mathrm{d}s \approx \sum_{i = 1}^kb_iF\left(W\left(t_{n,i}\right)\right)\]
+
+    \paragraph{}
+    Une méthode de Runge-Kutta est donc caractérisée par sa taille $k$ et par les valeurs $a_{ij, 1\leq j<i\leq k}$, $b_{i, 1\leq i\leq k}$ et $c_{i, 1\leq i\leq k}$.
+    Ces valeurs de quadrature sont souvent représentées dans le tableau de Butcher :
+
+    $$
+    \begin{array}{c|cccc}
+0\\
+\frac{1}{2} & \frac{1}{2}\\
+\frac{1}{2} &0 &\frac{1}{2} \\
+1& 0& 0& 1\\
+\hline
+& \frac{1}{6} &\frac{1}{3} &\frac{1}{3} &\frac{1}{6}
+\end{array}
+$$
+
+    \paragraph{}
+    On peut montrer que l'ordre de la méthode $p$ est tel que $p \leq k$.
+    Jusqu'à $k = 4$ on a $k = p$.
+    Pour les ordres supérieurs, obtenir une borne entre l'ordre et la taille de la méthode est encore un problème ouvert.
+
+
 
   \subsection{Méthodes d'Adams-Bashforth}
 
     \paragraph{}
     Les méthodes d'Adams-Bashforth sont des méthodes de type "multi-pas" (multi-step), c'est à dire qu'elles utilisent plusieurs états précédents pour déterminer l'état suivant.
-    Pour une méthode d'ordre $k$\footnote{Pour les méthodes d'Adams-Bashforth, l'indice $k$ désignant la méthode est bien égal à l'ordre de la méthode.}, on utilise donc les états $W_n, \dots, W_{n-k+1}$ pour déterminer $W_{n+1}$.
+    Pour une méthode d'ordre $k$, on utilise donc les états $W_n, \dots, W_{n-k+1}$ pour déterminer $W_{n+1}$.
+    On peut en effet vérifier que pour ces méthodes, l'indice $k$ désignant la méthode est égal à l'ordre de la méthode \PS{Citer "Solving ordinary differential equations I: Nonstiff problems" si j'arrive à le trouver}.
+
+    \paragraph{}
     L'idée est d'interpoler le second membre de (\ref{eq:edo}) en ces $k$ points calculés précédemment.
     Il existe en effet un unique polynôme $F_k$ tel que pour $0 \leq i < k$ on ait $F_k\left(t_{n-i}\right) = F\left(W_{n-i}\right)$.
-    On fait ensuite l'hypothèse $F_k\left(t\right) \simeq F\left(W\left(t\right)\right)$.
+    On fait ensuite l'hypothèse $F_k\left(t\right) \approx F\left(W\left(t\right)\right)$.
     On peut intégrer l'équation (\ref{eq:edo}) :
-    $$W_{n+1} = W_n + \int_{t_n}^{t_{n+1}}F_k\left(t\right)\mathrm{d}t$$
+    \[W_{n+1} = W_n + \int_{t_n}^{t_{n+1}}F_k\left(t\right)\mathrm{d}t\]
 
     \paragraph{}
     Contrairement aux méthodes de Runge-Kutta, puisqu'on réutilise les pas précédents, une unique évaluation du second membre de (\ref{eq:edo}) est nécessaire à chaque itération.
