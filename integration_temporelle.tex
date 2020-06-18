@@ -50,7 +50,7 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
       y_{n+1} = G\left(\Delta tA\right)y_n
     \end{equation}
     la relation qui donne l'état suivant en fonction de l'état actuel.
-    Pour la plupart des méthodes d'intégration temporelle, et en particulier pour celles présentées ici, on peut se ramener à cette écriture avec $G$ une fonction analytique.
+    Pour la plupart des méthodes d'intégration temporelle, et en particulier pour les méthodes de Runge-Kutta présentées ici, on peut se ramener à cette écriture avec $G$ une fonction analytique.
     On peut choisir une base de vecteurs propres de $A$ $v_1, \dots, v_N$ associés aux valeurs propres $\alpha_1, \dots, \alpha_N$.
     Si on décompose l'itéré initial sur cette base, c'est à dire $y_0 = \sum_{i=1}^N\lambda_iv_i$, on voit que puisque $G$ est une fonction analytique :
     \[y_n = \sum_{i=1}^N\lambda_iG\left(\Delta t\alpha_i\right)^nv_i\]
@@ -154,13 +154,28 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     Pour une méthode de Runge-Kutta d'ordre $p$, la fonction $G$ de l'équation (\ref{eq:stab_req}) est telle que \cite{HairerWanner1996}:
     $$G\left(z\right) = 1 + z + \frac{z^2}{2} + \dots + \frac{z^p}{p!} + O\left(z^{p+1}\right)$$
     Lorsque la méthode est telle que l'ordre $p$ est égal à la taille $k$, le terme en $O\left(z^{p+1}\right)$ est nul.
+    On peut donc tracer sur la figure \ref{fig:rk_stab} les domaines de stabilité des méthodes de Runge-Kutta.
+
+    \begin{figure}
+      \centering
+      \includegraphics[width=.5\textwidth]{images/rk_stab.png}
+      \caption{Domaines de stabilité (en couleur) des méthodes de Runge-Kutta pour les quatre premiers ordres.}
+      \label{fig:rk_stab}
+    \end{figure}
+
+    \paragraph{}
+    On constate alors que les méthodes de Runge-Kutta ne sont pas A-stables, et en particulier n'ont pas un large domaine de stabilité.
+    En pratique, cela imposera l'utilisation de faibles pas de temps, chose acceptable pour des calculs instationnaires mais insatisfaisante pour nos calculs stationnaires.
+    Si le coût de la méthode est moindre, le nombre d'itérations nécessaires pour converger vers un état stationnaire va rendre le coût de calcul global trop important.
+
 
   \subsection{Méthodes d'Adams-Bashforth}
 
     \paragraph{}
     Les méthodes d'Adams-Bashforth sont des méthodes de type "multi-pas" (multi-step), c'est à dire qu'elles utilisent plusieurs états précédents pour déterminer l'état suivant.
+    A la différence des méthodes de Runge-Kutta qui utilisent des pas intermédiaires entre $t_n$ et $t_{n+1}$, ces méthodes utilisent les $t_{i\leq n}$ précédents.
     Pour une méthode d'ordre $k$, on utilise donc les états $W_n, \dots, W_{n-k+1}$ pour déterminer $W_{n+1}$.
-    On peut en effet vérifier que pour ces méthodes, l'indice $k$ désignant la méthode est égal à l'ordre de la méthode \PS{Citer "Solving ordinary differential equations I: Nonstiff problems" si j'arrive à le trouver}.
+    On peut en effet vérifier que pour ces méthodes, l'indice $k$ désignant la méthode est égal à l'ordre de la méthode \PS{Apparemment dans "Solving ordinary differential equations I: Nonstiff problems", à citer si j'arrive à le trouver}.
 
     \paragraph{}
     L'idée est d'interpoler le second membre de (\ref{eq:edo}) en ces $k$ points calculés précédemment.
@@ -173,6 +188,11 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     Contrairement aux méthodes de Runge-Kutta, puisqu'on réutilise les pas précédents, une unique évaluation du second membre de (\ref{eq:edo}) est nécessaire à chaque itération.
     Le coût de calcul est donc très faible pour de telles méthodes.
     Cependant, les propriétés de stabilité de ces méthodes sont moindres, ce qui explique le fait qu'elles ne sont pas souvent utilisées en pratique dans des codes de calcul pour la dynamique des fluides.
+
+    \paragraph{}
+    Les méthodes d'Adams-Bashforth, et plus généralement les méthodes multi-pas, ne rentrent pas dans le cadre d'étude de la stabilité présenté précédemment.
+    L'analyse de leur stabilité est plus complexe, \cite{HairerWanner1996} \PS{cter également "Solving ordinary differential equations I: Nonstiff problems"} et ne sera donc pas détaillé ici.
+    Cependant, on constate que la stabilité de ces méthode est en général de l'ordre des méthodes de Runge-Kutta.
     De manière générale, il n'existe pas de méthodes multi-pas explicites qui sont A-stables.
 
 
