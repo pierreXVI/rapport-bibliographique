@@ -17,11 +17,11 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     Pour définir cette notion, on se place dans le cadre de l'équation (\ref{eq:edo}).
     Après un pas, la méthode numérique donne une valeur $W_1$ que l'on souhaite proche de la valeur exacte $W\left(t_0 + \Delta\right)$.
     La méthode est dite consistante si :
-    \[\lim_{\Delta t \rightarrow 0} \frac{W_1 - W\left(t_0 + \Delta t\right)}{\Delta t} = 0\]
+    \[\lim_{\Delta t \rightarrow 0} \frac{W_1 - W\left(t_0 + \Delta t\right)}{\Delta t} = 0\ .\]
 
     \paragraph{}
     De plus, on dira que la méthode est d'ordre $p$ si l'erreur locale est en $\Delta t^{p+1}$ :
-    \[W_1 - W\left(t_0 + \Delta t\right) = O\left(\Delta t^{p+1}\right)\]
+    \[W_1 - W\left(t_0 + \Delta t\right) = O\left(\Delta t^{p+1}\right)\ .\]
 
 
   \section{Stabilité}
@@ -36,10 +36,10 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     \paragraph{}
     Pour étudier la stabilité d'une méthode, on utilise en général l'équation différentielle ordinaire avec un second membre linéaire \cite{HairerWanner1996}.
     En effet, si on dispose d'une solution $\tilde{W}$ de (\ref{eq:edo}), on peut linéariser $F$ en $\tilde{W}$ :
-    \[\frac{\mathrm{d}W}{\mathrm{d}t} = F\left(\tilde{W}\right) + \frac{\partial F}{\partial W}\left(\tilde{W}\right)\cdot\left(W - \tilde{W}\right)\]
+    \[\frac{\mathrm{d}W}{\mathrm{d}t} = F\left(\tilde{W}\right) + \frac{\partial F}{\partial W}\left(\tilde{W}\right)\cdot\left(W - \tilde{W}\right)\ .\]
     Si on note ensuite $y = W - \tilde{W}$ et $J = \frac{\partial F}{\partial W}\left(\tilde{W}\right)$, on obtient :
     \begin{equation}\label{eq:stab}
-      \frac{\mathrm{d}y}{\mathrm{d}t} = Jy
+      \frac{\mathrm{d}y}{\mathrm{d}t} = Jy\ .
     \end{equation}
     C'est donc avec cette équation, également appelée équation de Dahlquist, que l'on étudie la stabilité de la méthode.
     Nous l'étudions dans $\mathbb{C}$.
@@ -53,12 +53,12 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     Pour la plupart des méthodes d'intégration temporelle, et en particulier pour les méthodes de Runge-Kutta présentées ici, on peut se ramener à cette écriture avec $G$ une fonction analytique.
     On peut choisir une base de vecteurs propres de $J$ $v_1, \dots, v_N$ associés aux valeurs propres $\alpha_1, \dots, \alpha_N$.
     Si on décompose l'itéré initial sur cette base, c'est à dire $y_0 = \sum_{i=1}^N\lambda_iv_i$, on voit que puisque $G$ est une fonction analytique :
-    \[y_n = \sum_{i=1}^N\lambda_iG\left(\Delta t\alpha_i\right)^nv_i\]
+    \[y_n = \sum_{i=1}^N\lambda_iG\left(\Delta t\alpha_i\right)^nv_i\ .\]
 
     \paragraph{}
     Il découle de l'équation précédente que si $G\left(\Delta t\alpha_i\right)^n$, alors $y_n$ tend vers 0.
     C'est ainsi qu'on définit le domaine de stabilité d'une méthode d'intégration temporelle :
-    \[\left\{\,z\in\mathbb{C}\;\mid\;\left|G\left(z\right)\right| < 1\,\right\}\]
+    \[\left\{\,z\in\mathbb{C}\;\mid\;\left|G\left(z\right)\right| < 1\,\right\}\ .\]
     Si toutes les valeurs propres de $J$ sont à partie réelle négatives, alors la solution de l'équation (\ref{eq:stab}) converge vers 0.
     On comprend alors tout de suite que pour que l'algorithme soit stable, il faut que les valeurs propres de $J$ soient toutes dans le domaine de stabilité de la méthode.
 
@@ -78,7 +78,7 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
 
   \paragraph{}
   Les méthodes explicites cherchent l'état suivant $W_{n+1}$ en fonction des états précédents :
-  \[W_{n+1} = F_e\left(W_n, W_{n-1}, \dots, W_0\right)\]
+  \[W_{n+1} = F_e\left(W_n, W_{n-1}, \dots, W_0\right)\ .\]
   Ces méthodes sont généralement utilisées dans les simulations numériques instationnaires de la dynamique des fluides.
   L'avantage de ces méthodes est d'une part leur facilité d'implémentation, et d'autre part leur faible coût numérique.
   En effet, puisque l'état recherché est accessible à partir des états précédents, la seule écriture d'une fonction est nécessaire au développement de la méthode, et le coût numérique à chaque itération se résume à l'évaluation de cette fonction.
@@ -89,7 +89,7 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     La méthode d'Euler, ou Euler explicite, est la méthode la plus simple qui soit.
     Elle consiste à intégrer (\ref{eq:edo}) entre $t_n$ et $t_{n+1} = t_n + \Delta t$ en supposant le second membre constant égal à $F\left(W_n\right)$, ou de manière équivalente à remplacer la dérivée dans (\ref{eq:edo}) par le taux d'accroissement : $\frac{\mathrm{d}W}{\mathrm{d}t}\approx\frac{W_{n+1}-W_n}{\Delta t}$.
     Ainsi, cette méthode donne la relation de récurrence explicite :
-    \[W_{n+1} = W_n + \Delta t F\left(W_n\right)\]
+    \[W_{n+1} = W_n + \Delta t F\left(W_n\right)\ .\]
 
     \paragraph{}
     Lorsqu'on réalise l'analyse de stabilité de cette méthode, on voit que la fonction $G$ de l'équation (\ref{eq:stab_req}) est $z\mapsto 1 + z$.
@@ -107,14 +107,14 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     Le principe général est le suivant.
     En supposant qu'en $t_n$ on dispose d'une valeur de la solution $W_n$, on introduit les étapes intermédiaires $t_{n,i} = t_n + c_i\Delta t$ pour $1\leq i\leq k$, avec $k$ fixé.
     On peut intégrer entre $t_n$ et $t_{n,i}$ l'équation (\ref{eq:edo}) de manière exacte :
-    \[W\left(t_{n,i}\right) = W\left(t_n\right) + \Delta t \int_0^{c_i}F\left(W\left(t_n + s\Delta t\right)\right)\mathrm{d}s\]
+    \[W\left(t_{n,i}\right) = W\left(t_n\right) + \Delta t \int_0^{c_i}F\left(W\left(t_n + s\Delta t\right)\right)\mathrm{d}s\ .\]
     L'intégrale est ensuite approchée par une quadrature sur les points $j<i$ :
-    \[\int_0^{c_i}F\left(W\left(t_n + s\Delta t\right)\right)\mathrm{d}s \approx \sum_{j = 1}^{i-1}a_{ij}F\left(W\left(t_{n,j}\right)\right)\]
+    \[\int_0^{c_i}F\left(W\left(t_n + s\Delta t\right)\right)\mathrm{d}s \approx \sum_{j = 1}^{i-1}a_{ij}F\left(W\left(t_{n,j}\right)\right)\ .\]
     Les étapes déjà calculées permettent donc de calculer la quadrature afin d'obtenir l'étape suivante.
     Une fois qu'on a obtenu toutes les étapes intermédiaires, on intègre (\ref{eq:edo}) entre $t_n$ et $t_{n+1}$ :
     \[W_{n+1} = W_n + \Delta t \int_0^1F\left(W\left(t_n + s\Delta t\right)\right)\mathrm{d}s\]
     que l'on approche de nouveau par la quadrature :
-    \[\int_0^1F\left(W\left(t_n + s\Delta t\right)\right)\mathrm{d}s \approx \sum_{i = 1}^kb_iF\left(W\left(t_{n,i}\right)\right)\]
+    \[\int_0^1F\left(W\left(t_n + s\Delta t\right)\right)\mathrm{d}s \approx \sum_{i = 1}^kb_iF\left(W\left(t_{n,i}\right)\right)\ .\]
 
     \paragraph{}
     Une méthode de Runge-Kutta est donc caractérisée par sa taille $k$ et par les valeurs $a_{ij, 1\leq j<i\leq k}$, $b_{i, 1\leq i\leq k}$ et $c_{i, 1\leq i\leq k}$.
@@ -132,9 +132,9 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
       c_k    & a_{k1} & a_{k2} & \hdots & a_{k,k-1} \RKBar
       b_1    & b_2    & \hdots & b_{k-1} & b_k
     \end{array}
-    \]
+    \ .\]
 
-    On rappelle ici les tableau de Butcher des méthodes les plus connues :
+    On rappelle ci-dessous les tableau de Butcher des méthodes les plus connues.
     \begin{table*}[h]\begin{tabular}{P{.15\textwidth}P{.3\textwidth}P{.4\textwidth}}
       \begin{tabular}{c|c}
         0 \RKBar 1
@@ -158,7 +158,7 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     Jusqu'à $k = 4$ on a $k = p$.
     Pour les ordres supérieurs, obtenir une borne entre l'ordre et la taille de la méthode est encore un problème ouvert.
     Pour une méthode de Runge-Kutta d'ordre $p$, la fonction $G$ de l'équation (\ref{eq:stab_req}) est telle que \cite{HairerWanner1996}:
-    $$G\left(z\right) = 1 + z + \frac{z^2}{2} + \dots + \frac{z^p}{p!} + O\left(z^{p+1}\right)$$
+    \[G\left(z\right) = 1 + z + \frac{z^2}{2} + \dots + \frac{z^p}{p!} + O\left(z^{p+1}\right)\ .\]
     Lorsque la méthode est telle que l'ordre $p$ est égal à la taille $k$, le terme en $O\left(z^{p+1}\right)$ est nul.
     On peut donc tracer sur la figure \ref{fig:rk_stab} les domaines de stabilité des méthodes de Runge-Kutta.
 
@@ -188,7 +188,7 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     Il existe en effet un unique polynôme $F_k$ tel que pour $0 \leq i < k$ on ait $F_k\left(t_{n-i}\right) = F\left(W_{n-i}\right)$.
     On fait ensuite l'hypothèse $F_k\left(t\right) \approx F\left(W\left(t\right)\right)$.
     On peut intégrer l'équation (\ref{eq:edo}) :
-    \[W_{n+1} = W_n + \int_{t_n}^{t_{n+1}}F_k\left(t\right)\mathrm{d}t\]
+    \[W_{n+1} = W_n + \int_{t_n}^{t_{n+1}}F_k\left(t\right)\mathrm{d}t\ .\]
 
     \paragraph{}
     Contrairement aux méthodes de Runge-Kutta, puisqu'on réutilise les pas précédents, une unique évaluation du second membre de (\ref{eq:edo}) est nécessaire à chaque itération.
@@ -219,13 +219,13 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     Pour bien comprendre le fonctionnement d'une méthode implicite, on prend à nouveau la méthode d'Euler, mais cette fois sa version implicite.
     On intègre à nouveau (\ref{eq:edo}) entre $t_n$ et $t_{n+1}$ en supposant le second membre constant, mais cette fois on le prend égal à $F\left(W_{n+1}\right)$.
     On obtient alors l'équation :
-    \[W_{n+1} - W_n = \Delta tF\left(W_{n+1}\right)\]
+    \[W_{n+1} - W_n = \Delta tF\left(W_{n+1}\right)\ .\]
     L'état suivant est donc donné comme étant un zéro de la fonction $z\mapsto z - W_n - \Delta tF\left(z\right)$.
 
     \paragraph{}
     On peut de nouveau réaliser l'analyse de stabilité de cette méthode.
     Appliqué à l'équation de Dahlquist (\ref{eq:stab}), la méthode d'Euler implicite donne :
-    \[W_{n+1} - W_n = \Delta tJ\cdot W_{n+1}\]
+    \[W_{n+1} - W_n = \Delta tJ\cdot W_{n+1}\ .\]
     Ainsi, on peut se ramener à la forme de l'équation (\ref{eq:stab_req}) :
     \[W_{n+1} = \left(\operatorname{Id} - \Delta tJ\right)^{-1}W_n\]
     où on peut identifier la fonction de stabilité : $G\left(z\right) = \left(1-z\right)^{-1}$.
@@ -238,7 +238,7 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     \paragraph{}
     Les méthodes de Runge-Kutta ont elles aussi leur équivalent implicite.
     La différence avec la version explicite est qu'à chaque étape, la quadrature de l'intégrale est approchée par l'ensemble des étapes intermédiaires :
-    \[\int_0^{c_i}F\left(W\left(t_n + s\Delta t\right)\right)\mathrm{d}s \approx \sum_{j = 1}^ka_{ij}F\left(W\left(t_{n,j}\right)\right)\]
+    \[\int_0^{c_i}F\left(W\left(t_n + s\Delta t\right)\right)\mathrm{d}s \approx \sum_{j = 1}^ka_{ij}F\left(W\left(t_{n,j}\right)\right)\ .\]
     Ainsi, pour chaque étape de la méthode Runge-Kutta implicite, on est amené à résoudre une équation non linéaire.
     Le surcoût de chaque itération est alors non négligeable.
 
@@ -258,12 +258,12 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     On a alors :
     \[y_{n+1} = y_n + \Delta t\alpha \sum_{i = 1}^k b_iy_{n,i}\]
     et pour $1\leq i\leq k$ :
-    \[y_{n,i} = y_n + \Delta t\alpha \sum_{j = 1}^k a_{ij}y_{n,j}\]
+    \[y_{n,i} = y_n + \Delta t\alpha \sum_{j = 1}^k a_{ij}y_{n,j}\ .\]
     En notant $y = \transpose{\left(y_{n,1}, \dots, y_{n,k}\right)}$ et $e = \transpose{\left(1, \dots, 1\right)}$, on a que :
     \begin{align*}
       y &= y_ne + \Delta t\alpha Ay \\
-      \Rightarrow y &= y_n\left(\operatorname{Id} - \Delta t\alpha A\right)^{-1}e
+      \Rightarrow y &= y_n\left(\operatorname{Id} - \Delta t\alpha A\right)^{-1}e\ .
     \end{align*}
     Ainsi :
-    \[y_{n+1} = \left(1 + \Delta t\alpha\transpose{b}\left(\operatorname{Id} - \Delta t\alpha A\right)^{-1}e\right)y_n\]
+    \[y_{n+1} = \left(1 + \Delta t\alpha\transpose{b}\left(\operatorname{Id} - \Delta t\alpha A\right)^{-1}e\right)y_n\ .\]
     On peut donc clairement identifier la fonction $G$ : $z \mapsto 1 + z\transpose{b}\left(\operatorname{Id} - zA\right)^{-1}e$.
