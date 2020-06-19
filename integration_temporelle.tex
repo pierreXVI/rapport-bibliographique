@@ -119,25 +119,31 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     \paragraph{}
     Une méthode de Runge-Kutta est donc caractérisée par sa taille $k$ et par les valeurs $a_{ij, 1\leq j<i\leq k}$, $b_{i, 1\leq i\leq k}$ et $c_{i, 1\leq i\leq k}$.
     Ces valeurs de quadrature sont souvent représentées dans le tableau de Butcher :
-    \[\begin{array}{c|ccccc}
+    \[
+    \begin{array}{c|c}
+      c & A \rule[-1.1ex]{0pt}{0pt} \RKBar \transpose{b}
+    \end{array}
+    \qquad = \qquad
+    \begin{array}{c|ccccc}
       0\\
       c_2    & a_{21} \\
       c_3    & a_{31} & a_{32} \\
       \vdots & \vdots &        & \ddots\\
-      c_k    & a_{k1} & a_{k2} & \hdots & a_{k,k-1}\\
-      \hline & b_1    & b_2    & \hdots & b_{k-1} & b_k
-    \end{array}\]
+      c_k    & a_{k1} & a_{k2} & \hdots & a_{k,k-1} \RKBar
+      b_1    & b_2    & \hdots & b_{k-1} & b_k
+    \end{array}
+    \]
 
     On rappelle ici les tableau de Butcher des méthodes les plus connues :
     \begin{table*}[h]\begin{tabular}{P{.15\textwidth}P{.3\textwidth}P{.4\textwidth}}
       \begin{tabular}{c|c}
-        0 \\ \hline & 1
+        0 \RKBar 1
       \end{tabular} &
       \begin{tabular}{c|cc}
-        0 \\ 1/2 & 1/2 \\ \hline & 0 & 1
+        0 \\ 1/2 & 1/2 \RKBar 0 & 1
       \end{tabular} &
       \begin{tabular}{c|cccc}
-        0 \\ 1/2 & 1/2 \\ 1/2 & 0 & 1/2 \\ 1 & 0 & 0 & 1 \\ \hline & 1/6 & 1/3 & 1/3 & 1/6
+        0 \\ 1/2 & 1/2 \\ 1/2 & 0 & 1/2 \\ 1 & 0 & 0 & 1 \RKBar 1/6 & 1/3 & 1/3 & 1/6
       \end{tabular} \\
       RK1 & RK2 & RK4 \\
     \end{tabular}\end{table*}
@@ -197,3 +203,55 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
 
 
 \section{Méthodes implicites}
+
+  \paragraph{}
+  Nous avons pu mettre en évidence dans la section précédente le principal défaut des méthodes explicites.
+  Si le coût numérique d'une itération de ces méthodes est faible, leur stabilité l'est également.
+  Ces mauvaises propriétés de stabilités imposent l'utilisation de faibles pas de temps, ce qui s'avère contraignant lorsqu'on cherche la valeur de l'état convergé, après un temps relativement long.
+
+  \paragraph{}
+  Opposé à ces méthodes, on trouve les méthodes implicites.
+  Si les méthodes explicites expriment l'état suivant à partir de l'état actuel (et éventuellement des précédents), les méthodes implicites donnent cet état suivant comme solution d'une équation.
+
+  \subsection{Méthode d'Euler}
+
+    \paragraph{}
+    Pour bien comprendre le fonctionnement d'une méthode implicite, on prend à nouveau la méthode d'Euler, mais cette fois sa version implicite.
+    On intègre à nouveau (\ref{eq:edo}) entre $t_n$ et $t_{n+1}$ en supposant le second membre constant, mais cette fois on le prend égal à $F\left(W_{n+1}\right)$.
+    On obtient alors l'équation :
+    \[W_{n+1} - W_n = \Delta tF\left(W_{n+1}\right)\]
+    L'état suivant est donc donné comme étant un zéro de la fonction $z\mapsto z - W_n - \Delta tF\left(z\right)$.
+
+    \paragraph{}
+    On peut de nouveau réaliser l'analyse de stabilité de cette méthode.
+    Appliqué à l'équation de Dahlquist (\ref{eq:stab}), la méthode d'Euler implicite donne :
+    \[W_{n+1} - W_n = \Delta tA\cdot W_{n+1}\]
+    Ainsi, on peut se ramener à la forme de l'équation (\ref{eq:stab_req}) :
+    \[W_{n+1} = \left(\operatorname{Id} - \Delta tA\right)^{-1}W_n\]
+    où on peut identifier la fonction de stabilité : $G\left(z\right) = \left(1-z\right)^{-1}$.
+    Le domaine de stabilité de la méthode d'Euler implicite est donc le plan complexe privé du cercle unité fermé centré en 1.
+    En particulier, le demi-plan complexe des nombres à partie réelle négative est inclus dans le domaine de stabilité, et donc cette méthode est A-stable.
+
+
+  \subsection{Méthodes de Runge-Kutta}
+
+    \paragraph{}
+    Les méthodes de Runge-Kutta ont elles aussi leur équivalent implicite.
+    La différence avec la version explicite est qu'à chaque étape, la quadrature de l'intégrale est approchée par l'ensemble des étapes intermédiaires :
+    \[\int_0^{c_i}F\left(W\left(t_n + s\Delta t\right)\right)\mathrm{d}s \approx \sum_{j = 1}^ka_{ij}F\left(W\left(t_{n,j}\right)\right)\]
+    Ainsi, pour chaque étape de la méthode Runge-Kutta implicite, on est amené à résoudre une équation non linéaire.
+    Le surcoût de chaque itération est alors non négligeable.
+
+    \paragraph{}
+    Le caractère implicite d'une méthode de Runge-Kutta se voit dans le tableau de Butcher.
+    Pour une méthode explicite, la matrice $A = \left(a_{ij}\right)_{1\leq i, j\leq k}$ est triangulaire inférieure.
+    Pour la version implicite, elle est quelconque.
+    Concrètement, cela veut dire qu'a l'étape $i$, on a besoin de toutes les étapes $j$ telles que $a_{ij}\neq 0$, sans avoir nécessairement $j < i$.
+    Ainsi, les étapes doivent se résoudre simultanément en calculant la solution d'un système de $k$ équations non linéaires.
+    On rappelle alors que chaque équation est en fait déjà une équation de dimension $N$ supposée grande.
+    On comprend donc pourquoi ces méthodes sont particulièrement coûteuses d'un point de vue numérique.
+
+    \paragraph{}
+    Si ces méthodes sont bien plus coûteuses que leur équivalents explicites, elle possèdent de meilleures propriétés de stabilité.
+    Appliqué à l'équation (\ref{eq:stab}), on a :
+    \[y_{n+1} = y_n + \Delta t \sum_{i = 1}^kb_iF\left(W\left(t_{n,i}\right)\right)\]
