@@ -37,9 +37,9 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     Pour étudier la stabilité d'une méthode, on utilise en général l'équation différentielle ordinaire avec un second membre linéaire \cite{HairerWanner1996}.
     En effet, si on dispose d'une solution $\tilde{W}$ de (\ref{eq:edo}), on peut linéariser $F$ en $\tilde{W}$ :
     \[\frac{\mathrm{d}W}{\mathrm{d}t} = F\left(\tilde{W}\right) + \frac{\partial F}{\partial W}\left(\tilde{W}\right)\cdot\left(W - \tilde{W}\right)\]
-    Si on note ensuite $y = W - \tilde{W}$ et $A = \frac{\partial F}{\partial W}\left(\tilde{W}\right)$, on obtient :
+    Si on note ensuite $y = W - \tilde{W}$ et $J = \frac{\partial F}{\partial W}\left(\tilde{W}\right)$, on obtient :
     \begin{equation}\label{eq:stab}
-      \frac{\mathrm{d}y}{\mathrm{d}t} = Ay
+      \frac{\mathrm{d}y}{\mathrm{d}t} = Jy
     \end{equation}
     C'est donc avec cette équation, également appelée équation de Dahlquist, que l'on étudie la stabilité de la méthode.
     Nous l'étudions dans $\mathbb{C}$.
@@ -47,11 +47,11 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     \paragraph{}
     Pour une méthode d'intégration donnée, on note :
     \begin{equation}\label{eq:stab_req}
-      y_{n+1} = G\left(\Delta tA\right)y_n
+      y_{n+1} = G\left(\Delta tJ\right)y_n
     \end{equation}
     la relation qui donne l'état suivant en fonction de l'état actuel.
     Pour la plupart des méthodes d'intégration temporelle, et en particulier pour les méthodes de Runge-Kutta présentées ici, on peut se ramener à cette écriture avec $G$ une fonction analytique.
-    On peut choisir une base de vecteurs propres de $A$ $v_1, \dots, v_N$ associés aux valeurs propres $\alpha_1, \dots, \alpha_N$.
+    On peut choisir une base de vecteurs propres de $J$ $v_1, \dots, v_N$ associés aux valeurs propres $\alpha_1, \dots, \alpha_N$.
     Si on décompose l'itéré initial sur cette base, c'est à dire $y_0 = \sum_{i=1}^N\lambda_iv_i$, on voit que puisque $G$ est une fonction analytique :
     \[y_n = \sum_{i=1}^N\lambda_iG\left(\Delta t\alpha_i\right)^nv_i\]
 
@@ -59,12 +59,12 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     Il découle de l'équation précédente que si $G\left(\Delta t\alpha_i\right)^n$, alors $y_n$ tend vers 0.
     C'est ainsi qu'on définit le domaine de stabilité d'une méthode d'intégration temporelle :
     \[\left\{\,z\in\mathbb{C}\;\mid\;\left|G\left(z\right)\right| < 1\,\right\}\]
-    Si toutes les valeurs propres de $A$ sont à partie réelle négatives, alors la solution de l'équation (\ref{eq:stab}) converge vers 0.
-    On comprend alors tout de suite que pour que l'algorithme soit stable, il faut que les valeurs propres de $A$ soient toutes dans le domaine de stabilité de la méthode.
+    Si toutes les valeurs propres de $J$ sont à partie réelle négatives, alors la solution de l'équation (\ref{eq:stab}) converge vers 0.
+    On comprend alors tout de suite que pour que l'algorithme soit stable, il faut que les valeurs propres de $J$ soient toutes dans le domaine de stabilité de la méthode.
 
     \paragraph{}
-    On remarque que l'argument de $G$ n'est pas $A$ mais $\Delta tA$.
-    Si une valeur propre $\Delta t\alpha_i$ de $\Delta tA$ n'est pas dans le domaine de stabilité de la méthode, la direction propre associée sera amplifiée et une instabilité d'origine numérique entraînera la divergence du calcul.
+    On remarque que l'argument de $G$ n'est pas $J$ mais $\Delta tJ$.
+    Si une valeur propre $\Delta t\alpha_i$ de $\Delta tJ$ n'est pas dans le domaine de stabilité de la méthode, la direction propre associée sera amplifiée et une instabilité d'origine numérique entraînera la divergence du calcul.
     On va donc jouer sur la valeur de $\Delta t$ : en la prenant assez faible, on arrivera à faire rentrer toutes les valeurs propres dans le domaine de stabilité, et donc à garantir la stabilité du calcul.
     Cependant, comme nous le verrons par la suite, cela impose l'utilisation de pas de temps relativement faible, ce qui s'avère contraignant pour nos application.
 
@@ -179,7 +179,7 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
 
     \paragraph{}
     Les méthodes d'Adams-Bashforth sont des méthodes de type "multi-pas" (multi-step), c'est à dire qu'elles utilisent plusieurs états précédents pour déterminer l'état suivant.
-    A la différence des méthodes de Runge-Kutta qui utilisent des pas intermédiaires entre $t_n$ et $t_{n+1}$, ces méthodes utilisent les $t_{i\leq n}$ précédents.
+    À la différence des méthodes de Runge-Kutta qui utilisent des pas intermédiaires entre $t_n$ et $t_{n+1}$, ces méthodes utilisent les $t_{i\leq n}$ précédents.
     Pour une méthode d'ordre $k$, on utilise donc les états $W_n, \dots, W_{n-k+1}$ pour déterminer $W_{n+1}$.
     On peut en effet vérifier que pour ces méthodes, l'indice $k$ désignant la méthode est égal à l'ordre de la méthode \PS{Apparemment dans "Solving ordinary differential equations I: Nonstiff problems", à citer si j'arrive à le trouver}.
 
@@ -225,9 +225,9 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     \paragraph{}
     On peut de nouveau réaliser l'analyse de stabilité de cette méthode.
     Appliqué à l'équation de Dahlquist (\ref{eq:stab}), la méthode d'Euler implicite donne :
-    \[W_{n+1} - W_n = \Delta tA\cdot W_{n+1}\]
+    \[W_{n+1} - W_n = \Delta tJ\cdot W_{n+1}\]
     Ainsi, on peut se ramener à la forme de l'équation (\ref{eq:stab_req}) :
-    \[W_{n+1} = \left(\operatorname{Id} - \Delta tA\right)^{-1}W_n\]
+    \[W_{n+1} = \left(\operatorname{Id} - \Delta tJ\right)^{-1}W_n\]
     où on peut identifier la fonction de stabilité : $G\left(z\right) = \left(1-z\right)^{-1}$.
     Le domaine de stabilité de la méthode d'Euler implicite est donc le plan complexe privé du cercle unité fermé centré en 1.
     En particulier, le demi-plan complexe des nombres à partie réelle négative est inclus dans le domaine de stabilité, et donc cette méthode est A-stable.
