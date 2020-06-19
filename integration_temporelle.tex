@@ -253,5 +253,17 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
 
     \paragraph{}
     Si ces méthodes sont bien plus coûteuses que leur équivalents explicites, elle possèdent de meilleures propriétés de stabilité.
-    Appliqué à l'équation (\ref{eq:stab}), on a :
-    \[y_{n+1} = y_n + \Delta t \sum_{i = 1}^kb_iF\left(W\left(t_{n,i}\right)\right)\]
+    On applique la méthode à l'équation (\ref{eq:stab}).
+    Pour simplifier l'étude, on se place dans le cas scalaire ou de manière équivalente sur une direction propre de $J$ associée à la valeur propre $\alpha$.
+    On a alors :
+    \[y_{n+1} = y_n + \Delta t\alpha \sum_{i = 1}^k b_iy_{n,i}\]
+    et pour $1\leq i\leq k$ :
+    \[y_{n,i} = y_n + \Delta t\alpha \sum_{j = 1}^k a_{ij}y_{n,j}\]
+    En notant $y = \transpose{\left(y_{n,1}, \dots, y_{n,k}\right)}$ et $e = \transpose{\left(1, \dots, 1\right)}$, on a que :
+    \begin{align*}
+      y &= y_ne + \Delta t\alpha Ay \\
+      \Rightarrow y &= y_n\left(\operatorname{Id} - \Delta t\alpha A\right)^{-1}e
+    \end{align*}
+    Ainsi :
+    \[y_{n+1} = \left(1 + \Delta t\alpha\transpose{b}\left(\operatorname{Id} - \Delta t\alpha A\right)^{-1}e\right)y_n\]
+    On peut donc clairement identifier la fonction $G$ : $z \mapsto 1 + z\transpose{b}\left(\operatorname{Id} - zA\right)^{-1}e$.
