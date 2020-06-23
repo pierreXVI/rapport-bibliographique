@@ -117,6 +117,15 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     \[\int_0^1F\left(W\left(t_n + s\Delta t\right)\right)\mathrm{d}s \approx \sum_{i = 1}^kb_iF\left(W\left(t_{n,i}\right)\right)\ .\]
 
     \paragraph{}
+    En résumé, en notant les étapes de calcul $W_{n,i} \approx W\left(t_{n,i}\right)$, une méthode de Runge-Kutta réalise une itération de la manière suivante :
+    \begin{equation}\label{eq:rk}
+      \left\{\begin{aligned}
+        W_{n+1} &= W_n + \Delta t\sum_{i = 1}^kb_iF\left(W_{n,i}\right) \\
+        \;\textrm{avec}\quad W_{n,i} &= W_n + \Delta t\sum_{j = 1}^{i-1}a_{ij}F\left(W_{n,j}\right)
+      \end{aligned}\right.\ .
+    \end{equation}
+
+    \paragraph{}
     Une méthode de Runge-Kutta est donc caractérisée par sa taille $k$ et par les valeurs $a_{ij, 1\leq j<i\leq k}$, $b_{i, 1\leq i\leq k}$ et $c_{i, 1\leq i\leq k}$.
     Ces valeurs de quadrature sont souvent représentées dans le tableau de Butcher :
     \[
@@ -133,6 +142,8 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
       b_1    & b_2    & \hdots & b_{k-1} & b_k
     \end{array}
     \ .\]
+
+    \PS{Pour la théorie, voir "Sur l'approximation des équations différentielles opérationnelles linéaires par des méthodes de Runge-Kutta", Crouzeix, 1975.}
 
     On rappelle ci-dessous les tableau de Butcher des méthodes les plus connues.
     \begin{table*}[h]\begin{tabular}{P{.15\textwidth}P{.3\textwidth}P{.4\textwidth}}
@@ -198,7 +209,7 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     \paragraph{}
     Les méthodes d'Adams-Bashforth, et plus généralement les méthodes multi-pas, ne rentrent pas dans le cadre d'étude de la stabilité présenté précédemment.
     L'analyse de leur stabilité est plus complexe, \cite{HairerWanner1996} \PS{cter également "Solving ordinary differential equations I: Nonstiff problems"} et ne sera donc pas détaillé ici.
-    Cependant, on constate que la stabilité de ces méthode est en général de l'ordre des méthodes de Runge-Kutta.
+    Cependant, on constate que la stabilité de ces méthode est en général similaire à celle des méthodes de Runge-Kutta.
     De manière générale, il n'existe pas de méthodes multi-pas explicites qui sont A-stables.
 
 
@@ -239,6 +250,16 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     Les méthodes de Runge-Kutta ont elles aussi leur équivalent implicite.
     La différence avec la version explicite est qu'à chaque étape, la quadrature de l'intégrale est approchée par l'ensemble des étapes intermédiaires :
     \[\int_0^{c_i}F\left(W\left(t_n + s\Delta t\right)\right)\mathrm{d}s \approx \sum_{j = 1}^ka_{ij}F\left(W\left(t_{n,j}\right)\right)\ .\]
+
+    \paragraph{}
+    La méthode de Runge-Kutta implicite réalise l'itération suivante :
+    \begin{equation}\label{eq:rk_impl}
+      \left\{\begin{aligned}
+        W_{n+1} &= W_n + \Delta t\sum_{i = 1}^kb_iF\left(W_{n,i}\right) \\
+        \;\textrm{avec}\quad W_{n,i} &= W_n + \Delta t \sum_{j = 1}^ka_{ij}F\left(W_{n,j}\right)
+      \end{aligned}\right.\ .
+    \end{equation}
+    Par rapport à la méthode classique (\ref{eq:rk}), on voit que toutes les étapes de calcul interviennent lorsqu'on veut en calculer une.
     Ainsi, pour chaque étape de la méthode Runge-Kutta implicite, on est amené à résoudre une équation non linéaire.
     Le surcoût de chaque itération est alors non négligeable.
 
@@ -252,6 +273,13 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     On comprend donc pourquoi ces méthodes sont particulièrement coûteuses d'un point de vue numérique.
 
     \paragraph{}
+    Malgré leur coût, les méthodes de Runge-Kutta implicites séduisent la communauté numérique.
+    La principale raison est qu'elles permettent d'atteindre un ordre élevé.
+    Par exemple, les méthodes basées sur des quadratures de Gauss-Legendre de taille $k$ ont un ordre $2k$.
+    On peut même en théorie atteindre un ordre arbitrairement grand.
+    \PS{citer Iserles, Arieh (1996), A First Course in the Numerical Analysis of Differential Equations ou enlever.}
+
+    \paragraph{}
     Si ces méthodes sont bien plus coûteuses que leur équivalents explicites, elle possèdent de meilleures propriétés de stabilité.
     On applique la méthode à l'équation (\ref{eq:stab}).
     Pour simplifier l'étude, on se place dans le cas scalaire ou de manière équivalente sur une direction propre de $J$ associée à la valeur propre $\alpha$.
@@ -263,7 +291,53 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     \begin{align*}
       y &= y_ne + \Delta t\alpha Ay \\
       \Rightarrow y &= y_n\left(\operatorname{Id} - \Delta t\alpha A\right)^{-1}e\ .
-    \end{align*}
+    \end{align*}    Ainsi, pour chaque étape de la méthode Runge-Kutta implicite, on est amené à résoudre une équation non linéaire.
+
     Ainsi :
     \[y_{n+1} = \left(1 + \Delta t\alpha\transpose{b}\left(\operatorname{Id} - \Delta t\alpha A\right)^{-1}e\right)y_n\ .\]
     On peut donc clairement identifier la fonction $G$ : $z \mapsto 1 + z\transpose{b}\left(\operatorname{Id} - zA\right)^{-1}e$.
+
+    \paragraph{}
+    Il existe donc un grand nombre de méthodes de Runge-Kutta implicites, car tout comme pour les méthodes explicites il existe un grand nombre de quadratures possibles.
+    Cependant, certaines méthodes sont plus utilisées que d'autres.
+
+    \subsubsection{DIRK}
+
+      \paragraph{}
+      Les méthodes DIRK, ou Diagonally Implicit Runge-Kutta methods, consistent à prendre la matrice $A$ du tableau de Butcher comme étant triangulaire inférieure.
+      Ainsi, seul les termes $a_{ii}$ sur la diagonale de $A$ donnent le caractère implicite à la méthode.
+      À chaque itération, plutôt que de résoudre simultanément $k$ équations implicites de taille $N$ et non-linéaires, on propose ici de les résoudre successivement.
+      L'équation (\ref{eq:rk_impl}) donnant l'intermédiaire de calcul devient :
+      \begin{equation}\label{eq:rk_dirk}
+        W_{n,i} = W_n + \Delta t\sum_{j = 1}^{i-1}a_{ij}F\left(W_{n,j}\right) + \Delta ta_{ii}F\left(W_{n,i}\right)
+      \end{equation}
+
+      \paragraph{}
+      En général, on résout une équation implicite en la linéarisant pour se ramener à la résolution d'un système matriciel.
+      Dans ce cas, la matrice à inverser à l'étape $i$ est : $\operatorname{Id} - \Delta ta_{ii}\frac{\partial F}{\partial W}$.
+      On remarque alors que si les $a_{ii}$ sont tous égaux, alors la matrice à inverser est la même pour chaque étape de la méthode.
+      En pratique, c'est un gros avantage car on peut alors factoriser la matrice une seule fois pour l'inverser à chaque étape.
+      Ce genre de méthodes sont désignées comme étant les méthodes DIRK \cite{Alexander1977}.
+
+    \subsubsection{Méthodes de Rosenbrock}
+
+      \paragraph{}
+      Les méthodes de Rosenbrock sont également appelées "linearly implicit Runge-Kutta methods".
+      Le principe est le suivant.
+      On part d'une méthode DIRK.
+      En prenant l'image par $F$ de l'équation (\ref{eq:rk_dirk}), puis en linéarisant autour de $g_i = W_n + \Delta t\sum_{j = 1}^{i-1}a_{ij}F_{n,j}$, on cherche $F_{n,i} \approx F\left(W_{n,i}\right)$ sous la forme :
+      \[F_{n,i} = F\left(g_i\right) + \Delta ta_{ii}\frac{\partial F}{\partial W}\left(g_i\right)F_{n,i}\ .\]
+      Pour ne pas calculer la jacobienne de $F$ à chaque étape, on prendra $\frac{\partial F}{\partial W}\left(g_i\right) = \frac{\partial F}{\partial W}\left(W_n\right) = F'$.
+      En pratique, pour permettre plus de liberté dans le choix de la méthode de Rosenbrock, on remplacera le terme $a_{ii}F'F_{n,i}$ par $F'\sum_{j=1}^i\gamma_jF_{n,j}$.
+      La méthode est donc :
+      \begin{equation}\label{eq:rk_rosenbrock}
+        \left\{\begin{aligned}
+          W_{n+1} &= W_n + \Delta t\sum_{i = 1}^kb_iF_{n,i} \\
+          \;\textrm{avec}\quad F_{n,i} &= F\left(W_n + \Delta t\sum_{j = 1}^{i-1}a_{ij}F_{n,j}\right) + \Delta tF'\sum_{j=1}^i\gamma_jF_{n,j}
+        \end{aligned}\right.\ .
+      \end{equation}
+
+      \paragraph{}
+      Une méthode de Rosenbrock est donc identifiée par les coefficients $a_{ij, 1\leq j<i\leq k}$, $b_{i, 1\leq i\leq k}$ et $\gamma_{ij, 1\leq j\leq i\leq k}$.
+      Pour inverser toujours la même matrice dans une étape, on veillera a prendre les $\gamma_{ii} = \gamma$ égaux entre eux.
+      On inverse donc à chaque étape la matrice $\operatorname{Id} - \Delta t\gamma F'$, et pour cela on ne réalise qu'une unique factorisation par itération de la méthode.
