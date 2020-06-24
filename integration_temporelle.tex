@@ -72,6 +72,8 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     La propriété clef découlant de cette étude de stabilité est la "A-stabilité" \cite{Dahlquist1963}.
     Une méthode d'intégration temporelle est dite A-stable si son domaine de stabilité inclut le demi-plan des complexe à partie réelle négative.
     Autrement dit, une méthode est A-stable si elle converge bien vers 0 lorsqu'elle le devrait, et ne fait donc pas diverger l'erreur numérique.
+    La propriété de A-stabilité nous intéresse beaucoup, car on dit d'une méthode A-stable qu'elle est inconditionnellement stable, alors qu'une méthode qui ne l'est pas est conditionnellement stable.
+    Cette appellation signifie qu'une méthode non A-stable nécessite de respecter certains critères, notamment sur le pas de temps, pour qu'elle soit stable, alors qu'une méthode A-stable reste stable quelque soit le pas de temps.
 
 
 \section{Méthodes explicites}
