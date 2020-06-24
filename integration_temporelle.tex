@@ -413,3 +413,35 @@ En effet, comme nous le disions au début, nous cherchons à intégrer une équa
 Ainsi, une méthode explicite et ses contraintes sur le pas de temps ne serait pas adaptée.
 Si ces méthodes sont en général bien moins coûteuse au niveau informatique, les méthodes implicites restent le meilleur choix pour nos problèmes raides.
 Il est souvent plus rentable d'effectuer une unique itération, coûteuse mais sur un grand pas de temps, d'une méthode implicite, que d'effectuer tout un ensemble d'itérations, peu coûteuses mais sur un petit pas de temps, d'une méthode explicite.
+
+
+\section{Étapes du calcul}
+
+	\paragraph{}
+	Nous cherchons à résoudre l'équation (\ref{eq:edo}) en utilisant une méthode d'intégration numérique de type implicite.
+  Pour ces méthodes, on recherche l'état, ou de manière équivalente l'incrément de l'état $\Delta W = W_{n+1} - W_n$, en l'exprimant comme le zéro d'une fonction.
+  Par exemple, pour la méthode d'Euler appliquée à (\ref{eq:edo}), on cherche à chaque itération le zéro de $\delta W \mapsto \delta W - \Delta t F\left(W_n + \delta W\right)$.
+	En notant $G$ cette fonction, on obtient l'équation non-linéaire :
+	\begin{equation}\label{eq:non_linear}
+		G\left(\delta W\right) = 0
+	\end{equation}
+	Nous allons donc devoir résoudre une équation non-linéaire à chaque itération.
+  On remarque en fait que pour toutes les méthodes d'intégration implicite on a besoin de résoudre une ou plusieurs équations non-linéaires de la forme de l'équation (\ref{eq:non_linear}).
+  C'est pour cela que dans le développement d'un code de CFD, il est important de pouvoir résoudre de telles équations.
+
+	\paragraph{}
+	Pour résoudre l'équation (\ref{eq:non_linear}), on utilise par exemple la méthode de Newton.
+	On part d'une valeur initiale de l'incrément $\delta W_0 = 0$, mais on peut envisager de prendre d'autres valeurs, comme $\Delta t F\left(W_n\right)$ qui est l'incrément donné par la méthode d'Euler explicite.
+	On va ensuite itérer pour trouver le zéro de $G$.
+	La linéarisation à l'ordre 1 de l'équation (\ref{eq:non_linear}) s'écrit :
+	\[\left(\operatorname{Id} - \Delta t\frac{\partial F}{\partial W}\left(W_n\right)\right)\delta W -\Delta t F\left(W_n\right) = 0\ .\]
+	On exprime alors l'incrément $\delta W$ comme étant la solution d'un système linéaire :
+	\begin{equation}\label{eq:linear}
+		A\delta W = b
+	\end{equation}
+	avec la matrice $A = \operatorname{Id} - \Delta t\frac{\partial F}{\partial W}\left(W_n\right)$ et le second membre $b = \Delta t f\left(W_n\right)$.
+	La méthode de Newton consiste ensuite à répéter le calcul précédent, pour faire converger la valeur de $\delta W$.
+
+	\paragraph{}
+	Pour toutes les méthodes d'intégration temporelles implicites, on retrouve la même idée : pour chaque itération de la méthode, on résout une ou plusieurs équation non-linéaire (\ref{eq:non_linear}), en résolvant un ou plusieurs systèmes linéaires (\ref{eq:linear}).
+	Les performances d'un code de calcul sont donc très étroitement liées à sa capacité à résoudre efficacement ces systèmes linéaires.
