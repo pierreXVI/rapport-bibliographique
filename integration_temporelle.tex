@@ -44,29 +44,46 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     C'est donc avec cette équation, également appelée équation de Dahlquist, que l'on étudie la stabilité de la méthode.
     Nous l'étudions dans $\mathbb{C}$.
 
-    \paragraph{}
-    Pour une méthode d'intégration donnée, on note :
-    \begin{equation}\label{eq:stab_req}
-      y_{n+1} = G\left(\Delta tJ\right)y_n
-    \end{equation}
-    la relation qui donne l'état suivant en fonction de l'état actuel.
-    Pour la plupart des méthodes d'intégration temporelle, et en particulier pour les méthodes de Runge-Kutta présentées ici, on peut se ramener à cette écriture avec $G$ une fonction analytique.
-    On peut choisir une base de vecteurs propres de $J$ $v_1, \dots, v_N$ associés aux valeurs propres $\alpha_1, \dots, \alpha_N$.
-    Si on décompose l'itéré initial sur cette base, c'est à dire $y_0 = \sum_{i=1}^N\lambda_iv_i$, on voit que puisque $G$ est une fonction analytique :
-    \[y_n = \sum_{i=1}^N\lambda_iG\left(\Delta t\alpha_i\right)^nv_i\ .\]
 
-    \paragraph{}
-    Il découle de l'équation précédente que si $G\left(\Delta t\alpha_i\right)^n$, alors $y_n$ tend vers 0.
-    C'est ainsi qu'on définit le domaine de stabilité d'une méthode d'intégration temporelle :
-    \[\left\{\,z\in\mathbb{C}\;\mid\;\left|G\left(z\right)\right| < 1\,\right\}\ .\]
-    Si toutes les valeurs propres de $J$ sont à partie réelle négatives, alors la solution de l'équation (\ref{eq:stab}) converge vers 0.
-    On comprend alors tout de suite que pour que l'algorithme soit stable, il faut que les valeurs propres de $J$ soient toutes dans le domaine de stabilité de la méthode.
+    \subsubsection{Méthodes mono-pas}
 
-    \paragraph{}
-    On remarque que l'argument de $G$ n'est pas $J$ mais $\Delta tJ$.
-    Si une valeur propre $\Delta t\alpha_i$ de $\Delta tJ$ n'est pas dans le domaine de stabilité de la méthode, la direction propre associée sera amplifiée et une instabilité d'origine numérique entraînera la divergence du calcul.
-    On va donc jouer sur la valeur de $\Delta t$ : en la prenant assez faible, on arrivera à faire rentrer toutes les valeurs propres dans le domaine de stabilité, et donc à garantir la stabilité du calcul.
-    Cependant, comme nous le verrons par la suite, cela impose l'utilisation de pas de temps relativement faible, ce qui s'avère contraignant pour nos application.
+      \paragraph{}
+      Pour une méthode d'intégration donnée, on note :
+      \begin{equation}\label{eq:stab_req}
+        y_{n+1} = G\left(\Delta tJ\right)y_n
+      \end{equation}
+      la relation qui donne l'état suivant en fonction de l'état actuel.
+      Pour la plupart des méthodes d'intégration temporelle, et en particulier pour les méthodes de Runge-Kutta présentées ici, on peut se ramener à cette écriture avec $G$ une fonction analytique.
+      On peut choisir une base de vecteurs propres de $J$ $v_1, \dots, v_N$ associés aux valeurs propres $\alpha_1, \dots, \alpha_N$.
+      Si on décompose l'itéré initial sur cette base, c'est à dire $y_0 = \sum_{i=1}^N\lambda_iv_i$, on voit que puisque $G$ est une fonction analytique :
+      \[y_n = \sum_{i=1}^N\lambda_iG\left(\Delta t\alpha_i\right)^nv_i\ .\]
+
+      \paragraph{}
+      Il découle de l'équation précédente que si $G\left(\Delta t\alpha_i\right)^n$, alors $y_n$ tend vers 0.
+      C'est ainsi qu'on définit le domaine de stabilité d'une méthode d'intégration temporelle :
+      \[\left\{\,z\in\mathbb{C}\;\mid\;\left|G\left(z\right)\right| < 1\,\right\}\ .\]
+      Si toutes les valeurs propres de $J$ sont à partie réelle négatives, alors la solution de l'équation (\ref{eq:stab}) converge vers 0.
+      On comprend alors tout de suite que pour que l'algorithme soit stable, il faut que les valeurs propres de $J$ soient toutes dans le domaine de stabilité de la méthode.
+
+      \paragraph{}
+      On remarque que l'argument de $G$ n'est pas $J$ mais $\Delta tJ$.
+      Si une valeur propre $\Delta t\alpha_i$ de $\Delta tJ$ n'est pas dans le domaine de stabilité de la méthode, la direction propre associée sera amplifiée et une instabilité d'origine numérique entraînera la divergence du calcul.
+      On va donc jouer sur la valeur de $\Delta t$ : en la prenant assez faible, on arrivera à faire rentrer toutes les valeurs propres dans le domaine de stabilité, et donc à garantir la stabilité du calcul.
+      Cependant, comme nous le verrons par la suite, cela impose l'utilisation de pas de temps relativement faible, ce qui s'avère contraignant pour nos application.
+
+    \subsubsection{Méthodes multi-pas}
+
+      \paragraph{}
+      Certaines méthodes présentées par la suite ne rentrent pas dans le cadre précédent.
+      En particulier, les méthodes multi-pas qui seront introduites par la suite ne peuvent pas se réécrire sous la forme (\ref{eq:stab_req}).
+      Ces méthodes utilisent les valeurs $y_n, \dots, y_{n-k+1}$ pour trouver $y_{n+1}$.
+      Puisque les méthodes présentées par la suite sont linéaires, elles peuvent cependant s'écrire sous la forme :
+      \[y_{n+1} = \sum_{i=1}^kg_{k-i}\left(z\right)y_{n+1-i}\ .\]
+      On cherche ensuite les $y_{n+1-i}$ sous la forme $\mu^{k-i}$ et on identifie alors le polynôme $G_z\left(\mu\right) = \mu^k - \sum_{i=0}^{k-1}g_i\left(z\right)\mu^i$.
+      Si les racines de ce polynôme sont toutes de module plus petit que 1, alors la solution converge vers 0.
+      On définit ainsi le domaine de stabilité d'une méthode multi-pas \cite{HairerWanner1996} :
+      \[\left\{\,z\in\mathbb{C}\;\mid\;\textrm{les racines $\xi$ de $G_z$ vérifient $\left|\xi\right| \leq 1$, les racines doubles vérifient $\left|\xi\right| < 1$}\,\right\}\ .\]
+
 
     \paragraph{}
     La propriété clef découlant de cette étude de stabilité est la "A-stabilité" \cite{Dahlquist1963}.
@@ -211,7 +228,7 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     \paragraph{}
     Les méthodes d'Adams-Bashforth, et plus généralement les méthodes multi-pas, ne rentrent pas dans le cadre d'étude de la stabilité présenté précédemment.
     L'analyse de leur stabilité est plus complexe, \cite{HairerWanner1996} \PS{cter également "Solving ordinary differential equations I: Nonstiff problems"} et ne sera donc pas détaillé ici.
-    Cependant, on constate que la stabilité de ces méthode est en général similaire à celle des méthodes de Runge-Kutta.
+    Cependant, on constate que la stabilité de ces méthode décroît avec l'ordre, et qu'elles ne sont pas adaptées pour les problèmes raides que l'on cherche à résoudre.
     De manière générale, il n'existe pas de méthodes multi-pas explicites qui sont A-stables.
 
 
@@ -343,3 +360,30 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
       Une méthode de Rosenbrock est donc identifiée par les coefficients $a_{ij, 1\leq j<i\leq k}$, $b_{i, 1\leq i\leq k}$ et $\gamma_{ij, 1\leq j\leq i\leq k}$.
       Pour inverser toujours la même matrice dans une étape, on veillera a prendre les $\gamma_{ii} = \gamma$ égaux entre eux.
       On inverse donc à chaque étape la matrice $\operatorname{Id} - \Delta t\gamma F'$, et pour cela on ne réalise qu'une unique factorisation par itération de la méthode.
+
+
+  \subsection{Méthodes BDF}
+
+  \paragraph{}
+  Les méthodes BDF (Backward Differentiation Formula) sont des méthodes implicites de type multi-pas.
+  Pour une méthode d'indice $k$, on dispose des valeurs de la solution $W_{n-k+1}, \dots, W_n$, calculées en $t_{n-k+1}, \dots, t_n$.
+  On forme alors le polynôme $p$ de degré $k$ qui est l'interpolation de Lagrange en les points $\left(\left(t_{n-k+1}, W_{n-k+1}\right), \dots, \left(t_n, W_n\right), \left(t_{n+1}, W_{n+1}\right)\right)$.
+  Le principe de la méthode d'évaluer (\ref{eq:edo}) en $t_{n+1}$, en remplaçant $\frac{\mathrm{d}W}{\mathrm{d}t}\left(t_{n+1}\right)$ par $p'\left(t_{n+1}\right)$ et $W\left(t_{n+1}\right)$ par $W_{n+1}$.
+  En utilisant la formule de l'interpolation de Lagrange, et le fait que $t_i = t_0 + i\Delta t$, on peut exprimer analytiquement la méthode BDF :
+  \[\left(\sum_{i=1}^k\frac{1}{i}\right)W_{n+1} + \sum_{i=1}^k\frac{\left(-1\right)^i}{i}\binom{k}{i}W_{n-i} = \Delta tF\left(W_{n+1}\right)\ .\]
+
+  \paragraph{}
+  Le nom de cette méthode vient du fait qu'on peut la reformuler en utilisant la différenciation vers l'arrière (backward differenciation).
+  En définissant par récurrence l'opérateur de différenciation $\nabla^0W_i = W_i$ et $\nabla^j+1W_i = \nabla^jW_i - \nabla^jW_{i-1}$, on peut alors réécrire la méthode BDF sous la forme :
+  \[\sum_{i=1}^k\frac{1}{i}\nabla^iW_{n+1} = \Delta tF\left(W_{n+1}\right)\ .\]
+
+  \paragraph{}
+  Comme pour les méthodes d'Adams-Bashforth et les autres méthodes multi-pas, l'analyse de stabilité est un peu plus complexe qu'avec les méthodes mono-pas.
+  % Cependant, les domaines de stabilité des méthodes BDF sont satisfaisants, comme on peut le voir sur la figure \ref{fig:bdf_stab}.
+  %
+  % \begin{figure}
+  %   \centering
+  %   \includegraphics{images/bdf_stab.png}
+  %   \caption{Domaines de stabilité des méthodes BDF.}
+  %   \label{fig:bdf_stab}
+  % \end{figure}
