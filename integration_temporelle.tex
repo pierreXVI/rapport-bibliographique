@@ -234,7 +234,6 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
       \label{fig:ab_stab}
     \end{figure}
 
-
     \paragraph{}
     L'analyse de la stabilité des méthodes d'Adams-Bashforth est plus complexe, \cite{HairerWanner1996} \PS{citer également "Solving ordinary differential equations I: Nonstiff problems"} et le développement des calculs ne sera donc pas détaillé ici.
     On peut toutefois tracer numériquement les domaines de stabilité des premières méthodes sur la figure \ref{fig:ab_stab}.
@@ -375,34 +374,42 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
 
   \subsection{Méthodes BDF}
 
-  \paragraph{}
-  Les méthodes BDF (Backward Differentiation Formula) sont des méthodes implicites de type multi-pas.
-  Pour une méthode d'indice $k$, on dispose des valeurs de la solution $W_{n-k+1}, \dots, W_n$, calculées en $t_{n-k+1}, \dots, t_n$.
-  On forme alors le polynôme $p$ de degré $k$ qui est l'interpolation de Lagrange en les points $\left(\left(t_{n-k+1}, W_{n-k+1}\right), \dots, \left(t_n, W_n\right), \left(t_{n+1}, W_{n+1}\right)\right)$.
-  Le principe de la méthode d'évaluer (\ref{eq:edo}) en $t_{n+1}$, en remplaçant $\frac{\mathrm{d}W}{\mathrm{d}t}\left(t_{n+1}\right)$ par $p'\left(t_{n+1}\right)$ et $W\left(t_{n+1}\right)$ par $W_{n+1}$.
-  En utilisant la formule de l'interpolation de Lagrange, et le fait que $t_i = t_0 + i\Delta t$, on peut exprimer analytiquement la méthode BDF :
-  \[\left(\sum_{i=1}^k\frac{1}{i}\right)W_{n+1} + \sum_{i=1}^k\frac{\left(-1\right)^i}{i}\binom{k}{i}W_{n-i} = \Delta tF\left(W_{n+1}\right)\ .\]
+    \paragraph{}
+    Les méthodes BDF (Backward Differentiation Formula) sont des méthodes implicites de type multi-pas.
+    Pour une méthode d'indice $k$, on dispose des valeurs de la solution $W_{n-k+1}, \dots, W_n$, calculées en $t_{n-k+1}, \dots, t_n$.
+    On forme alors le polynôme $p$ de degré $k$ qui est l'interpolation de Lagrange en les points $\left(\left(t_{n-k+1}, W_{n-k+1}\right), \dots, \left(t_n, W_n\right), \left(t_{n+1}, W_{n+1}\right)\right)$.
+    Le principe de la méthode d'évaluer (\ref{eq:edo}) en $t_{n+1}$, en remplaçant $\frac{\mathrm{d}W}{\mathrm{d}t}\left(t_{n+1}\right)$ par $p'\left(t_{n+1}\right)$ et $W\left(t_{n+1}\right)$ par $W_{n+1}$.
+    En utilisant la formule de l'interpolation de Lagrange, et le fait que $t_i = t_0 + i\Delta t$, on peut exprimer analytiquement la méthode BDF :
+    \[\left(\sum_{i=1}^k\frac{1}{i}\right)W_{n+1} + \sum_{i=1}^k\frac{\left(-1\right)^i}{i}\binom{k}{i}W_{n-i} = \Delta tF\left(W_{n+1}\right)\ .\]
 
-  \paragraph{}
-  Le nom de cette méthode vient du fait qu'on peut la reformuler en utilisant la différenciation vers l'arrière (backward differenciation).
-  En définissant par récurrence l'opérateur de différenciation $\nabla^0W_i = W_i$ et $\nabla^j+1W_i = \nabla^jW_i - \nabla^jW_{i-1}$, on peut alors réécrire la méthode BDF sous la forme :
-  \[\sum_{i=1}^k\frac{1}{i}\nabla^iW_{n+1} = \Delta tF\left(W_{n+1}\right)\ .\]
+    \paragraph{}
+    Le nom de cette méthode vient du fait qu'on peut la reformuler en utilisant la différenciation vers l'arrière (backward differenciation).
+    En définissant par récurrence l'opérateur de différenciation $\nabla^0W_i = W_i$ et $\nabla^j+1W_i = \nabla^jW_i - \nabla^jW_{i-1}$, on peut alors réécrire la méthode BDF sous la forme :
+    \[\sum_{i=1}^k\frac{1}{i}\nabla^iW_{n+1} = \Delta tF\left(W_{n+1}\right)\ .\]
 
-  \paragraph{}
-  L'analyse de stabilité des méthodes BDF est réalisée numériquement.
-  Les domaines de stabilité obtenus sont satisfaisants, comme on peut le voir sur la figure \ref{fig:bdf_stab}.
-  En particulier, on observe que les méthodes d'indice 1 et 2 sont A-stables.
+    \paragraph{}
+    L'analyse de stabilité des méthodes BDF est réalisée numériquement.
+    Les domaines de stabilité obtenus sont satisfaisants, comme on peut le voir sur la figure \ref{fig:bdf_stab}.
+    En particulier, on observe que les méthodes d'indice 1 et 2 sont A-stables.
 
-  \begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{images/bdf_stab.png}
-    \caption{Domaines de stabilité (en couleur) des méthodes BDF.}
-    \label{fig:bdf_stab}
-  \end{figure}
+    \begin{figure}
+      \centering
+      \includegraphics[width=\textwidth]{images/bdf_stab.png}
+      \caption{Domaines de stabilité (en couleur) des méthodes BDF.}
+      \label{fig:bdf_stab}
+    \end{figure}
 
-  \paragraph{}
-  Pour les méthodes BDF, on montre que l'indice de la méthode est égal à l'ordre.
-  Ces méthodes permettent donc d'atteindre un ordre voulu dans entraîner une trop grosse complexité algorithmique.
-  En effet, l'équation implicite n'est pas plus difficile à résoudre lorsqu'on monte en ordre.
-  Cependant, il n'est pas possible de prendre un ordre aussi élevé qu'on ne le souhaite : les méthodes BDF d'ordre supérieur à 6 sont intrinsèquement instables.
-  De manière générale, les méthodes multi-pas ne peuvent pas être A-stable avec un ordre supérieur à 2 \cite{HairerWanner1996}.
+    \paragraph{}
+    Pour les méthodes BDF, on montre que l'indice de la méthode est égal à l'ordre.
+    Ces méthodes permettent donc d'atteindre un ordre voulu dans entraîner une trop grosse complexité algorithmique.
+    En effet, l'équation implicite n'est pas plus difficile à résoudre lorsqu'on monte en ordre.
+    Cependant, il n'est pas possible de prendre un ordre aussi élevé qu'on ne le souhaite : les méthodes BDF d'ordre supérieur à 6 sont intrinsèquement instables.
+    De manière générale, les méthodes multi-pas ne peuvent pas être A-stable avec un ordre supérieur à 2 \cite{HairerWanner1996}.
+
+
+\paragraph{}
+Cette étude des méthodes d'intégration classiques permet d'orienter le domaine de recherche.
+En effet, comme nous le disions au début, nous cherchons à intégrer une équation différentielle ordinaire afin d'obtenir la valeur de l'état après un temps long.
+Ainsi, une méthode explicite et ses contraintes sur le pas de temps ne serait pas adaptée.
+Si ces méthodes sont en général bien moins coûteuse au niveau informatique, les méthodes implicites restent le meilleur choix pour nos problèmes raides.
+Il est souvent plus rentable d'effectuer une unique itération, coûteuse mais sur un grand pas de temps, d'une méthode implicite, que d'effectuer tout un ensemble d'itérations, peu coûteuses mais sur un petit pas de temps, d'une méthode explicite.
