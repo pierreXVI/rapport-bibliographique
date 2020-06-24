@@ -164,8 +164,7 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
 
     \PS{Pour la théorie, voir "Sur l'approximation des équations différentielles opérationnelles linéaires par des méthodes de Runge-Kutta", Crouzeix, 1975.}
 
-    On rappelle ci-dessous les tableau de Butcher des méthodes les plus connues.
-    \begin{table*}[h]\begin{tabular}{P{.15\textwidth}P{.3\textwidth}P{.4\textwidth}}
+    \begin{table}\begin{tabular}{P{.15\textwidth}P{.3\textwidth}P{.4\textwidth}}
       \begin{tabular}{c|c}
         0 \RKBar 1
       \end{tabular} &
@@ -176,9 +175,10 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
         0 \\ 1/2 & 1/2 \\ 1/2 & 0 & 1/2 \\ 1 & 0 & 0 & 1 \RKBar 1/6 & 1/3 & 1/3 & 1/6
       \end{tabular} \\
       RK1 & RK2 & RK4 \\
-    \end{tabular}\end{table*}
+    \end{tabular}\caption{}\label{tab:rk_butcher}\end{table}
 
     \paragraph{}
+    On rappelle dans la table \ref{tab:rk_butcher} les tableau de Butcher des méthodes les plus connues.
     La méthode RK1 est équivalente à la méthode Euler explicite présentée précédemment.
     Cette méthode RK2 est également appelée méthode du point milieu.
     Cette méthode RK4 est d'ordre 4, et est l'une des plus utilisées pour l'intégration explicite des équations différentielles.
@@ -226,8 +226,7 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     Cependant, les propriétés de stabilité de ces méthodes sont moindres, ce qui explique le fait qu'elles ne sont pas souvent utilisées en pratique dans des codes de calcul pour la dynamique des fluides.
 
     \paragraph{}
-    Les méthodes d'Adams-Bashforth, et plus généralement les méthodes multi-pas, ne rentrent pas dans le cadre d'étude de la stabilité présenté précédemment.
-    L'analyse de leur stabilité est plus complexe, \cite{HairerWanner1996} \PS{cter également "Solving ordinary differential equations I: Nonstiff problems"} et ne sera donc pas détaillé ici.
+    L'analyse de la stabilité des méthodes d'Adams-Bashforth est plus complexe, \cite{HairerWanner1996} \PS{citer également "Solving ordinary differential equations I: Nonstiff problems"} et ne sera donc pas détaillé ici.
     Cependant, on constate que la stabilité de ces méthode décroît avec l'ordre, et qu'elles ne sont pas adaptées pour les problèmes raides que l'on cherche à résoudre.
     De manière générale, il n'existe pas de méthodes multi-pas explicites qui sont A-stables.
 
@@ -378,12 +377,20 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
   \[\sum_{i=1}^k\frac{1}{i}\nabla^iW_{n+1} = \Delta tF\left(W_{n+1}\right)\ .\]
 
   \paragraph{}
-  Comme pour les méthodes d'Adams-Bashforth et les autres méthodes multi-pas, l'analyse de stabilité est un peu plus complexe qu'avec les méthodes mono-pas.
-  % Cependant, les domaines de stabilité des méthodes BDF sont satisfaisants, comme on peut le voir sur la figure \ref{fig:bdf_stab}.
-  %
-  % \begin{figure}
-  %   \centering
-  %   \includegraphics{images/bdf_stab.png}
-  %   \caption{Domaines de stabilité des méthodes BDF.}
-  %   \label{fig:bdf_stab}
-  % \end{figure}
+  L'analyse de stabilité des méthodes BDF est réalisée numériquement.
+  Les domaines de stabilité obtenus sont satisfaisants, comme on peut le voir sur la figure \ref{fig:bdf_stab}.
+  En particulier, on observe que les méthodes d'indice 1 et 2 sont A-stables.
+
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{images/bdf_stab.png}
+    \caption{Domaines de stabilité (en couleur) des méthodes BDF.}
+    \label{fig:bdf_stab}
+  \end{figure}
+
+  \paragraph{}
+  Pour les méthodes BDF, on montre que l'indice de la méthode est égal à l'ordre.
+  Ces méthodes permettent donc d'atteindre un ordre voulu dans entraîner une trop grosse complexité algorithmique.
+  En effet, l'équation implicite n'est pas plus difficile à résoudre lorsqu'on monte en ordre.
+  Cependant, il n'est pas possible de prendre un ordre aussi élevé qu'on ne le souhaite : les méthodes BDF d'ordre supérieur à 6 sont intrinsèquement instables.
+  De manière générale, les méthodes multi-pas ne peuvent pas être A-stable avec un ordre supérieur à 2 \cite{HairerWanner1996}.
