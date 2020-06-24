@@ -79,7 +79,9 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
       Ces méthodes utilisent les valeurs $y_n, \dots, y_{n-k+1}$ pour trouver $y_{n+1}$.
       Puisque les méthodes présentées par la suite sont linéaires, elles peuvent cependant s'écrire sous la forme :
       \[y_{n+1} = \sum_{i=1}^kg_{k-i}\left(z\right)y_{n+1-i}\ .\]
-      On cherche ensuite les $y_{n+1-i}$ sous la forme $\mu^{k-i}$ et on identifie alors le polynôme $G_z\left(\mu\right) = \mu^k - \sum_{i=0}^{k-1}g_i\left(z\right)\mu^i$.
+      On cherche ensuite les $y_i$ sous la forme $y_i\propto\mu^{i}$ ce qui donne :
+      \[\mu^k = \sum_{i=1}^kg_{k-i}\left(z\right)\mu^{k-i}\]
+      et qui permet d'identifier le polynôme $G_z\left(\mu\right) = \mu^k - \sum_{i=0}^{k-1}g_i\left(z\right)\mu^i$.
       Si les racines de ce polynôme sont toutes de module plus petit que 1, alors la solution converge vers 0.
       On définit ainsi le domaine de stabilité d'une méthode multi-pas \cite{HairerWanner1996} :
       \[\left\{\,z\in\mathbb{C}\;\mid\;\textrm{les racines $\xi$ de $G_z$ vérifient $\left|\xi\right| \leq 1$, les racines doubles vérifient $\left|\xi\right| < 1$}\,\right\}\ .\]
@@ -225,9 +227,19 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     Le coût de calcul est donc très faible pour de telles méthodes.
     Cependant, les propriétés de stabilité de ces méthodes sont moindres, ce qui explique le fait qu'elles ne sont pas souvent utilisées en pratique dans des codes de calcul pour la dynamique des fluides.
 
+    \begin{figure}
+      \centering
+      \includegraphics[width=.6\textwidth]{images/ab_stab.png}
+      \caption{Domaines de stabilité (en couleur) des méthodes d'Adams-Bashforth pour les quatre premiers ordres.}
+      \label{fig:ab_stab}
+    \end{figure}
+
+
     \paragraph{}
-    L'analyse de la stabilité des méthodes d'Adams-Bashforth est plus complexe, \cite{HairerWanner1996} \PS{citer également "Solving ordinary differential equations I: Nonstiff problems"} et ne sera donc pas détaillé ici.
-    Cependant, on constate que la stabilité de ces méthode décroît avec l'ordre, et qu'elles ne sont pas adaptées pour les problèmes raides que l'on cherche à résoudre.
+    L'analyse de la stabilité des méthodes d'Adams-Bashforth est plus complexe, \cite{HairerWanner1996} \PS{citer également "Solving ordinary differential equations I: Nonstiff problems"} et le développement des calculs ne sera donc pas détaillé ici.
+    On peut toutefois tracer numériquement les domaines de stabilité des premières méthodes sur la figure \ref{fig:ab_stab}.
+    On y constate que la stabilité de ces méthode décroît avec l'ordre, et qu'elles ne sont pas adaptées pour les problèmes raides que l'on cherche à résoudre.
+    La stabilité de ces méthodes s'avère donc décevante.
     De manière générale, il n'existe pas de méthodes multi-pas explicites qui sont A-stables.
 
 

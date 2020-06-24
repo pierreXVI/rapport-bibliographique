@@ -84,5 +84,64 @@ def fig_bdf():
     plt.show()
 
 
+def fig_ab():
+    x_min, x_max = -2.5, .5
+    y_min, y_max = -1.5, 1.5
+    res_x = 500
+    res_y = 500
+
+    x = np.linspace(x_min, x_max, res_x)
+    y = np.linspace(y_min, y_max, res_y)
+    x, y = np.meshgrid(x, y)
+
+    def lbd(i, n):
+        coeff = np.ones(1)
+        for j in range(n):
+            if j == i:
+                continue
+            ai, bi = 1 / (j - i), j / (j - i)
+            new_coeff = np.zeros(len(coeff) + 1)
+            new_coeff[0] = coeff[0] * ai
+            for k in range(1, len(coeff)):
+                new_coeff[k] = coeff[k - 1] * bi + coeff[k] * ai
+            new_coeff[-1] = coeff[-1] * bi
+            coeff = new_coeff
+        val = 0
+        for j in range(len(coeff)):
+            val += coeff[-1 - j] / (j + 1)
+        return val
+
+    def r(k):
+        def sub_r(z):
+            coeff = np.zeros(k + 1, dtype=complex)
+            coeff[0] = 1
+            for i in range(1, k + 1):
+                coeff[i] = -z * lbd(i - 1, k)
+            coeff[1] -= 1
+            return (np.abs(np.roots(coeff)) <= 1).all()
+
+        return np.vectorize(sub_r)
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.set_aspect('equal')
+    for axis in ('left', 'bottom'):
+        ax.spines[axis].set_position('zero')
+        ax.spines[axis].set_linewidth(2)
+    for axis in ('right', 'top'):
+        ax.spines[axis].set_color('none')
+    ax.tick_params(width=2, labelsize=12)
+    ax.yaxis.tick_left()
+    ax.xaxis.tick_bottom()
+    for (i, c) in zip((1, 2, 3, 4), ([.5, .5, .5, 1], [.0, .0, .8, 1], [.0, .8, .0, 1], [.8, .0, .0, 1],)):
+        rk_i = r(i)(x + 1j * y)
+        ax.pcolormesh(x, y, np.ma.masked_array(rk_i, mask=1 - rk_i), cmap=clr.ListedColormap([c]))
+        ax.plot([None], [None], '--', c=c, lw=20, label='RK{0}'.format(i))
+    ax.grid(True, lw=2)
+    ax.legend(fontsize=16, loc='upper left', handletextpad=1, labelspacing=1)
+
+    plt.show()
+
+
 if __name__ == '__main__':
     fig_rk()
