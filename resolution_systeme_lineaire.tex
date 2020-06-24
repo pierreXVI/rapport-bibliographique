@@ -175,8 +175,41 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 		&= \norm{r_0 - V_{n+1}\widetilde{H}_ny_n} \\
 		&= \norm{\norm{r_0} e_1 - \widetilde{H}_ny_n}\qquad\textrm{avec $e_1$ le premier vecteur de la base canonique de $\mathbb{K}^{n+1}$.}
 	\end{align*}
+
+	\paragraph{}
 	La condition de minimisation du résidu est remplie en résolvant un problème de minimisation de taille $n$.
 	En pratique ce problème est résolu par décomposition QR de la matrice de Hessenberg.
+	Pour ce faire, on suppose qu'on dispose d'une décomposition $\Omega_n\widetilde{H}_n = \begin{pmatrix}R_n \\ 0\end{pmatrix}$ avec $\Omega_n\in\orthogroup{n+1}{K}$ une matrice unitaire et $R_n\in\matrixsymb{n}{K}$ une matrice diagonale.
+	La décomposition QR de $\widetilde{H}_n$ à en effet cette forme de par sa structure de Hessenberg.
+	C'est le cas à l'itération 1 avec $\Omega_1 = \operatorname{Id}$ et $R_1 = 1$.
+	On note ensuite :
+	\[\begin{pmatrix}\Omega_n & 0 \\ 0 & 1\end{pmatrix}\widetilde{H}_{n+1} = \begin{pmatrix}R_n & r_{n+1} \\ 0 & \rho \\ 0 & \sigma\end{pmatrix} \quad\textrm{avec}\quad \begin{pmatrix}r_{n+1} \\ \rho\end{pmatrix} = \Omega_n\begin{pmatrix}h_{n,n+1} \\ \vdots \\ h_{n+1,n+1}\end{pmatrix} \quad\textrm{et}\quad \sigma = h_{n+2,n+1}\ .\]
+	On pose ensuite la rotation de Givens :
+	\[G_n = \left\{\begin{aligned}
+		&\quad\operatorname{Id}_{n+2} &\textrm{si }\rho = \sigma = 0\\ \\
+		\begin{pmatrix}\operatorname{Id}_n & 0 & 0 \\ 0 & c & s \\ 0 & -s & c\end{pmatrix}& \quad\textrm{avec}\quad c = \frac{\rho}{\sqrt{\rho^2 + \sigma^2}}, s = \frac{\sigma}{\sqrt{\rho^2 + \sigma^2}} &\quad\textrm{sinon.}
+	\end{aligned}\right.\]
+	On remarque enfin que :
+	\[G_n\begin{pmatrix}\Omega_n & 0 \\ 0 & 1\end{pmatrix}\widetilde{H}_{n+1} = \begin{pmatrix}R_n & r_{n+1} \\ 0 & \sqrt{\rho^2 + \sigma^2} \\ 0 & 0\end{pmatrix}\]
+	ce qui donne la nouvelle décomposition QR : $\Omega_{n+1}\widetilde{H}_{n+1} = \begin{pmatrix}R_{n+1} \\ 0\end{pmatrix}$.
+
+
+	\paragraph{}
+	Finalement, la décomposition QR de la matrice de Hessenberg se construit à mesure des itérations, de manière peu coûteuse.
+	Cette décomposition est cependant très intéressante.
+	Lorsqu'on cherche à minimiser le résidu, on à montré précédemment qu'on minimise :
+	\begin{align*}
+		\norm{r_n} &= \norm{\norm{r_0} e_1 - \widetilde{H}_ny_n} \\
+		&= \norm{\norm{r_0} \Omega_ne_1 - \begin{pmatrix}R_ny_n \\ 0\end{pmatrix}}\ .
+	\end{align*}
+	La solution de ce problème de minimisation est connu.
+	En notant $\Omega_ne_1 = \begin{pmatrix}\omega_1 \\ \omega_{1n}\end{pmatrix}$ la première colonne de $\Omega_n$, on a :
+	\[y_n = \norm{r_0}R_n^{-1}\omega_1\quad\textrm{et}\quad\norm{r_n} = \norm{r_0}\left|\omega_{1n}\right|\ .\]
+	L'intérêt de mettre à jour la décomposition de la matrice de Hessenberg est alors double :
+	\begin{itemize}
+		\item l'inversion du système réduit est explicite, par inversion d'une matrice triangulaire ce qui est aisé
+		\item la norme du résidu peut être calculée à chaque itération sans inverser le système, ce qui permet un meilleur contrôle des itérations.
+	\end{itemize}
 
 	\paragraph{}
 	Mon choix s'est porté sur la méthode GMRES pour plusieurs raisons.
