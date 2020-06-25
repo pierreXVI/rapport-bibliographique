@@ -15,26 +15,6 @@
 
 \chapter{TODO}
 
-
-	%
-	% 	\paragraph{}
-	% 	Plus récemment, les méthodes au centre de l'attention sont les méthodes itératives de Krylov
-	% 	\cite{TrefethenBau1997, Saad2003, SimonciniSzyld2007, OlshanskiiTyrtyshnikov2014, Vasseur2016}.
-	%
-	% 	\paragraph{}
-	% 	Ces méthodes vont construire une base de l'espace de Krylov, en l'enrichissant à chaque itération, puis résoudre le système linéaire projeté sur cet espace.
-	% 	Pour l'itération $k$, on appelle résidu le vecteur $r_k = b - Ax_k$.
-	% 	On considère dans ce qui suit que la matrice $A$ est de taille $N\times N$,
-	% 	et que dans l'esprit des algorithmes : $n\ll N$, même si la suite reste vraie avec $n$ quelconque.
-	%
-	%
-	% 	\paragraph{}
-	% 	À chaque itération de l'algorithme, on va calculer le vecteur de base à ajouter à $\krylov{n}$ pour engendrer $\krylov{n+1}$.
-	% 	On cherche ensuite l'itéré sur $\krylov{n}$ qui s'approche de la solution voulue :
-	% 	\begin{equation}\label{eqn:x_n}
-	% 		x_n \in x_0 + \krylov[A, r_0]{n}
-	% 	\end{equation}
-	%
 	% \paragraph{}
 	% La convergence des méthode itératives, classiques comme de Krylov, est très fortement liée au conditionnement de l'opérateur $A$.
 	% La définition du conditionnement dépend de la norme choisie, et pour la norme $\norm[2]{\cdot}$ on a, pour une matrice $A$ inversible :
