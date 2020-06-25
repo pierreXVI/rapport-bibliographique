@@ -226,7 +226,43 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 
 	\subsection{Convergence des méthodes}
 
+		\paragraph{}
+		La convergence des méthodes de Krylov, et plus généralement des méthodes itératives, dépend du système linéaire.
+		En effet, si une méthode itérative fait converger la norme de l'erreur ou celle du résidu vers 0, la vitesse de convergence dépend à la fois de la méthode et de la matrice à inverser.
 
+		\paragraph{}
+		On se rend compte en parcourant la litérature a convergence des méthode itératives est très fortement liée au conditionnement de l'opérateur $A$.
+		Le conditionnement d'une matrice inversible $A$ est :
+		\[\kappa\left(A\right) = \norm{A}\norm{A^{-1}}\]
+		et dépend donc de la norme choisie.
+		Une matrice dite bien conditionnée, du point de vue des algorithmes itératifs, a un conditionnement $\kappa = O\left(1\right)$.
+		Au contraire, pour une matrice mal conditionnée, $\kappa\gg1$.
+
+		\paragraph{}
+		Pour la norme $\norm[2]{\cdot}$ on a, pour une matrice $A$ :
+		\begin{equation}\label{eq:conditionnement}
+			\kappa\left(A\right) = \frac{\sigma_{\max}}{\sigma_{\min}}
+		\end{equation}
+		où $\sigma_{\min}$ et $\sigma_{\max}$ sont les valeurs singulières minimales et maximales de $A$.
+		Pour rappel, les valeurs singulières de $A$ sont les valeurs propres de $\adj{A}A$.
+
+		\paragraph{}
+		On trouve souvent la relation : $\kappa\left(A\right) = \frac{\left|\lambda_{\max}\right|}{\left|\lambda_{\min}\right|}$ avec $\lambda_{\min}$ et $\lambda_{\max}$ les valeurs propres de $A$ de plus petit et de plus grand module.
+		Cependant cette relation n'est vraie que pour les matrices normales (qui commutent avec leur matrice adjointe).
+		Pour cette raison, il ne sert à rien de se baser uniquement sur le spectre de l'opérateur pour étudier la convergence des méthodes.
+
+		\paragraph{}
+		Dans \cite{GreenbaumPtakStrakos1996}, on trouve un résultat surprenant.
+		Cet article montre en effet que pour un spectre donné et pour une courbe de convergence décroissante donnée, il est possible de construire une matrice avec ce spectre telle que GMRES suivra la courbe de convergence.
+		Autrement dit, on peut exhiber un exemple de matrice mal conditionnée qui converge rapidement, et à l'inverse trouver une matrice bien conditionnée pour laquelle GMRES aura du mal à faire décroitre le résidu.
+		Ce phénomène est causé par la non-normalité de l'opérateur \cite{GreenbaumStrakos1994, GreenbaumPtakStrakos1996, Trefethen1999}.
+		Puisque les matrices rencontrées dans les problèmes de CFD sont quelconques, ou au moins à priori non-normales, étudier précisément le spectre de l'opérateur ne semble pas être une bonne idée.
+
+		\paragraph{}
+		Si une étude précise du spectre de la matrice n'est pas recomandée, une rapide analyse peut toutefois s'avérer utile.
+		En effet, mathématiquement parlant, le spectre peut ne donner aucune information, d'après le paragraphe précédent.
+		Cependant, les matrices rencontrées en pratiques ne sont pas des contres-exemples d'une preuve mathématique, mais de vraies matrices quelconque.
+		En faisant l'hypothèse qu'on ne tombera pas précisément sur un cas particulier, on peut continuer à regarder le spectre de $A$ pour se donner une idée de la convergence de l'algorithme.
 
 
 \section{Améliorations de l’algorithme}
