@@ -213,7 +213,7 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     Les méthodes d'Adams-Bashforth sont des méthodes de type "multi-pas" (multi-step), c'est à dire qu'elles utilisent plusieurs états précédents pour déterminer l'état suivant.
     À la différence des méthodes de Runge-Kutta qui utilisent des pas intermédiaires entre $t_n$ et $t_{n+1}$, ces méthodes utilisent les $t_{i\leq n}$ précédents.
     Pour une méthode d'ordre $k$, on utilise donc les états $W_n, \dots, W_{n-k+1}$ pour déterminer $W_{n+1}$.
-    On peut en effet vérifier que pour ces méthodes, l'indice $k$ désignant la méthode est égal à l'ordre de la méthode \PS{Apparemment dans "Solving ordinary differential equations I: Nonstiff problems", à citer si j'arrive à le trouver}.
+    On peut en effet vérifier que pour ces méthodes, l'indice $k$ désignant la méthode est égal à l'ordre de la méthode \cite{HairerNorsettWanner1993}.
 
     \paragraph{}
     L'idée est d'interpoler le second membre de (\ref{eq:edo}) en ces $k$ points calculés précédemment.
@@ -235,7 +235,7 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     \end{figure}
 
     \paragraph{}
-    L'analyse de la stabilité des méthodes d'Adams-Bashforth est plus complexe, \cite{HairerWanner1996} \PS{citer également "Solving ordinary differential equations I: Nonstiff problems"} et le développement des calculs ne sera donc pas détaillé ici.
+    L'analyse de la stabilité des méthodes d'Adams-Bashforth est plus complexe \cite{HairerNorsettWanner1993, HairerWanner1996}, et le développement des calculs ne sera donc pas détaillé ici.
     On peut toutefois tracer numériquement les domaines de stabilité des premières méthodes sur la figure \ref{fig:ab_stab}.
     On y constate que la stabilité de ces méthode décroît avec l'ordre, et qu'elles ne sont pas adaptées pour les problèmes raides que l'on cherche à résoudre.
     La stabilité de ces méthodes s'avère donc décevante.
