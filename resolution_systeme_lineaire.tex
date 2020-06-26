@@ -68,7 +68,7 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 
 		\paragraph{}
 		Les méthodes itératives sont donc les plus adaptées pour inverser des systèmes linéaires creux de grande taille.
-		Cependant, il peut arriver qu'on utilise une méthode directe : on peut envisager par exemple la résolution d'un système linéaire avec une succession d'étages d'un algorithme multigrille, pour arriver à un système grossier de petite taille (ou du moins de taille raisonnable), qu'on résoudrait avec une méthode directe comme la décomposition LU.
+		Cependant, il peut arriver qu'on utilise une méthode directe : on peut envisager par exemple la résolution d'un système linéaire avec une succession d'étages d'un algorithme multigrille, pour arriver à un système grossier de petite taille (ou au moins de taille raisonnable), qu'on résoudrait avec une méthode directe comme la décomposition LU.
 		Ces méthodes sont bien connues \cite{TrefethenBau1997}, et ne seront pas détaillées ici.
 
 
@@ -258,7 +258,13 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 		Dans \cite{GreenbaumPtakStrakos1996}, on trouve un résultat surprenant.
 		Cet article montre en effet que pour un spectre donné et pour une courbe de convergence décroissante donnée, il est possible de construire une matrice avec ce spectre telle que GMRES suivra la courbe de convergence.
 		Autrement dit, on peut exhiber un exemple de matrice mal conditionnée qui converge rapidement, et à l'inverse trouver une matrice bien conditionnée pour laquelle GMRES aura du mal à faire décroitre le résidu.
-		Ce phénomène est causé par la non-normalité de l'opérateur \cite{GreenbaumStrakos1994, GreenbaumPtakStrakos1996, Trefethen1999}.
+		En particulier, on peut concevoir une matrice avec le meilleur spectre possible, c'est à dire qui admet 1 comme seule valeur propre de multiplicité $N$, et pour qui GMRES convergerait aussi lentement que souhaité.
+		Ce phénomène est causé par la non-normalité de l'opérateur \cite{GreenbaumStrakos1994, GreenbaumPtakStrakos1996}.
+		Pour remédier à ce problème, on peut par exemple s'intéresser au pseudo-spectre de l'opérateur \cite{Trefethen1999}.
+		Cependant, cette analyse est relativement complexe et ne sera pas présentée ici.
+
+		\paragraph{}
+		L'utilisation des méthodes de Krylov avec ces matrices non-normales, et l'analyse de la convergence des algorithmes pour ces matrice ne sont pas triviales \cite{LiesenTichy2004, Huhtanen2005}.
 		Puisque les matrices rencontrées dans les problèmes de CFD sont quelconques, ou au moins à priori non-normales, étudier précisément le spectre de l'opérateur ne semble pas être une bonne idée.
 
 		\paragraph{}
@@ -317,12 +323,38 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 		Pour un préconditionnement à gauche, respectivement à droite, l'opérateur à inverser est alors $M^{-1}A$, respectivement $AM^{-1}$.
 
 		\paragraph{}
-		En s'inspirant de l'exemple 35.2 de \cite{TrefethenBau1997}, on
+		L'idée principale du préconditionnement est de transformer $A$ en une matrice plus facile à inverser.
+		On prend donc pour $M$ une matrice qui ressemble à $A$.
+		Si $M$ est trop proche de $A$, par exemple $M=A$, l'équation préconditionnée devient triviale.
+		Cependant appliquer le préconditionnement, c'est à dire calculer $M^{-1}$ est aussi dur que de résoudre le problème initial.
+		À l'inverse, si on prend un préconditionneur facile à inverser mais trop éloigné de $A$, typiquement $M = \operatorname{Id}$, alors le calcul du préconditionnement est trivial, mais il n'aide pas à résoudre le problème.
+		On va donc faire un compromis pour trouver un opérateur $M$ qui ressemble à $A$, mais qu'il est relativement facile d'inverser.
+
+		\paragraph{}
+		En s'inspirant de l'exemple 35.2 de \cite{TrefethenBau1997}, on considère la matrice complexe de taille $N\times N$ avec $N = 200$ qui est la somme d'une matrice diagonale et d'une matrice de perturbations aléatoires :
+		\[A = A_{diag} + \frac{1}{2\sqrt{N}}A_{rand}\]
+		où
+		\[A_{diag, k} = 2\sin\left(\frac{2k\pi}{N-1}\right) - 1 + i\cos\left(\frac{2k\pi}{N-1}\right) \quad\textrm{et}\quad A_{rand}\hookrightarrow\mathcal{N}\left(0,1\right)\ .\]
+
+		\paragraph{}
+		On représente sur la figure \ref{fig:precond} le spectre de $A$ en bleu.
+		On y voit qu'il est étalé tout autour de l'origine.
+		En appliquant un préconditionneur de Jacobi, détaillé par la suite, on voit que le spectre préconditionné est rassemblé autour de 1.
+		L'effet du préconditionneur sur la convergence de GMRES se voit très nettement sur la figure.
+		Pour la matrice non préconditionnée, les itérations peinent à faire décroitre la norme du résidu, alors que celle-ci chute rapidement lorsqu'on applique le préconditionneur.
+
+		\paragraph{}
+		Cet exemple permet également d'établir une remarque intéressante.
+		En effet, déjà avant de préconditionner la matrice, son conditionnement n'est pas excessivement grand, et cependant GMRES n'arrive pas à converger.
+		C'est parce que puisque la matrice est non-normale, le conditionnement seul ne veut rien dire, et dans cet exemple en particulier c'est la disposition des valeurs propres qui importent.
+		Ainsi, l'étude du spectre de l'opérateur ne peut se faire en regardant simplement son conditionnement.
+		Il faut aussi regarder la répartition de ses valeurs propres dans le plan complexe, sa non-normalité, \dots
+
 
 
 		\begin{figure}
 			\centering
 			\includegraphics[width=\textwidth]{images/precond.png}
-			\caption{TODO}
+			\caption{Spectre de $A = VDV^{-1}$ en bleu et de $A_{pre} = AD^{-1}$ en orange (gauche). Convergence de GMRES pour ces matrices (droite).}
 			\label{fig:precond}
 		\end{figure}
