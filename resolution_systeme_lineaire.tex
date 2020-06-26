@@ -264,6 +264,30 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 		Cependant, les matrices rencontrées en pratiques ne sont pas des contres-exemples d'une preuve mathématique, mais de vraies matrices quelconque.
 		En faisant l'hypothèse qu'on ne tombera pas précisément sur un cas particulier, on peut continuer à regarder le spectre de $A$ pour se donner une idée de la convergence de l'algorithme.
 
+		\subsubsection{Convergence de GMRES}
+
+			\paragraph{}
+			Pour étudier la convergence de GMRES, on reformule le problème de minimisation \cite{TrefethenBau1997}.
+			On prendra dans ce qui suit une norme quelconque de $\mathbb{K}^n$ et sa norme induite pour $\matrixsymb{n}{K}$.
+			Pour $x_n\in\krylov{n}$, on peut écrire $x_n = x_0 + q_n\left(A\right)b$ où $q_n\left(X\right)$ est un polynôme de $\mathbb{K}_{n-1}\left[X\right]$.
+			Le résidu devient alors $r_n = b - Ax_n = p_n\left(A\right)r_0$ où $p_n\left(X\right)\in\mathbb{K}_n\left[X\right]$ s'écrit $p_n\left(X\right) = 1 - Xq_n\left(X\right)$.
+			En notant $\textup{P}_n = \left\{\,p\in\mathbb{K}_n\left[X\right]\;\mid\;p\left(0\right) = 1\,\right\}$, le problème de minimisation devient alors :
+			\[\textrm{trouver $p_n\in \textup{P}_n$ qui minimise $\norm{p_n\left(A\right)r_0}$.}\]
+
+
+			\paragraph{}
+			Nous avons déjà dit que pour GMRES, $\norm{r_{n+1}}\leq\norm{r_n}$, et que $\norm{r_N} = 0$.
+			En utilisant le résultat du paragraphe précédent, on a de plus que $\norm{r_n} = \norm{p_n\left(A\right)r_0}\leq\norm{p_n\left(A\right)}\norm{r_0}$. Ainsi :
+			\[\frac{\norm{r_n}}{\norm{r_0}} \leq \inf_{p\in\textup{P}_n}\norm{p\left(A\right)}\ .\]
+
+			\paragraph{}
+			Supposons maintenant que $A$ est diagonalisable, avec $A = VDV^{-1}$ pour une matrice inversible $V$ et une matrice diagonale $D$.
+			La diagonale de $D$ est en fait composée des valeurs propres de $A$ : $\lambda_1, \dots, \lambda_N$.
+			Alors pour un polynôme $p$ on a $\norm{p\left(A\right)}\leq\norm{V}\norm{p\left(D\right)}\norm{V^{-1}}$
+			Ainsi, on a la relation :
+			\[\frac{\norm{r_n}}{\norm{r_0}} \leq \kappa\left(V\right)\inf_{p\in\textup{P}_n}\max_{1\leq i\leq N}\norm{p\left(\lambda_i\right)}\ .\]
+			On comprend alors la remarque faite précédemment : si la matrice $A$ n'est pas trop non-normale, c'est à dire si $\kappa\left(V\right)$ n'est pas trop grand, alors la convergence de GMRES est controlée par les valeurs propres de $A$.
+
 
 \section{Améliorations de l’algorithme}
 
