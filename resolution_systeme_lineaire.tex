@@ -10,42 +10,42 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 
 	\subsection{Système linéaire creux}
 
-	\paragraph{}
-	Comme cela a été mentionné, la taille des matrices rencontrées dans un problème typique de la simulation numérique de la dynamique des fluides est très grande.
-	Les matrices ont également une autre propriété : la creusité.
-	Puisque les matrices des systèmes linéaires à résoudre sont liées à une matrice jacobienne (voir équation (\ref{eq:linear})), un coefficient de la matrice symbolise une interaction entre deux points du maillage.
-	On comprend alors que si le graphe de ces interactions dépend du schéma de discrétisation et d'intégration spatiale, deux points éloignés dans le maillage ne seront normalement pas reliés.
-	Ainsi, les matrices présentent cette caractéristique notable qu'est la creusité et que l'on peut observer sur la figure \ref{fig:sparse}.
-	On y voit en effet que la majorité des coefficients du système linéaire sont 0.
-	En pratique, les matrices rencontrées sont tellement grandes qu'il n'est pas possible de les stocker et de les utiliser sous leur forme dense.
-	La propriété de creusité permettra d'utiliser des représentation astucieuses pour stocker les matrices en mémoire, telle que le format CSR (Compressed Sparse Row) \cite{Saad2003}.
-	Ces formats permettent à la fois d'économiser de l'espace en mémoire lors du stockage de la matrice, mais également de réaliser des opérations telles que le produit matrice vecteur plus efficacement qu'avec une matrice dense de même taille.
+		\paragraph{}
+		Comme cela a été mentionné, la taille des matrices rencontrées dans un problème typique de la simulation numérique de la dynamique des fluides est très grande.
+		Les matrices ont également une autre propriété : la creusité.
+		Puisque les matrices des systèmes linéaires à résoudre sont liées à une matrice jacobienne (voir équation (\ref{eq:linear})), un coefficient de la matrice symbolise une interaction entre deux points du maillage.
+		On comprend alors que si le graphe de ces interactions dépend du schéma de discrétisation et d'intégration spatiale, deux points éloignés dans le maillage ne seront normalement pas reliés.
+		Ainsi, les matrices présentent cette caractéristique notable qu'est la creusité et que l'on peut observer sur la figure \ref{fig:sparse}.
+		On y voit en effet que la majorité des coefficients du système linéaire sont 0.
+		En pratique, les matrices rencontrées sont tellement grandes qu'il n'est pas possible de les stocker et de les utiliser sous leur forme dense.
+		La propriété de creusité permettra d'utiliser des représentation astucieuses pour stocker les matrices en mémoire, telle que le format CSR (Compressed Sparse Row) \cite{Saad2003}.
+		Ces formats permettent à la fois d'économiser de l'espace en mémoire lors du stockage de la matrice, mais également de réaliser des opérations telles que le produit matrice vecteur plus efficacement qu'avec une matrice dense de même taille.
 
-	\begin{figure}
-		\centering
-		\begin{subfigure}[t]{0.3\textwidth}
+		\begin{figure}
 			\centering
-			\includegraphics[width=\textwidth]{images/GT01R.png}
-			\caption{GT01R : écoulement 2D non visqueux à travers un étage d'aubes de turbomachine}
-			\label{fig:sparse.GT01R}
-		\end{subfigure}
-		\hfill
-		\begin{subfigure}[t]{0.3\textwidth}
-			\centering
-			\includegraphics[width=\textwidth]{images/HV15R.png}
-			\caption{HV15R : écoulement RANS 3D dans la soufflante d'un moteur}
-			\label{fig:sparse.HV15R}
-		\end{subfigure}
-		\hfill
-		\begin{subfigure}[t]{0.3\textwidth}
-			\centering
-			\includegraphics[width=\textwidth]{images/RM07R.png}
-			\caption{RM07R : écoulement 3D visqueux dans le compresseur d'un turbopropulseur}
-			\label{fig:sparse.RM07R}
-		\end{subfigure}
-		\caption{Représentation de matrices issues de problèmes de CFD \cite{PacullAubertBuisson2011}, utilisant une méthode spatiale Volumes Finis, les points de couleurs correspondant aux valeurs non nulles}
-		\label{fig:sparse}
-	\end{figure}
+			\begin{subfigure}[t]{0.3\textwidth}
+				\centering
+				\includegraphics[width=\textwidth]{images/GT01R.png}
+				\caption{GT01R : écoulement 2D non visqueux à travers un étage d'aubes de turbomachine}
+				\label{fig:sparse.GT01R}
+			\end{subfigure}
+			\hfill
+			\begin{subfigure}[t]{0.3\textwidth}
+				\centering
+				\includegraphics[width=\textwidth]{images/HV15R.png}
+				\caption{HV15R : écoulement RANS 3D dans la soufflante d'un moteur}
+				\label{fig:sparse.HV15R}
+			\end{subfigure}
+			\hfill
+			\begin{subfigure}[t]{0.3\textwidth}
+				\centering
+				\includegraphics[width=\textwidth]{images/RM07R.png}
+				\caption{RM07R : écoulement 3D visqueux dans le compresseur d'un turbopropulseur}
+				\label{fig:sparse.RM07R}
+			\end{subfigure}
+			\caption{Représentation de matrices issues de problèmes de CFD \cite{PacullAubertBuisson2011}, utilisant une méthode spatiale Volumes Finis, les points de couleurs correspondant aux valeurs non nulles}
+			\label{fig:sparse}
+		\end{figure}
 
 
 	\subsection{Type de méthode}
@@ -77,13 +77,16 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 		\paragraph{}
 		Les méthodes itératives sont encore aujourd'hui très étudiées dans la communauté des mathématiques appliquées \cite{OlshanskiiTyrtyshnikov2014, Saad2003, TrefethenBau1997}.
 		Une première classe de méthode intervient : les méthodes itératives classiques.
-		Si ces méthodes sont plutôt anciennes et plutôt écartées pour leurs mauvaises performances, elles peuvent s'utiliser en se combinant avec des méthodes plus efficaces, et c'est pour cela qu'il est important de comprendre leur fonctionnement.
 		Ce sont des méthodes de relaxation, parmi lesquelles on compte les méthode de Jacobi, Gauss-Seidel ou encore SOR (Successive Over Relaxation).
 		Leur fonctionnement réside dans une décomposition $A = M - N$ avec $M$ une matrice relativement facile à inverser, où le choix de la décomposition est propre à la méthode.
 		Pour la méthode de Jacobi on prendra pour $M$ la diagonale de $A$.
 		Il suffit ensuite, à partir d'un itéré initial $x_0$ d'appliquer la formule de récurrence $x_{k+1} = M^{-1}\left(Nx_k + b\right)$.
 		Cependant, comme dit précédemment, ces méthodes n'offrent pas une convergence satisfaisante pour la communauté de CFD.
 		Ainsi, il faut se tourner vers un autre type de méthodes itératives pour résoudre le système linéaire.
+
+		\paragraph{}
+		Si ces méthodes sont plutôt anciennes et plutôt écartées pour leurs mauvaises performances, elles peuvent s'utiliser en se combinant avec des 	méthodes plus efficaces, et c'est pour cela qu'il est important de comprendre leur fonctionnement.
+		En particulier, la méthode de Jacobi est toujours utilisée, car si elle est plutôt simple et offre une convergence plutôt lente, elle est très peu coûteuse et se parallèlise facilement, ce qui est un argument de poids lorsqu'on traite des systèmes de très grande taille.
 
 
 \section{Méthodes de Krylov}
@@ -298,3 +301,28 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 	En effet, la méthode GMRES peut être améliorée, affinée, pour obtenir plus efficacement la solution.
 	De telles améliorations sont présentées dans ce qui suit.
 	Il sera précisé si cette amélioration concerne typiquement la méthode GMRES, ou si elle s'applique généralement à toute méthode de résolution d'un système linéaire.
+
+
+	\subsection{Préconditionnement}
+
+		\paragraph{}
+		Nous avons expliqué précedemment en quoi le conditionnement de l'opérateur linéaire joue sur la vitesse de convergence des algorithmes itératifs.
+		On peut utiliser un préconditionnement pour jouer sur le spectre de la matrice afin d'améliorer son conditionnement.
+		Un préconditionnement, ou préconditionneur, est associé à une matrice $M$.
+		Le principe est de multiplier l'équation à résoudre par cette matrice, pour modifier l'opérateur à inverser.
+		Concrètement, on peut effectuer un préconditionnement à gauche :
+		\[M^{-1}Ax = M^{-1}b\]
+		ou bien un préconditionnement à droite :
+		\[\left\{\begin{aligned}AM^{-1}y &= b \\	M^{-1}y &= x\end{aligned}\right.\ .\]
+		Pour un préconditionnement à gauche, respectivement à droite, l'opérateur à inverser est alors $M^{-1}A$, respectivement $AM^{-1}$.
+
+		\paragraph{}
+		En s'inspirant de l'exemple 35.2 de \cite{TrefethenBau1997}, on
+
+
+		\begin{figure}
+			\centering
+			\includegraphics[width=\textwidth]{images/precond.png}
+			\caption{TODO}
+			\label{fig:precond}
+		\end{figure}
