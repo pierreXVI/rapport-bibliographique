@@ -80,13 +80,13 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 		Ce sont des méthodes de relaxation, parmi lesquelles on compte les méthode de Jacobi, Gauss-Seidel ou encore SOR (Successive Over Relaxation).
 		Leur fonctionnement réside dans une décomposition $A = M - N$ avec $M$ une matrice relativement facile à inverser, où le choix de la décomposition est propre à la méthode.
 		Pour la méthode de Jacobi on prendra pour $M$ la diagonale de $A$.
-		Il suffit ensuite, à partir d'un itéré initial $x_0$ d'appliquer la formule de récurrence $x_{k+1} = M^{-1}\left(Nx_k + b\right)$.
+		Il suffit ensuite, à partir d'un itéré initial $x_0$ d'appliquer la formule de récurrence $x_{n+1} = M^{-1}\left(Nx_n + b\right)$.
 		Cependant, comme dit précédemment, ces méthodes n'offrent pas une convergence satisfaisante pour la communauté de CFD.
 		Ainsi, il faut se tourner vers un autre type de méthodes itératives pour résoudre le système linéaire.
 
 		\paragraph{}
 		Si ces méthodes sont plutôt anciennes et plutôt écartées pour leurs mauvaises performances, elles peuvent s'utiliser en se combinant avec des 	méthodes plus efficaces, et c'est pour cela qu'il est important de comprendre leur fonctionnement.
-		En particulier, la méthode de Jacobi est toujours utilisée, car si elle est plutôt simple et offre une convergence plutôt lente, elle est très peu coûteuse et se parallèlise facilement, ce qui est un argument de poids lorsqu'on traite des systèmes de très grande taille.
+		En particulier, la méthode de Jacobi est toujours utilisée, car si elle est plutôt simple et offre une convergence plutôt lente, elle est très peu coûteuse et se parallélise facilement, ce qui est un argument de poids lorsqu'on traite des systèmes de très grande taille.
 
 
 \section{Méthodes de Krylov}
@@ -350,11 +350,75 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 		Ainsi, l'étude du spectre de l'opérateur ne peut se faire en regardant simplement son conditionnement.
 		Il faut aussi regarder la répartition de ses valeurs propres dans le plan complexe, sa non-normalité, \dots
 
-
-
 		\begin{figure}
 			\centering
 			\includegraphics[width=\textwidth]{images/precond.png}
 			\caption{Spectre de $A = VDV^{-1}$ en bleu et de $A_{pre} = AD^{-1}$ en orange (gauche). Convergence de GMRES pour ces matrices (droite).}
 			\label{fig:precond}
 		\end{figure}
+
+
+		\paragraph{}
+		Ci après sont brièvement présentés les préconditionnements les plus connus, qui s'appliquent de manière générale à toute méthode de résolution d'un système linéaire.
+
+
+		\paragraph{Préconditionneur de Jacobi :}
+		aussi appelé préconditionneur Diagonal, on prend $M=\operatorname{diag}\left(A\right)$, à condition qu'il n'y ait pas de zéros sur la diagonale de $A$.
+		De manière plus générale, on peut prendre $M$ comme matrice diagonale telle que le conditionnement de $M^{-1}A$ est meilleur que celui de $A$.
+		Ce préconditionneur est très intéressant pour les matrices à diagonale dominante.
+		Dans ce cas, le théorème de Gerschgorin garantit l'efficacité d'un tel préconditionneur.
+		Dans le cas plus général, il est souvent insuffisant.
+		Ce préconditionneur est de plus facile à mettre en place, nécessite peu d'espace mémoire et est peu coûteux à calculer.
+		S'il est très basique, il s'avère être très souvent employé grâce à sa grande simplicité et a ses bonnes performances pour le calcul parallèle.
+
+		\paragraph{Approximation Locale :}
+		quand $A$ représente un couplage entre deux échelles, phénomènes physiques, ..., on prend pour $M$ le même opérateur mais sans les termes d'interaction.
+		Cela consiste à garder quelques éléments proches de la diagonale, et à généraliser le préconditionneur de Jacobi.
+		Un cas particulier est le préconditionneur diagonal par bloc, qui consiste à garder les blocs diagonaux représentants différents domaines, mais de supprimer les blocs extra-diagonaux représentant les interactions entre domaines.
+		L'avantage de ces préconditionneurs est à nouveau qu'ils sont naturellement parallélisables.
+
+		\paragraph{Factorisation incomplète :}
+		quand on dispose d'une factorisation de $A$ (factorisation LU : $A = LU$, ou de Cholesky quand $A$ est hermitienne : $A = L\adj{L}$), et que la matrice $A$ est creuse, les matrices intervenant dans ces décomposition perdent la creusité.
+		On va donc garder ces matrices en leur imposant le pattern de creusité de $A$ :
+		\begin{itemize}
+			\item $M=\widetilde{L}\widetilde{U}$ avec $\widetilde{L}_{ij}=L_{ij}$ et $\widetilde{U}_{ij}=U_{ij}$ si $A_{ij}\neq0$ et $\widetilde{L}_{ij}=\widetilde{U}_{ij}=0$ sinon, pour la décomposition LU,
+			\item $M=\widetilde{L}\adj{\widetilde{L}}$ avec $\widetilde{L}_{ij}=L_{ij}$ si $A_{ij}\neq0$ et 0 sinon, pour la décomposition de Cholesky.
+		\end{itemize}
+		On peut généraliser cette factorisation incomplète en prenant le pattern de creusité de $A^k$, plus dense que le pattern de creusité de $A$ mais globalement creux.
+		Cette famille de préconditionnement est souvent lourde à calculer, et nécessite de la mémoire, mais est réputée pour être efficace.
+		Elle s'avère cependant très avantageuse lorsque l'algorithme à préconditionner utilise déjà une factorisation de $A$.
+
+		\paragraph{Préconditionnement multigrille :}
+		cette méthode consiste à prendre $M$ comme étant l'approximation de $A$ sur une grille plus grossière.
+		On a donc effectivement $M\simeq A$ avec $M$ plus facile à inverser que $A$.
+		Ce préconditionnement capte bien les basses fréquences liées au problème, et se rapproche d'une itération multigrille.
+
+		\paragraph{Discrétisation bas ordre :}
+		si $A$ est l'opérateur associé à une méthode numérique d'ordre élevé, le grande taille du stencil impliquera une creusité faible.
+		Autrement dit, une méthode d'ordre plus élevé utilise plus de points du voisinage pour calculer le second membre en un point, ce qui augmente le nombre de relations entre les différents points du maillage et la matrice aura plus de coefficients non nuls.
+		On peut alors prendre comme préconditionneur l'opérateur associé à un ordre plus bas de la même méthode, et gagner ainsi en creusité.
+		On se retrouve donc bien avec une matrice dont l'action est proche de celle de $A$, et plus simple à inverser.
+
+		\paragraph{Séparation de l'opérateur :}
+		si $A$ se décompose naturellement en somme de plusieurs opérateur, par exemple $A = A_{advection} + A_{diffusion} + \dots$, et que l'un de ces opérateurs est facilement inversible,
+		on peut prendre $M$ comme étant la matrice de cet opérateur.
+
+		\paragraph{Préconditionnement polynômial :}
+		on ne va pas chercher $M\simeq A$ mais $M^{-1} \approx A^{-1}$, en exprimant directement $M^{-1}$ comme un polynôme en $A$ \cite{DuboisGreenbaumRodrigue1979}.
+		L'idée est d'avoir $M^{-1} \approx A^{-1}$ comme les premiers termes de la série de Neumann de $\operatorname{Id} - A$ :
+		\[M^{-1}=\operatorname{Id}+\left(\operatorname{Id}-A\right)+\left(\operatorname{Id}-A\right)^2 + \dots+\left(\operatorname{Id}-A\right)^k\ .\]
+		On voit qu'il n'est pas nécessaire de connaître explicitement $A$ mais seulement de pouvoir former le produit matrice vecteur.
+		Avec les méthodes de Krylov, calculer le produit $P\left(A\right)v$ où $P\left(A\right)$ est un polynôme en $A$ et $v$ un vecteur est aisé.
+		Alors qu'il ne nécessite pas d'espace mémoire supplémentaire, ce préconditionneur est très coûteux en temps de calcul, et son utilisation doit être bien étudiée.
+
+		\paragraph{Un pas d'une méthode classique :}
+		l'idée est d'effectuer un (ou quelques) pas d'une méthode itérative classique.
+		Lorsque ces méthodes ont été introduites un peu plus haut, on écrivait $A = M - N$.
+		Pour conserver cette notation, on notera dans ce paragraphe le préconditionneur $M_{pre}$ pour ne pas confondre avec la décomposition de $A$.
+		Pour ces méthodes de relaxation, on itérait en calculant $x_{n+1} = M^{-1}Nx_n + M^{-1}b$.
+		L'idée est donc de prendre $M_{pre} = M^{-1}N$.
+
+		\paragraph{}
+		Dans l'esprit des méthodes de Krylov, le préconditionnement n'a pas besoin d'être calculé explicitement.
+		On n'a seulement besoin de connaître son effet sur un vecteur.
+		En pratique, on ne calculera pas toujours $M^{-1}$, mais on résoudra $My = c$, en se contentant souvent d’une approximation.
