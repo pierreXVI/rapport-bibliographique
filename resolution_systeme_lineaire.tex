@@ -320,8 +320,12 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 		Concrètement, on peut effectuer un préconditionnement à gauche :
 		\[M^{-1}Ax = M^{-1}b\]
 		ou bien un préconditionnement à droite :
-		\[\left\{\begin{aligned}AM^{-1}y &= b \\	M^{-1}y &= x\end{aligned}\right.\ .\]
+		\[\left\{\begin{aligned}AM^{-1}x' &= b \\	M^{-1}x' &= x\end{aligned}\right.\ .\]
 		Pour un préconditionnement à gauche, respectivement à droite, l'opérateur à inverser est alors $M^{-1}A$, respectivement $AM^{-1}$.
+    On notera qu'avec un préconditionneur à droite appliqué à une méthode de Krylov, la relation d'arnoldi (\ref{eq:arnoldi}) devient :
+    \begin{equation}\label{eq:arnoldi_pre}
+      AM^{-1}V_n = V_{n+1}\widetilde{H}_n\ .
+    \end{equation}
 
 		\paragraph{}
 		L'idée principale du préconditionnement est de transformer $A$ en une matrice plus facile à inverser.
@@ -414,11 +418,11 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 		Alors qu'il ne nécessite pas d'espace mémoire supplémentaire, ce préconditionneur est très coûteux en temps de calcul, et son utilisation doit être bien étudiée.
 
 		\paragraph{Un pas d'une méthode classique :}
-		l'idée est d'effectuer un (ou quelques) pas d'une méthode itérative classique.
+		l'idée est d'effectuer un (ou quelques) pas d'une méthode itérative classique, et en particulier linéaire.
 		Lorsque ces méthodes ont été introduites un peu plus haut, on écrivait $A = M - N$.
 		Pour conserver cette notation, on notera dans ce paragraphe le préconditionneur $M_{pre}$ pour ne pas confondre avec la décomposition de $A$.
 		Pour ces méthodes de relaxation, on itérait en calculant $x_{n+1} = M^{-1}Nx_n + M^{-1}b$.
-		L'idée est donc de prendre $M_{pre} = M^{-1}N$.
+    La relation de récurrence étant linéaire, l'idée est donc de prendre $M_{pre} = M^{-1}N$.
 
 		\paragraph{}
 		Dans l'esprit des méthodes de Krylov, le préconditionnement n'a pas besoin d'être calculé explicitement.
@@ -467,4 +471,34 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 		\paragraph{}
 		Certains préconditionnements sont un peu plus complexes qu'une simple décomposition de l'opérateur.
 		C'est le cas du préconditionnement flexible.
-		Son principe est plutôt simple : il consiste à réaliser
+		Un préconditionnement est dit flexible s'il change à chaque itération.
+    Ainsi, pour un préconditionneur flexible, on notera $M_i$ sa variante à l'étape $i$.
+    Lorsqu'on applique un préconditionneur flexible à une méthode de Krylov, la relation d'Arnoldi est à nouveau modifiée, et devient :
+    \begin{equation}\label{eq:arnoldi_pre_flex}
+      AZ_n = V_{n+1}\widetilde{H}_nj
+    \end{equation}
+    où $Z_n\in\matrixsymb{N, n}{K}$ est telle que ses colonnes $z_1,\dots, z_n$ correspondent à la base de Krylov préconditionnée :
+    \[\forall i = 1, \dots, n\quad M_iz_i = v_i\ .\]
+
+    \paragraph{}
+    Puisque la relation d'Arnoldi est modifiée, on constate qu'il est nécessaire de connaître la matrice $Z_n$ tout le long du calcul.
+    Ainsi, il est nécessaire de stocker la base des $n$ vecteurs préconditionnés qui s'enrichira à mesure que $n$ augmente.
+    Cela entraîne donc un surcoût en mémoire de $N \times n$ nombres pour effectuer $n$ itérations.
+
+    \paragraph{}
+    On s'intéressera en particulier à la méthode FGMRES \cite{Saad1993, SimonciniSzyld2002} : il s'agit d'une méthode GMRES, préconditionnée par $k$ étapes d'un GMRES interne.
+    Le préconditionnement à l'étape $i$ est donc :
+    \[M_i^{-1}v = \textrm{le vecteur donné par $k$ étapes de GMRES appliqué à l'équation $Ax = v$.}\]
+    Nous avons parlé plus haut du fait qu'il est possible de préconditionner une méthode de résolution par une autre méthode de résolution.
+    Cependant, cela s'applique directement pour les méthodes classiques, qui sont en fait linéaires en le vecteur à inverser.
+    Puisque appliquer $k$ étapes de GMRES pour calculer $A^{-1}v$ n'est pas une application linéaire en $v$, le préconditionnement à utiliser se doit d'être flexible.
+    \footnote{\PS{Dois-je montrer que GMRES n'est pas linéaire ? Ça ne sort pas d'une référence, mais j'ai la preuve sauf que c'est un peu long.}}
+
+    \paragraph{}
+    Concrètement, lorsqu'on applique l'itération $n$ du GMRES externe, plutôt que d'orthonormaliser $AM^{-1}v_n$ contre les $v_{i, 1\leq i\leq n}$ pour obtenir $v_{n+1}$, on préconditionne $v_n$ en résolvant $Az_n = v_n$ par $k$ itérations du GMRES interne, puis on orthonormalise $Az_n$.
+    Ce choix de préconditionnement fait sens car en prenant un $k$ raisonnablement petit, le calcul du préconditionnement est peu coûteux, et l'effet du préconditionneur est tout de même proche de l'effet de $A$.
+    Un autre avantage de ce préconditionneur est qu'il ne nécessite peu de choix de la part de l'utilisateur, et peu de travail de la part du développeur.
+    En effet, dans un code pour lequel la méthode GMRES est déjà implémentée, le travail pour écrire cette méthode FGMRES sera simple.
+
+    \paragraph{}
+    Cette méthode FGMRES à très largement été étudiée \cite{CoulaudGiraudRametEtAl2013, Vasseur2016}, et utilisée en pratique dans des codes de calculs \cite{Pinel2010}.
