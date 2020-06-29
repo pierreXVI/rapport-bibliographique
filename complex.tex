@@ -1,0 +1,22 @@
+\chapter{Méthodes plus complexes}
+
+\paragraph{}
+Dans les chapitres précédents, nous avons présentés des outils extraits de la littérature permettant de résoudre des équations différentielles.
+Nous avons expliqué comment, en partant d'une équation aux dérivées partielles issue du modèle physique, nous arrivions après une étape de discrétisation numérique à une équation différentielle ordinaire.
+Des méthodes d'intégration temporelle ont été présentée afin de résoudre cette équation, et nous avons mis en avant une classe d'intégrateurs : les méthode implicites.
+Ces méthodes permettent de calculer l'état du système en résolvant des équations non linéaires, qui sont elles même résolue avec la solution de systèmes linéaires.
+Enfin, nous avons identifié une méthode de Krylov, GMRES, et certaines de ses améliorations, pour pouvoir résoudre un système linéaire.
+
+\paragraph{}
+Ce cheminement permet l'intégration temporelle de phénomènes physiques, mais à nouveau ce n'est pas le seul possible.
+On peut envisager d'utiliser des méthodes et des techniques moins classiques pour arriver à nos fins.
+
+
+\section{JFNK}
+
+  \paragraph{}
+  Dans le cadre de la simulation numérique de grande dimension, une formulation apparaît comme très séduisante.
+  Il s'agit des méthodes Jacobian Free Newton Krylov (JFNK), utilisées pour résoudre le système linéaire.
+  Ces méthodes sont dites "sans matrices", car elles ne nécessitent pas la formation explicite de la matrice du système linéaire.
+  Cela n'est pas anodin, car puisqu'on travaille sur des maillages de très grande taille, la matrice est donc de très grande dimension.
+  La calculer a alors un certain coût algorithmique, et la stocker a un grand coût en mémoire.

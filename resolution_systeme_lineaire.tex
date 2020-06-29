@@ -504,12 +504,12 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
     Cette méthode FGMRES à très largement été étudiée \cite{CoulaudGiraudRametEtAl2013, Vasseur2016}, et utilisée en pratique dans des codes de calculs \cite{Pinel2010}.
 
 
-  \subsection{Augmentation, déflation}
+  \subsection{Recyclage de l'information}
 
     \paragraph{}
     Lorsque le redémarrage de GMRES a été présenté précédemment, nous avons dit qu'il y avait un risque de stagnation du résidu.
     Le problème vient du fait que l'espace de Krylov créé après le redémarrage peut être proche de l'espace Krylov créé avant.
-    Pour corriger ce défaut, on utilise deux techniques : l'augmentation ou la déflation.
+    Pour corriger ce défaut, on utilise deux techniques : l'augmentation ou la déflation \cite{ChapmanSaad1997, RamosKehlNabben2020}.
     Ces deux variantes de GMRES sont en réalité équivalentes dans leurs résultats \cite{CoulaudGiraudRametEtAl2013}.
 
     \paragraph{}
@@ -603,3 +603,9 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
     Si la déflation permet de bien comprendre la théorie derrière ces concepts, l'augmentation est plus facile à implémenter et sera souvent préférée.
     Ces méthodes ajoutent bien entendu de la complexité aux algorithmes, mais en manipulant des objets de taille $k \ll N$ ce qui est raisonnable.
     Pour les mettre en place, une étude de l'opérateur est nécessaire affin de bien choisir l'espace $\mathcal{W}$.
+
+
+    \subsubsection{Résolution successive du système linéaire}
+    Les techniques d'augmentation et de déflation permettent de recycler l'information spectrale obtenu au cours d'un cycle afin d'améliorer les performances des cycles suivants.
+    Cette idée de recyclage sont encore aujourd'hui amplement étudiées \cite{JolivetTournier2016}.
+    On peut par exemple utiliser de telles méthodes de recyclage non pas entre les cycles d'une résolution GMRES, mais pourquoi au cours d'une résolution successive de plusieurs problèmes linéaires \cite{Gaul2014}, ce qui est précisément ce que l'on fait dans notre cas.
