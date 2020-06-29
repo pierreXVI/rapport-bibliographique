@@ -1,7 +1,10 @@
 \chapter{Intégration temporelle}
 
 \paragraph{}
-Nous avons vu dans l'introduction que lorsqu'on résout un problème de simulation numérique de la dynamique des fluides, on se ramène à résoudre une équation différentielle ordinaire de la forme (\ref{eq:edo}).
+Nous avons vu dans l'introduction que lorsqu'on résout un problème de simulation numérique de la dynamique des fluides, on se ramène à résoudre une équation différentielle ordinaire de la forme :
+\begin{equation}\label{eq:edo_2}
+  Ax = b\ .
+\end{equation}
 Il existe différents algorithmes permettant de résoudre une telle équation, et la plupart de ces algorithmes se rangent dans deux catégories : les méthodes explicites, et les méthodes implicites.
 
 \section{Analyse des méthodes}
@@ -14,13 +17,14 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     \paragraph{}
     Une méthode de résolution d'équations différentielles doit respecter certaines propriétés pour être "correcte".
     Notamment elle se doit d'être consistante.
-    Pour définir cette notion, on se place dans le cadre de l'équation (\ref{eq:edo})\footnote{\GP{Astuce de vieux briscard : l'équation n'est pas dans le chapitre. Aide le lecteur et remet la STP.}}.
+    Pour définir cette notion, on se place dans le cadre de l'équation (\ref{eq:edo_2}).
     Après un pas, la méthode numérique donne une valeur $W_1$ que l'on souhaite proche de la valeur exacte $W\left(t_0 + \Delta\right)$.
     La méthode est dite consistante si :
     \[\lim_{\Delta t \rightarrow 0} \frac{W_1 - W\left(t_0 + \Delta t\right)}{\Delta t} = 0\ .\]
 
     \paragraph{}
-    De plus, on dira que la méthode est d'ordre $p$ si l'erreur locale\footnote{\GP{J'ai un doute... Ordre p+1 pour moi...}} est en $\Delta t^{p+1}$ :
+    De plus, on dira que la méthode est d'ordre $p$ si l'erreur locale est en $\Delta t^{p+1}$ \cite{HairerNorsettWanner1993} :
+    \footnote{\GP{J'ai un doute... Ordre p+1 pour moi...}\PS{Voir citation}}
     \[W_1 - W\left(t_0 + \Delta t\right) = O\left(\Delta t^{p+1}\right)\ .\]
 
 
@@ -249,8 +253,9 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
 
   \paragraph{}
   \GP{Commentaires pour la suite : Opposé à... bof... et dans les 2 cas, on résoud une équation pour trouver la solution. Je changerais la formulation. Et toi?}
-  \GP{Opposé à ces méthodes, on trouve les méthodes implicites.
-  Si les méthodes explicites expriment l'état suivant à partir de l'état actuel (et éventuellement des précédents), les méthodes implicites donnent cet état suivant comme solution d'une équation.}
+  \PS{Changé.}
+  Une solution est d'utiliser les méthodes implicites.
+  Si les méthodes explicites expriment l'état suivant à partir de l'état actuel (et éventuellement des précédents), les méthodes implicites donnent cet état suivant comme solution d'une équation.
 
   \subsection{Méthode d'Euler}
 
@@ -305,7 +310,7 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     La principale raison est qu'elles permettent d'atteindre un ordre élevé.
     Par exemple, les méthodes basées sur des quadratures de Gauss-Legendre de taille $k$ ont un ordre $2k$.
     On peut même en théorie atteindre un ordre arbitrairement grand.
-    \PS{citer Iserles, Arieh (1996), A First Course in the Numerical Analysis of Differential Equations ou enlever.}\GP{Oui, citer !}
+    \PS{citer Iserles, Arieh (1996), A First Course in the Numerical Analysis of Differential Equations ou enlever.}\GP{Oui, citer !}\PS{Mais j'arrive pas à le trouver. J'ai lu que le résultat du paragraphe est montré dedans mais j'aimerai bien le vérifier avant !}
 
     \paragraph{}
     Si ces méthodes sont bien plus coûteuses que leur équivalents explicites, elle possèdent de meilleures propriétés de stabilité.
@@ -332,7 +337,7 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     \subsubsection{DIRK}
 
       \paragraph{}
-      Les méthodes DIRK\cite{Alexander1977}, ou Diagonally Implicit Runge-Kutta methods, consistent à prendre la matrice $A$ du tableau de Butcher comme étant triangulaire inférieure.
+      Les méthodes DIRK \cite{Alexander1977}, ou Diagonally Implicit Runge-Kutta methods, consistent à prendre la matrice $A$ du tableau de Butcher comme étant triangulaire inférieure.
       Ainsi, seul les termes $a_{ii}$ sur la diagonale de $A$ donnent le caractère implicite à la méthode.
       À chaque itération, plutôt que de résoudre simultanément $k$ équations implicites de taille $N$ et non-linéaires, on propose ici de les résoudre successivement.
       L'équation (\ref{eq:rk_impl}) donnant l'intermédiaire de calcul devient :
@@ -344,9 +349,11 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
       En général, on résout une équation implicite en la linéarisant pour se ramener à la résolution d'un système matriciel.
       Dans ce cas, la matrice à inverser à l'étape $i$ est : $\operatorname{Id} - \Delta ta_{ii}\frac{\partial F}{\partial W}$.
       On remarque alors que si les $a_{ii}$ sont tous égaux, alors la matrice à inverser est la même pour chaque étape de la méthode.
-      En pratique, c'est un gros avantage car on peut alors factoriser la matrice une seule fois pour l'inverser à chaque étape.\GP{Référence?}
-      %GP : pas utile sauf référence...
-      %Ce genre de méthodes sont désignées comme étant les méthodes DIRK \cite{Alexander1977}.
+      En pratique, c'est un gros avantage car on peut alors factoriser la matrice une seule fois pour l'inverser à chaque étape.
+      \GP{Référence?}
+      \PS{Pas de "référence", c'est un constat immédiat : la matrice est la même pour chaque étape donc on la factorise une seule fois.}
+      Cette variante est appelée SDIRK (Singly Diagonally Implicit) \cite{HairerWanner1996}.
+
 
     \subsubsection{Méthodes de Rosenbrock}
 
@@ -357,7 +364,8 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
       En prenant l'image par $F$ de l'équation (\ref{eq:rk_dirk}), puis en linéarisant autour de $g_i = W_n + \Delta t\sum_{j = 1}^{i-1}a_{ij}F_{n,j}$, on cherche $F_{n,i} \approx F\left(W_{n,i}\right)$ sous la forme :
       \[F_{n,i} = F\left(g_i\right) + \Delta ta_{ii}\frac{\partial F}{\partial W}\left(g_i\right)F_{n,i}\ .\]
       Pour ne pas calculer la jacobienne de $F$ à chaque étape, on prendra $\frac{\partial F}{\partial W}\left(g_i\right) = \frac{\partial F}{\partial W}\left(W_n\right) = F'$.
-      En pratique, pour permettre plus de liberté dans le choix de la méthode de Rosenbrock, on remplacera le terme\footnote{\GP{Tu ne dis pas les conséquences mathématiques d'un tel changement}} $a_{ii}F'F_{n,i}$ par $F'\sum_{j=1}^i\gamma_jF_{n,j}$.
+      En pratique, pour permettre plus de liberté dans le choix de la méthode de Rosenbrock, on remplacera le terme $a_{ii}F'F_{n,i}$ par $F'\sum_{j=1}^i\gamma_jF_{n,j}$.
+      \footnote{\GP{Tu ne dis pas les conséquences mathématiques d'un tel changement}\PS{Pas non plus dans le texte de référence, je peux cependant remonter à la source pour trouver ça, mais est-ce que c'est pas un peu m'éloigner du sujet ?}}
       La méthode est donc :
       \begin{equation}\label{eq:rk_rosenbrock}
         \left\{\begin{aligned}

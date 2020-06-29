@@ -8,13 +8,15 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 
 \section{Contexte de résolution}
 
+  \subsection{Système linéaire creux}
+
     \paragraph{}
 		Comme cela a été mentionné, la taille des matrices rencontrées dans un problème typique de la simulation numérique de la dynamique des fluides est très grande.
 		Les matrices ont également une autre propriété : la creusité.
 		Puisque les matrices des systèmes linéaires à résoudre sont liées à une matrice jacobienne (voir équation (\ref{eq:linear})), un coefficient de la matrice symbolise une interaction entre deux points du maillage.
 		On comprend alors que si le graphe de ces interactions dépend du schéma de discrétisation et d'intégration spatiale, deux points éloignés dans le maillage ne seront normalement pas reliés.
 		Ainsi, les matrices présentent cette caractéristique notable qu'est la creusité et que l'on peut observer sur la figure \ref{fig:sparse}.
-		On y voit en effet que la majorité des coefficients du système linéaire \GP{est} 0.
+		On y voit en effet que la majorité des coefficients du système linéaire est 0.
 		En pratique, les matrices rencontrées sont tellement grandes qu'il n'est pas possible de les stocker et de les utiliser sous leur forme dense.
 		La propriété de creusité permettra d'utiliser des représentation astucieuses pour stocker les matrices en mémoire, telle que le format CSR (Compressed Sparse Row) \cite{Saad2003}.
 		Ces formats permettent à la fois d'économiser de l'espace en mémoire lors du stockage de la matrice, mais également de réaliser des opérations telles que le produit matrice vecteur plus efficacement qu'avec une matrice dense de même taille.
@@ -91,12 +93,10 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 
   \subsection{Principe des méthodes}
 
-		\paragraph{}
-    Les méthodes de Krylov s'imposent comme étant la norme dans le domaine de la dynamique des fluides numérique\footnote{\GP{Qui l'a dit? Ou as-tu trouve la reference?}}.
-	  Le principe d'une méthode de Krylov est de projeter le système linéaire sur un espace restreint appelé espace de Krylov, et d'y résoudre le système maintenant qu'il est plus petit.
-	  L'astuce va être dans le fait que ces espaces de Krylov sont emboîtés, et qu'à chaque nouvelle itération on utilise l'information accumulée lors des précédentes.
-		Les méthodes de Krylov s'imposent comme étant la norme dans le domaine de la dynamique des fluides numérique.
-		Le principe d'une méthode de Krylov est de projeter le système linéaire sur un espace restreint appelé espace de Krylov, et d'y résoudre le système maintenant qu'il est plus petit.
+    \paragraph{}
+    Les méthodes de Krylov s'imposent comme étant la norme dans le domaine de la dynamique des fluides numérique.
+    \footnote{\GP{Qui l'a dit? Ou as-tu trouve la reference?}\PS{Je voulais dire par là que de ce que j'ai vu, beaucoup de monde les utilise. Personne n'a explicitement dit ça, est ce que je remplace par : Les méthodes de Krylov semblent s'imposer dans le domaine de la dynamique des fluides.}}
+    Le principe d'une méthode de Krylov est de projeter le système linéaire sur un espace restreint appelé espace de Krylov, et d'y résoudre le système maintenant qu'il est plus petit.
 		L'astuce va être dans le fait que ces espaces de Krylov sont emboîtés, et qu'a chaque nouvelle itération on utilise l'information accumulée lors des précédentes.
 
 		\paragraph{}
