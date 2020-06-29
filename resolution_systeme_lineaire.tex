@@ -170,7 +170,7 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 	\subsection{GMRES}
 
 		\paragraph{}
-		La méthode GMRES consiste donc, à chaque itération $n$, à :
+		La méthode GMRES \cite{SaadSchultz1986} consiste donc, à chaque itération $n$, à :
 		\begin{itemize}
 			\item calculer le nouvel espace de Krylov $\krylov{n+1}$ à partir de $\krylov{n}$, donc d'après (\ref{eq:arnoldi_n+1}) de calculer le produit $Av_n$, puis de l'orthonormaliser sur les colonnes de $V_n$ pour obtenir $\widetilde{H}_n$ et $V_{n+1}$
 			\item trouver $x_n \in x_0 + \krylov{n}$ qui minimise la norme de $r_n = b - Ax_n$.
@@ -235,7 +235,7 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 		En effet, si une méthode itérative fait converger la norme de l'erreur ou celle du résidu vers 0, la vitesse de convergence dépend à la fois de la méthode et de la matrice à inverser.
 
 		\paragraph{}
-		On se rend compte en parcourant la litérature a convergence des méthode itératives est très fortement liée au conditionnement de l'opérateur $A$.
+		On se rend compte en parcourant la littérature \cite{Nevanlinna1994} que la convergence des méthode itératives est très fortement liée au conditionnement de l'opérateur $A$.
 		Le conditionnement d'une matrice inversible $A$ est :
 		\[\kappa\left(A\right) = \norm{A}\norm{A^{-1}}\]
 		et dépend donc de la norme choisie.
@@ -379,15 +379,16 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 		L'avantage de ces préconditionneurs est à nouveau qu'ils sont naturellement parallélisables.
 
 		\paragraph{Factorisation incomplète :}
-		quand on dispose d'une factorisation de $A$ (factorisation LU : $A = LU$, ou de Cholesky quand $A$ est hermitienne : $A = L\adj{L}$), et que la matrice $A$ est creuse, les matrices intervenant dans ces décomposition perdent la creusité.
-		On va donc garder ces matrices en leur imposant le pattern de creusité de $A$ :
-		\begin{itemize}
-			\item $M=\widetilde{L}\widetilde{U}$ avec $\widetilde{L}_{ij}=L_{ij}$ et $\widetilde{U}_{ij}=U_{ij}$ si $A_{ij}\neq0$ et $\widetilde{L}_{ij}=\widetilde{U}_{ij}=0$ sinon, pour la décomposition LU,
-			\item $M=\widetilde{L}\adj{\widetilde{L}}$ avec $\widetilde{L}_{ij}=L_{ij}$ si $A_{ij}\neq0$ et 0 sinon, pour la décomposition de Cholesky.
-		\end{itemize}
-		On peut généraliser cette factorisation incomplète en prenant le pattern de creusité de $A^k$, plus dense que le pattern de creusité de $A$ mais globalement creux.
+		quand on dispose d'une factorisation de $A$ et que la matrice $A$ est creuse, les matrices intervenant dans ces décomposition perdent la creusité.
+		On va donc garder ces matrices en leur imposant le pattern de creusité de $A$.
+    Par exemple, pour une décomposition LU, $A = LU$ avec $L$ et $U$ des matrices triangulaire, respectivement inférieure et supérieure.
+		On prend alors $M=\widetilde{L}\widetilde{U}$ avec $\widetilde{L}_{ij}=L_{ij}$ et $\widetilde{U}_{ij}=U_{ij}$ si $A_{ij}\neq0$ et $\widetilde{L}_{ij}=\widetilde{U}_{ij}=0$ sinon.
+    On appelle cette factorisation ILU, ou ILU(0).
+		On peut généraliser cette factorisation incomplète en prenant le pattern de creusité de $A^{k+1}$, plus dense que le pattern de creusité de $A$ mais globalement creux.
+    On parle alors de factorisation ILU($k$).
 		Cette famille de préconditionnement est souvent lourde à calculer, et nécessite de la mémoire, mais est réputée pour être efficace.
 		Elle s'avère cependant très avantageuse lorsque l'algorithme à préconditionner utilise déjà une factorisation de $A$.
+    Ces techniques de préconditionnement ILU sont souvent utilisées dans la communauté de dynamique des fluides numériques \cite{LiuZhangZhongEtAl2015, AhrabiMavriplis2020}.
 
 		\paragraph{Préconditionnement multigrille :}
 		cette méthode consiste à prendre $M$ comme étant l'approximation de $A$ sur une grille plus grossière.
@@ -427,7 +428,38 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 
 	\subsection{Redémarrage}
 
+    \paragraph{}
+    Nous avons vu que pour GMRES, la norme du résidu décroît, mais en général on comprend que l'erreur diminue à mesure que l'algorithme progresse.
+    Cependant, pour certaines méthodes, le coût de l'itération augmente avec le numéro de l'itération.
+    C'est en particulier vrai pour GMRES : à l'itération $n$ on orthonormalise l'image par $A$ du dernier vecteur de la base de Krylov $v_n$, pour obtenir le suivant $v_{n+1}$.
+    Ainsi, à l'étape $n$, on calcule $n$ produits scalaires.
+    On comprend donc que le coût algorithmique d'une itération augmente avec $n$.
+    De plus, on stocke en mémoire différentes matrices, et en particulier on stocke les vecteurs qui engendrent l'espace de Krylov : les colonnes de $V_n$.
+    Le coût en mémoire de ce stockage est $N\times n$, donc à mesure que $n$ augmente le besoin en mémoire de l'algorithme augmente aussi.
+    Nous avons vu dans l'introduction que la taille $N$ des problèmes rencontrés est très grande, et donc on ne peut pas se permettre d'utiliser autant de mémoire qu'on ne le souhaite.
 
+    \paragraph{}
+    Ainsi, pour des limitations de temps et d'espace mémoire, on ne peut pas réaliser un nombre trop grand d'itérations.
+    Une astuce est alors de faire un redémarrage de l'algorithme.
+    Après $n$ itérations, on a produit une valeur $x_n$ qui donne un résidu $r_n = b - Ax_n$.
+    Le redémarrage consiste à recommencer l'algorithme itératif en prenant $x_0\rightarrow 0$ et $b\rightarrow r_n$.
+
+    \paragraph{}
+    L'intérêt du redémarrage est multiple.
+    Tout d'abord, il permet de contrôler la taille nécessaire au fonctionnement de l'algorithme.
+    Pour une méthode de Krylov, il fixe par exemple la taille maximale de l'espace de Krylov construit.
+    En contrôlant la dimension de cet espace, on contrôle à la fois l'espace mémoire requis par l'algorithme, et dans le cas de GMRES le coût des itérations.
+    En pratique, on part de $r_0 = b - Ax_0$, on réalise $m$ itérations pour trouver $x_m$ et $r_m$, on pose alors $r_0 \rightarrow r_m$ et on commence un nouveau GMRES.
+    Le redémarrage peut être réalisé plusieurs fois, et on utilisera un critère d'arrêt basé sur le nombre total d'itérations ou sur la norme du résidu.
+
+    \paragraph{}
+    L’inconvénient du redémarrage est qu’on ne peut plus assurer la convergence en au plus $N$ itérations comme avec une méthode GMRES simple.
+    De plus, si l'espace de Krylov engendré par le redémarrage est trop similaire à l'espace engendré au départ, il y a un risque de stagnation de la norme du résidu \cite{Simoncini1999}.
+    Une solution peut être d'augmenter l'espace de recherche de l'itéré $x_n$ à chaque redémarrage en réutilisant de l'information du cycle précédent.
+    C'est ce que fait par exemple la méthode LGMRES \cite{BakerJessupManteuffel2005}.
+    Cette notion d'augmentation sera plus détaillée par la suite.
+    Il faut enfin choisir une valeur de $m$ appropriée, car une valeur trop petite risque de ralentir la convergence et même d’entraîner une stagnation du résidu, alors qu'une valeur trop grande est contraire à l’esprit du redémarrage, car nécessite un espace mémoire important et un grand nombre d’opérations.
+    Il n’y a pas de règle quand au choix de $m$, c’est l’expérience qui permet de fixer une valeur.
 
 
 	\subsection{Préconditionnement flexible}
