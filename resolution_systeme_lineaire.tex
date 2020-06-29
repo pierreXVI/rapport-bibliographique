@@ -422,3 +422,16 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 		Dans l'esprit des méthodes de Krylov, le préconditionnement n'a pas besoin d'être calculé explicitement.
 		On n'a seulement besoin de connaître son effet sur un vecteur.
 		En pratique, on ne calculera pas toujours $M^{-1}$, mais on résoudra $My = c$, en se contentant souvent d’une approximation.
+
+
+	\subsection{Redémarrage}
+
+
+
+
+	\subsection{Préconditionnement flexible}
+
+		\paragraph{}
+		Certains préconditionnements sont un peu plus complexes qu'une simple décomposition de l'opérateur.
+		C'est le cas du préconditionnement flexible.
+		Son principe est plutôt simple : il consiste à réaliser
