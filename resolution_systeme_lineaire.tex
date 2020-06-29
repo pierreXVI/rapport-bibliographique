@@ -502,3 +502,104 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 
     \paragraph{}
     Cette méthode FGMRES à très largement été étudiée \cite{CoulaudGiraudRametEtAl2013, Vasseur2016}, et utilisée en pratique dans des codes de calculs \cite{Pinel2010}.
+
+
+  \subsection{Augmentation, déflation}
+
+    \paragraph{}
+    Lorsque le redémarrage de GMRES a été présenté précédemment, nous avons dit qu'il y avait un risque de stagnation du résidu.
+    Le problème vient du fait que l'espace de Krylov créé après le redémarrage peut être proche de l'espace Krylov créé avant.
+    Pour corriger ce défaut, on utilise deux techniques : l'augmentation ou la déflation.
+    Ces deux variantes de GMRES sont en réalité équivalentes dans leurs résultats \cite{CoulaudGiraudRametEtAl2013}.
+
+    \paragraph{}
+    Lorsqu'on redémarre un cycle de GMRES, on perd toute l'information qu'on avait obtenue sur l'opérateur.
+    En effet, la relation d'Arnoldi (\ref{eq:arnoldi}) donne que :
+    \[\adj{V_n}AV_n = H_n\]
+    où $H_n$ est la matrice carrée extraite de $\widetilde{H}_n$, ou autrement dit $\widetilde{H}_n$ sans sa dernière ligne.
+
+    \paragraph{}
+    On appelle :
+    \begin{itemize}
+      \item valeurs de Ritz les valeurs propres de la matrice $H_n$
+      \item valeurs de Ritz harmoniques les valeurs propres de la matrice $H_n + h_{n+1,n}^2H_m^{*-1}e_n\transpose{e_n}$.
+    \end{itemize}
+    ou de manière équivalente, $\lambda\in\mathbb{K}$ est :
+    \begin{itemize}
+      \item une valeur de Ritz s'il existe $y\in\mathbb{K}^n$ tel que $H_ny = \lambda y$
+      \item une valeur de Ritz harmonique s'il existe $x \in \operatorname{Im}\left(V_n\right)$ tel que $Ax - \lambda x \perp \operatorname{Im}\left(V_{n+1}\right)$
+    \end{itemize}
+    La matrice $H_n$ grandit à chaque itération pour tendre vers la matrice $H$ qui est semblable à A et qui possède donc les mêmes valeurs propres.
+    On pense alors naïvement que le spectre de $H_n$ tend vers celui de $A$, et c'est effectivement ce qu'on observe.
+    On voit en fait que dès un petit nombre d'itération, les valeurs de Ritz donnent de l'information sur les valeurs propres de $A$ de grand module, et les valeurs de Ritz harmoniques sur les valeurs propres de $A$ de petit module \cite{Pinel2010, TrefethenBau1997}.
+
+    \paragraph{}
+    L'idée des techniques de déflation et d'augmentation est d'utiliser l'information spectrale au moment du redémarrage en cherchant plus astucieusement les directions de recherche.
+    On va ensuite augmenter ou projeter l'espace de recherche de la solution pour la trouver de manière plus efficace.
+
+
+    \subsubsection{Augmentation}
+
+      \paragraph{}
+      Pour l'augmentation, au lieu de chercher l'itéré $x_n \in x_0 + \krylov{n}$, on va le chercher comme $x_n \in x_0 + \krylov{n} \oplus \mathcal{W}$, avec $\mathcal{W}$ un sous espace vectoriel astucieusement choisi en fonction de l'information spectrale dont on dispose.
+
+      \paragraph{}
+      Par exemple, pour un opérateur ayant des valeurs propres de petits modules, puisqu'elles ralentissent la convergence, on peut calculer l'information de Ritz harmonique pour les estimer.
+      Il en irait de même si la matrice avait des valeurs propres de grand module, et on calculerait l'information de Ritz.
+      On peut ensuite prendre pour $\mathcal{W}$ le sous espace propre associé à ces valeurs.
+      C'est le principe des méthode de type "Deflated Restart" \cite{Vasseur2016, Morgan2002, Pinel2010}.
+      Malgré son nom, cette méthode utilise bien l'augmentation et pas la déflation.
+
+
+    \subsubsection{Déflation orthogonale}
+
+      \paragraph{}
+      Pour la déflation, on projette le problème linéaire sur un sous espace vectoriel $\mathcal{W}$, là aussi astucieusement choisi en fonction de l'information spectrale dont on dispose.
+
+      \paragraph{}
+      Supposons qu'on souhaite résoudre un système linéaire et qu'on dispose d'un sous-espace $\mathcal{W}$ de dimension $k$, avec $W\in\matrixsymb{N k}{K}$ dont les colonnes engendrent $\mathcal{W}$.
+      Puisque $\adj{\left(AW\right)}AW$ est hermitienne définie positive, donc inversible, on peut alors définir \cite{CoulaudGiraudRametEtAl2013} :
+      \begin{align*}
+        Q_1 &= AW\left(\adj{\left(AW\right)}AW\right)^{-1}\adj{\left(AW\right)} &&\textrm{projecteur orthogonal sur $A\mathcal{W}$} \\
+        P_1 &= \operatorname{Id} - Q_1 &&\textrm{projecteur orthogonal sur $\left(A\mathcal{W}\right)^\perp$} \\
+        P_2 &= \operatorname{Id} - A^{-1}Q_1A &&\textrm{projecteur orthogonal sur $\left(\mathcal{W}\right)^\perp$.}
+      \end{align*}
+      L'idée générale va ensuite être de "préconditionner" à gauche par $P_1$ et à droite par $P_2$ :
+      \begin{equation*}
+        \left\{
+        \begin{aligned}
+          P_1Ax_\perp &= P_1b\\
+          x_\perp &= P_2x
+        \end{aligned}
+        \right.\ .
+      \end{equation*}
+      En résolvant la première équation on trouve la solution $x_\perp$. La seconde équation n'étant pas inversible, on se contente de trouver un $x$ qui convient.
+
+      \paragraph{}
+      Plus précisément, on décompose $x$ en $x_\perp$ et $x_{//}$ :
+      \[x = x_\perp + x_{//}\quad\text{ avec }\quad x_\perp = P_2x\quad\text{ et }\quad x_{//} = x - P_2x\ .\]
+      Alors :
+      \begin{equation*}
+        \left\{
+        \begin{aligned}
+          Ax_{//} &= \left(\operatorname{Id} - P_1\right)b \\
+          Ax_\perp &= P_1b
+        \end{aligned}
+        \right.
+      \end{equation*}
+      On va ensuite résoudre l'équation $P_1Ax_\perp = P_1b$ avec une méthode itérative pour obtenir au bout de $n$ itérations une valeur de l'itéré $x_{\perp, n}$ et du résidu $r_{\perp, n} = P_1b - P_1Ax_{\perp, n}$.
+      Il faut maintenant "inverser" la projection.
+      Pour cela on prend comme approximation :
+      $$x_n = W\left(\adj{\left(AW\right)}AW\right)^{-1}\adj{\left(AW\right)}b + P_2x_{\perp, n}$$
+      pour avoir, par construction, le résidu $r_n = r_{\perp, n}$.
+
+      \paragraph{}
+      On peut voir la déflation comme un préconditionnement par un projecteur $P_1$, ce qui rend l'opérateur préconditionné $P_1A$ singulier, et l'itération d'Arnoldi peut ne pas terminer si
+      \[\operatorname{Im}\left(P_1A\right) \cap \operatorname{Ker}\left(P_1A\right) \neq \left\{0\right\}\ .\]
+      Ainsi, on s'assurera de prendre $\mathcal{W}$ un sous espace invariant par $A$ pour éviter cela.
+
+
+    \paragraph{}
+    Si la déflation permet de bien comprendre la théorie derrière ces concepts, l'augmentation est plus facile à implémenter et sera souvent préférée.
+    Ces méthodes ajoutent bien entendu de la complexité aux algorithmes, mais en manipulant des objets de taille $k \ll N$ ce qui est raisonnable.
+    Pour les mettre en place, une étude de l'opérateur est nécessaire affin de bien choisir l'espace $\mathcal{W}$.
