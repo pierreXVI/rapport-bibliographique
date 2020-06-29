@@ -4,16 +4,16 @@
 
 	\paragraph{}
 	La nécessité de la simulation numérique est aujourd'hui bien admise, tant dans le monde industriel que le monde académique.
-	Les entreprises comme les laboratoires de recherche ont besoin de pouvoir accéder à certaines grandeurs physiques associées à des phénomènes et à des régimes de fonctionnement \PS{bien particuliers.
+	Les entreprises comme les laboratoires de recherche ont besoin de pouvoir accéder à certaines grandeurs physiques associées à des phénomènes et à des régimes de fonctionnement bien particuliers.
 	Il arrive souvent que ces régimes ne soient pas réalisables à notre échelle, en raison de limitations matérielles ou financières.
-	}\footnote{\GP{Pas super bien dit...}\PS{Corrigé}}
+	
 	On peut prendre comme exemple l'étude du givrage qui a lieu sur la voilure d'un avion, qui est réalisable expérimentalement mais représente un budget imposant pour l’avionneur, ou bien l'étude des transferts thermiques d'une capsule de rentrée atmosphérique, bien plus difficile à réaliser expérimentalement.
 	Pour contourner ces limitations, la simulation numérique est la meilleure option, car elle permet de modéliser un tel cas d'étude par l’exécution d'un programme informatique, et d'obtenir un ensemble important de données qui seront analysées par la suite pour répondre aux questions souhaitées.
 
 	\paragraph{}
 	La simulation numérique n'est pas non plus un outil absolu ou parfait : si elle rend possible l'obtention de données inaccessible par l'expérimentation, elle nécessite cependant un travail de modélisation et de développement, des connaissances, et surtout un important travail de calcul informatique.
 	Par travail, on peut entendre ici une puissance de calcul multipliée par un temps de calcul : n'importe quelle machine ne peut pas réaliser n'importe quelle simulation, certains cas nécessitent des machines très puissantes, et même avec ces machines la simulation numérique n'est pas instantanée, et il est courant de lancer des calculs durant plusieurs semaines.
-	Dans certains cas, comme pour les écoulements turbulents à grands nombres de Reynolds, la simulation est même inaccessible.
+	Dans certains cas, comme pour les écoulements turbulents à grands nombres de Reynolds, la simulation \GP{de toutes les échelles de la turbulence} est même inaccessible.
 	\footnote{\GP{Les simulations turbulentes à grand nombre de Reynolds sont inaccessibles...}\PS{J'ai précisé.}}
 
 	\paragraph{}
@@ -66,7 +66,9 @@
 	\subsection{Le problème numérique}
 
 		\paragraph{}
-		Par différents procédés de discrétisation, l'équation physique (\ref{eq:edp_0}) est transformée en une autre équation que l'on pourrait qualifier de "numérique".
+		Par différents procédés %de discrétisation
+		\GP{mathématiques}, l'équation physique (\ref{eq:edp_0}) est transformée en une autre équation que l'on pourrait qualifier de %"numérique".
+		\GP{"discrétisée"}.
 		C'est cette équation que l'on résout en pratique.
 
 		\paragraph{}
@@ -80,7 +82,7 @@
 		\paragraph{}
 		Pour obtenir une solution de (\ref{eq:f=0}), on introduit la notion de pseudo-temps \cite{KelleyKeyes1996}.
 		En effet, utiliser un algorithme tel que la méthode de Newton de manière brute sur la fonction $\underline{\operatorname{f}}$ ne permet pas d'obtenir la solution en général.
-		Pour les cas qui nous intéressent, le second membre est fortement non-linéaire, et donc une simple méthode de Newton ne convergera pas.
+		Pour les cas qui nous intéressent, le second membre est fortement non-linéaire, et donc une simple méthode de Newton ne convergera pas \GP{toujours}.
 		L'autre possibilité est de résoudre le problème instationnaire en laissant le système converger vers sa solution stationnaire.
 		Cependant, résoudre l'évolution du système en fonction du temps depuis un état initial connu s'avère souvent plus coûteux que nécessaire, car les états intermédiaires ne nous intéressent pas.
 
