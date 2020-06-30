@@ -4,7 +4,7 @@
 Dans les chapitres précédents, nous avons présentés des outils extraits de la littérature permettant de résoudre des équations différentielles.
 Nous avons expliqué comment, en partant d'une équation aux dérivées partielles issue du modèle physique, nous arrivions après une étape de discrétisation numérique à une équation différentielle ordinaire.
 Des méthodes d'intégration temporelle ont été présentée afin de résoudre cette équation, et nous avons mis en avant une classe d'intégrateurs : les méthode implicites.
-Ces méthodes permettent de calculer l'état du système en résolvant des équations non linéaires, qui sont elles même résolue avec la solution de systèmes linéaires.
+Ces méthodes permettent de calculer l'état du système en résolvant des équations non-linéaires, qui sont elles même résolue avec la solution de systèmes linéaires.
 Enfin, nous avons identifié une méthode de Krylov, GMRES, et certaines de ses améliorations, pour pouvoir résoudre un système linéaire.
 
 \paragraph{}
@@ -12,65 +12,106 @@ Ce cheminement permet l'intégration temporelle de phénomènes physiques, mais 
 On peut envisager d'utiliser des méthodes et des techniques moins classiques pour arriver à nos fins.
 
 
-\section{Formulation sans matrice}
+\section{Pour la résolution du système linéaire}
 
-  \paragraph{}
-  Dans le cadre de la simulation numérique de grande dimension, une formulation apparaît comme très séduisante.
-  Il s'agit des méthodes Jacobian Free Newton Krylov (JFNK), utilisées pour résoudre le système linéaire.
-  Ces méthodes sont dites "sans matrices", car elles ne nécessitent pas la formation explicite de la matrice du système linéaire.
-  Cela n'est pas anodin, car puisqu'on travaille sur des maillages de très grande taille, la matrice est donc de très grande dimension.
-  La calculer a alors un certain coût algorithmique, et la stocker a un grand coût en mémoire.
 
-  \subsection{Calcul de la jacobienne}
+  \subsection{Formulation sans matrice}
 
     \paragraph{}
-    L'équation (\ref{eq:linear}) à laquelle nous étions arrivé cherchait à résoudre un système linéaire où la matrice à inverser était de la forme :
-    \[A = \operatorname{Id} - \Delta t\frac{\partial F}{\partial W}\left(W_0\right)\]
-    pour une certaine fonction $F$ que nous avions identifiée.
-    Former la jacobienne de $F$ est un problème à part entière.
-    En pratique, on réalise l'un des choix suivants.
+    Dans le cadre de la simulation numérique de grande dimension, une formulation apparaît comme très séduisante.
+    Il s'agit des méthodes Jacobian Free Newton Krylov (JFNK), utilisées pour résoudre le système linéaire.
+    Ces méthodes sont dites "sans matrices", car elles ne nécessitent pas la formation explicite de la matrice du système linéaire.
+    Cela n'est pas anodin, car puisqu'on travaille sur des maillages de très grande taille, la matrice est donc de très grande dimension.
+    La calculer a alors un certain coût algorithmique, et la stocker a un grand coût en mémoire.
+
+    \subsubsection{Calcul de la jacobienne}
+
+      \paragraph{}
+      L'équation (\ref{eq:linear}) à laquelle nous étions arrivé cherchait à résoudre un système linéaire où la matrice à inverser était de la forme :
+      \[A = \operatorname{Id} - \Delta t\frac{\partial F}{\partial W}\left(W_0\right)\]
+      pour une certaine fonction $F$ que nous avions identifiée.
+      Former la jacobienne de $F$ est un problème à part entière.
+      En pratique, on réalise l'un des choix suivants.
+
+      \paragraph{}
+      On peut former analytiquement la jacobienne à partir de l'expression de $F$.
+      Cela semble donc être le meilleur choix, car on aurait la valeur exacte de l'opérateur pour une complexité algorithmique moindre.
+      Cependant, cela nécessite un travail important des développeurs.
+      En pratique, un code de calcul a pour vocation d'évoluer en intégrant de nouveaux modèles physiques, et pour cette raison cette solution n'est pas toujours utilisée.
+      En effet, une modification ou un ajout d'un modèle entraînent une modification de la jacobienne, et le code doit être scrupuleusement adapté.
+      Le lourd travail de calcul analytique de la jacobienne, et la pénibilité de la gestion du code font que ce choix n'est pas le seul utilisé.
+      Certains codes de calcul se contentent eux d'une approximation analytique très grossière de la jacobienne.
+      Si cela permet de la former de manière très économe, nous verrons par la suite quels sont les inconvénients de ce choix.
+
+      \paragraph{}
+      On peut calculer la jacobienne à partir de $F$, en utilisant des différences finies.
+      En effet, la $i$\textsuperscript{ème} colonne de la jacobienne de $F$ peut être approchée par :
+      \[\frac{\partial F}{\partial W}\left(W_0\right)_i = \frac{F\left(W_0 + \varepsilon e_i\right) - F\left(W_0\right)}{\varepsilon} + O\left(\varepsilon\right)\]
+      pour un $\varepsilon$ suffisamment petit, avec $e_i$ le $i$\textsuperscript{ème} vecteur de la base canonique.
+      On pourrait atteindre une meilleure précision avec des différences finies centrées, cependant on dispose déjà, en général, de la valeur de $F\left(W_0\right)$, et les différences finies décentrées permettent donc d'économiser une évaluation de $F$.
+      Le choix du paramètre $\varepsilon$ doit être fait avec beaucoup de vigilance.
+      Une valeur trop grande donnerait une mauvaise approximation de la jacobienne, alors qu'une valeur trop faible entraînerait des erreurs d'arrondis numériques.
+      On pourrait envisager d'utiliser la méthode du "Complex-Step Differentiation" \footnote{\PS{J'ai une ref mais ça doit être à l'ONERA, donc TODO}} dans un code de calcul travaillant sur des nombres complexes, mais ce n'est pas notre cas a priori.
+
+      \paragraph{}
+      Calculer la jacobienne avec des différences finies donnerait une approximation à l'ordre 1 pour un coût de calcul important : cela nécessite $N$ évaluations de la fonction $F$.
+      Pour éviter ces opérations coûteuses, on peut utiliser un coloriage de la jacobienne \cite{GebremedhinMannePothen2005}.
+      Cela consiste à identifier des colonnes "indépendantes", auxquelles on associe une couleur, qu'on va calculer par une unique différence finie.
+      On peut calculer un coloration de la jacobienne car on peut en général obtenir son pattern de creusité facilement puisqu'un connaît le schéma de discrétisation du code.
+
+    \subsubsection{JFNK}
+
+      \paragraph{}
+      Plutôt que de calculer entièrement la jacobienne, chose coûteuse en temps et en mémoire comme on l'a dit précédemment, on peut se contenter d'approcher son action.
+      En effet, lorsque nous avions introduit les méthodes de Krylov, nous avions remarqué qu'il n'était pas nécessaire de connaître explicitement $A$, mais seulement de pouvoir calculer le produit $Av$ pour un vecteur $v$ donné.
+      L'idée des méthodes JFNK est donc de prendre, pour $v$ donné,
+      \[Av = \left(\operatorname{Id} - \Delta t\frac{\partial F}{\partial W}\left(W_0\right)\right)v \approx v - \Delta t\frac{F\left(W_0 + \varepsilon v\right) - F\left(W_0\right)}{\varepsilon}\ .\]
+
+      \paragraph{}
+      Là aussi, le paramètre $\varepsilon$ doit être consciencieusement choisi.
+      Des études nous guident vers certains choix pour la valeur de ce paramètre \cite{KnollKeyes2004}.
+      Un avantage de cette approximation de la jacobienne apparaît pour les calculs multiphysiques.
+      Pour ces applications, les physiques ont souvent des échelles de variations différentes, donc on ne peut pas prendre $\varepsilon$ adapté à toutes les physiques.
+      Ce n'est pas un problème, au contraire, puisqu'on prendra un $\varepsilon$ par physique \cite{Turpault2003}.
+
+      \paragraph{}
+      Ces algorithmes JFNK ont démontré leur utilité sur des applications concrètes \cite{LiuZhangZhongEtAl2015, FrancoCamierAndrejEtAl2020}.
+
+
+  \subsection{Différenciation Automatique}
 
     \paragraph{}
-    On peut former analytiquement la jacobienne à partir de l'expression de $F$.
-    Cela semble donc être le meilleur choix, car on aurait la valeur exacte de l'opérateur pour une complexité algorithmique moindre.
-    Cependant, cela nécessite un travail important des développeurs.
-    En pratique, un code de calcul a pour vocation d'évoluer en intégrant de nouveaux modèles physiques, et pour cette raison cette solution n'est pas toujours utilisée.
-    En effet, une modification ou un ajout d'un modèle entraînent une modification de la jacobienne, et le code doit être scrupuleusement adapté.
-    Le lourd travail de calcul analytique de la jacobienne, et la pénibilité de la gestion du code font que ce choix n'est pas le seul utilisé.
-    Certains codes de calcul se contentent eux d'une approximation analytique très grossière de la jacobienne.
-    Si cela permet de la former de manière très économe, nous verrons par la suite quels sont les inconvénients de ce choix.
+    Si les méthodes JFNK offrent de bonnes performances, elles ont un défaut qui est l'erreur induite sur l'approximation de la jacobienne.
+    Si la jacobienne est mal approximé, alors le système linéaire résolu n'est pas le bon, et donc la résolution de l'équation non-linéaire sera gênée.
+    Une solution applicable est l'utilisation de la Différenciation Automatique (AD) \cite{Griewank2000}.
+    Cela consiste à "dériver" à l'aide d'un programme externe \cite{HascoeetPascual2012} le code source de notre solveur.
 
     \paragraph{}
-    On peut calculer la jacobienne à partir de $F$, en utilisant des différences finies.
-    En effet, la $i$\textsuperscript{ème} colonne de la jacobienne de $F$ peut être approchée par :
-    \[\frac{\partial F}{\partial W}\left(W_0\right)_i = \frac{F\left(W_0 + \varepsilon e_i\right) - F\left(W_0\right)}{\varepsilon} + O\left(\varepsilon\right)\]
-    pour un $\varepsilon$ suffisamment petit, avec $e_i$ le $i$\textsuperscript{ème} vecteur de la base canonique.
-    On pourrait atteindre une meilleure précision avec des différences finies centrées, cependant on dispose déjà, en général, de la valeur de $F\left(W_0\right)$, et les différences finies décentrées permettent donc d'économiser une évaluation de $F$.
-    Le choix du paramètre $\varepsilon$ doit être fait avec beaucoup de vigilance.
-    Une valeur trop grande donnerait une mauvaise approximation de la jacobienne, alors qu'une valeur trop faible entraînerait des erreurs d'arrondis numériques.
-    On pourrait envisager d'utiliser la méthode du "Complex-Step Differentiation" \footnote{\PS{J'ai une ref mais ça doit être à l'ONERA, donc TODO}} dans un code de calcul travaillant sur des nombres complexes, mais ce n'est pas notre cas a priori.
+    Un avantage de la différenciation automatique est que son coût n'est payé qu'à la compilation du code, au moment de sa différenciation.
+    Après cela, le calcul de la jacobienne se fait par le simple appel à une fonction, qui a été automatiquement produite par l'outil.
+    Un autre avantage est que le résultat obtenu est exact, et non approché.
+    La précision obtenue est alors bien meilleure qu'avec des différences finies.
 
     \paragraph{}
-    Calculer la jacobienne avec des différences finies donnerait une approximation à l'ordre 1 pour un coût de calcul important : cela nécessite $N$ évaluations de la fonction $F$.
-    Pour éviter ces opérations coûteuses, on peut utiliser un coloriage de la jacobienne \cite{GebremedhinMannePothen2005}.
-    Cela consiste à identifier des colonnes "indépendantes", auxquelles on associe une couleur, qu'on va calculer par une unique différence finie.
-    On peut calculer un coloration de la jacobienne car on peut en général obtenir son pattern de creusité facilement puisqu'un connaît le schéma de discrétisation du code.
-
-
-  \subsection{JFNK}
+    Une idée est alors d'utiliser les avantages de JFNK avec la précision de la différenciation automatique.
+    En effet, si l'AD peut former explicitement la jacobienne, elle peut plus rapidement encore calculer son action sur un vecteur.
+    On va donc alors utiliser une méthode de Krylov, par exemple GMRES, sans former explicitement la matrice à inverser mais en calculant seulement son action sur un vecteur avec l'AD.
 
     \paragraph{}
-    Plutôt que de calculer entièrement la jacobienne, chose coûteuse en temps et en mémoire comme on l'a dit précédemment, on peut se contenter d'approcher son action.
-    En effet, lorsque nous avions introduit les méthodes de Krylov, nous avions remarqué qu'il n'était pas nécessaire de connaître explicitement $A$, mais seulement de pouvoir calculer le produit $Av$ pour un vecteur $v$ donné.
-    L'idée des méthodes JFNK est donc de prendre, pour $v$ donné,
-    \[Av = \left(\operatorname{Id} - \Delta t\frac{\partial F}{\partial W}\left(W_0\right)\right)v \approx v - \Delta t\frac{F\left(W_0 + \varepsilon v\right) - F\left(W_0\right)}{\varepsilon}\ .\]
+    Si la différenciation automatique n'est pas très largement utilisée par la communauté de CFD, elle séduit de plus en plus \cite{BilanceriBeuxElmahiEtAl2011, KenwayMaderHeEtAl2019}.
+    \footnote{\PS{Parler d'ELSA qui s'y met, ou alors on les aime pas donc on en parle pas ? Si oui je pense pouvoir trouver un doc où ils comparent les perfo avec/sans AD.}}
+
+
+\section{Pour l'intégration temporelle}
+
+  \subsection{Méthodes IMEX}
 
     \paragraph{}
-    Là aussi, le paramètre $\varepsilon$ doit être consciencieusement choisi.
-    Des études nous guident vers certains choix pour la valeur de ce paramètre \cite{KnollKeyes2004}.
-    Un avantage de cette approximation de la jacobienne apparaît pour les calculs multiphysiques.
-    Pour ces applications, les physiques ont souvent des échelles de variations différentes, donc on ne peut pas prendre $\varepsilon$ adapté à toutes les physiques.
-    Ce n'est pas un problème, au contraire, puisqu'on prendra un $\varepsilon$ par physique \cite{Turpault2003}.
+    Dans la partie sur les méthodes d’intégration temporelle nous avons mis en évidence l'opposition entre les méthodes explicites et les méthodes implicites.
+    Nous avons alors expliqué que pour notre cadre d'application il était nécessaire d'utiliser des méthodes implicites.
+    La raison venait du fait que nous souhaitons utiliser des grands pas de temps, et que les méthodes explicites seront instables dans ce cas.
 
     \paragraph{}
-    Ces algorithmes JFNK ont démontré leur utilité sur des applications concrètes \cite{LiuZhangZhongEtAl2015, FrancoCamierAndrejEtAl2020}.
+    L’inconvénient des méthodes implicites est leur lourd coût de calcul.
+    Une idée permet alors d'alléger ce coût.
+    Pour

@@ -293,7 +293,7 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
       \end{aligned}\right.\ .
     \end{equation}
     Par rapport à la méthode classique (\ref{eq:rk}), on voit que toutes les étapes de calcul interviennent lorsqu'on veut en calculer une.
-    Ainsi, pour chaque étape de la méthode Runge-Kutta implicite, on est amené à résoudre une équation non linéaire.
+    Ainsi, pour chaque étape de la méthode Runge-Kutta implicite, on est amené à résoudre une équation non-linéaire.
     Le surcoût de chaque itération est alors non négligeable.
 
     \paragraph{}
@@ -301,16 +301,15 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     Pour une méthode explicite, la matrice $A = \left(a_{ij}\right)_{1\leq i, j\leq k}$ est triangulaire inférieure.
     Pour la version implicite, elle est quelconque.
     Concrètement, cela veut dire qu'a l'étape $i$, on a besoin de toutes les étapes $j$ telles que $a_{ij}\neq 0$, sans avoir nécessairement $j < i$.
-    Ainsi, les étapes doivent se résoudre simultanément en calculant la solution d'un système de $k$ équations non linéaires.
+    Ainsi, les étapes doivent se résoudre simultanément en calculant la solution d'un système de $k$ équations non-linéaires.
     On rappelle alors que chaque équation est en fait déjà une équation de dimension $N$ supposée grande.
     On comprend donc pourquoi ces méthodes sont particulièrement coûteuses d'un point de vue numérique.
 
     \paragraph{}
     Malgré leur coût, les méthodes de Runge-Kutta implicites séduisent la communauté numérique.
     La principale raison est qu'elles permettent d'atteindre un ordre élevé.
-    Par exemple, les méthodes basées sur des quadratures de Gauss-Legendre de taille $k$ ont un ordre $2k$.
-    On peut même en théorie atteindre un ordre arbitrairement grand.
-    \PS{citer Iserles, Arieh (1996), A First Course in the Numerical Analysis of Differential Equations ou enlever.}\GP{Oui, citer !}\PS{Mais j'arrive pas à le trouver. J'ai lu que le résultat du paragraphe est montré dedans mais j'aimerai bien le vérifier avant !}
+    Par exemple, les méthodes basées sur des quadratures de Gauss-Legendre de taille $k$ ont un ordre $2k$ \cite{Iserles2008}.
+    On peut donc en théorie atteindre un ordre arbitrairement grand avec ces méthodes.
 
     \paragraph{}
     Si ces méthodes sont bien plus coûteuses que leur équivalents explicites, elle possèdent de meilleures propriétés de stabilité.
@@ -324,7 +323,7 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     \begin{align*}
       y &= y_ne + \Delta t\alpha Ay \\
       \Rightarrow y &= y_n\left(\operatorname{Id} - \Delta t\alpha A\right)^{-1}e\ .
-    \end{align*}    Ainsi, pour chaque étape de la méthode Runge-Kutta implicite, on est amené à résoudre une équation non linéaire.
+    \end{align*}    Ainsi, pour chaque étape de la méthode Runge-Kutta implicite, on est amené à résoudre une équation non-linéaire.
 
     Ainsi :
     \[y_{n+1} = \left(1 + \Delta t\alpha\transpose{b}\left(\operatorname{Id} - \Delta t\alpha A\right)^{-1}e\right)y_n\ .\]
