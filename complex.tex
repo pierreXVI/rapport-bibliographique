@@ -104,7 +104,7 @@ On peut envisager d'utiliser des méthodes et des techniques moins classiques po
 
 \section{Pour l'intégration temporelle}
 
-  \subsection{Méthodes IMEX}
+  \subsection{Méthodes ASIRK}
 
     \paragraph{}
     Dans la partie sur les méthodes d’intégration temporelle nous avons mis en évidence l'opposition entre les méthodes explicites et les méthodes implicites.
@@ -114,4 +114,9 @@ On peut envisager d'utiliser des méthodes et des techniques moins classiques po
     \paragraph{}
     L’inconvénient des méthodes implicites est leur lourd coût de calcul.
     Une idée permet alors d'alléger ce coût.
-    Pour
+    Considérons par exemple que le second membre de l'équation différentielle (\ref{eq:edo}) puisse se décomposer en une partie non raide $f$ et une partie raide $g$ :
+    \[\frac{\partial W}{\partial t} = f\left(W\right) + g\left(W\right)\ .\]
+    On peut envisager dans notre cas de prendre pour l'opérateur raide le flux associé à la turbulence visqueuse dans la couche limite, ou encore associé à la chimie réactive.
+    L'idée est alors d'intégrer $g$ implicitement, car la raideur nous l'oblige, et d'intégrer $f$ explicitement, car on peut le faire et qu
+    Introduit dans \cite{Zhong1996}.
+    Utilisé dans \cite{HuangPerssonZahr2019}.
