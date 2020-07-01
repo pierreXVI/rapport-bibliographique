@@ -7,7 +7,7 @@ Dans cette partie sont présentés les différents codes et bibliothèques que j
 \section{CEDRE}
 
   \paragraph{}
-  Le code CEDRE est développé par le Département Multi-Physique pour l'Énergétique de l'ONERA.
+  Le code CEDRE est développé en Fortran par le Département Multi-Physique pour l'Énergétique de l'ONERA.
   C'est un code à visée industrielle, qui est aujourd'hui utilisé par des entreprises comme ArianeGroup, Safran, MBDA ou encore la DGA.
   CEDRE est en réalité une plateforme logicielle comportant plusieurs solveurs associés à différents modèles physiques, et des outils numériques pour le maillage, la visualisation des résultats, ...
 
@@ -19,17 +19,49 @@ Dans cette partie sont présentés les différents codes et bibliothèques que j
   Si la simulation des problèmes instationnaires avec CEDRE est satisfaisante, ce n'est pas le cas de l'intégration implicite des problèmes stationnaires, et c'est ce qui motive ma thèse.
   La résolution implicite est aujourd'hui basée sur une méthode d'Euler implicite, qui utilise un algorithme GMRES basique \cite{Selva1998}.
   Nous voulons dire par basique que si des tentatives d'améliorations ont été faites, avec un préconditionneur polynomial par exemple, les utilisateurs aujourd'hui n'utilisent qu'un préconditionneur diagonal par bloc, et réalisent quelques itérations de GMRES, sans redémarrage ni préconditionnement supplémentaire.
-  \footnote{\PS{C'est un peu méchant, je dramatise un peu pour donner du rythme au récit, mais en vrai il y a quand même eu des choses de faites, le MG par exemple. Du coup est-ce que je peux laisser ou est-ce que je reformule ?}}
+  \footnote{\PS{C'est un peu méchant, je dramatise un peu pour "donner du rythme au récit", mais en vrai il y a quand même eu des choses de faites, le MG par exemple. Du coup est-ce que je laisse ou est-ce que je reformule ?}}
 
   \paragraph{}
   Parmi les solveurs de CEDRE, je m'intéresse tout particulièrement à celui des écoulements compressibles multifluides, réactifs et turbulents : CHARME.
   CHARME utilise une formulation volumes finis, qui a brièvement été présentée dans l'introduction, et offre un choix de méthodes d'intégrations explicites et implicites.
   De plus, CHARME prend avantage du modèle physique et propose un préconditionnement basé sur la physique : un préconditionnement bas Mach \cite{Turkel1987}.
 
+  \paragraph{}
+  Le but de ma thèse est donc de m'intéresser à des méthodes d'intégration temporelle adaptées à la résolution des équations stationnaires.
+  CEDRE inclut un algorithme GMRES, donc je me suis tourné vers cette méthode et ses améliorations, avec en particulier la méthode flexible FGMRES présentée précédemment dans ce rapport.
+  La jacobienne intervenant dans la matrice du système linéaire étant formée de manière très grossière, je m'intéresse également à une formulation sans matrice, JFNK, pour résoudre plus précisément l'équation non-linéaire.
 
-\section{PETSc}
-% 		\cite{petsc-web-page, petsc-user-ref, petsc-efficient}, PETSc TS \cite{AbhyankarBrownConstantinescuEtAl2018}
+  \paragraph{}
+  Cependant, CEDRE est un code massif, dans lequel le développement de nouvelles méthodes n'est pas aisé.
+  Pour cette raison, je n'utiliserai pas uniquement ce solveur durant ma thèse.
 
 
 \section{Code maquette}
-%     \cite{PoinsotLele1992}
+
+  \paragraph{}
+  Pour se permettre de développer et d'analyser plus facilement de nouvelles méthodes de résolution, il a été décidé qu'il serait bon de disposer d'un code de calcul plus petit, qui servirait de maquette.
+
+  \subsection{Structure du code}
+
+    \paragraph{}
+    Ce code réalisé en C se base sur la librairie PETSc, présentée dans la suite.
+    Pour garder une cohérence avec CEDRE, il utilise des maillages non-structurés, et une formulation volumes finis.
+    Puisque ce code est développé par mes soins, j'ai du me documenter sur certains aspects de la simulation numérique qui ne concernent pas directement ma thèse.
+    Un travail de recherche à donc été mené pour le développement de la méthode d'intégration spatiale volumes finis \cite{EymardGallouetHerbin2000}, ou pour le traitement des conditions limites \cite{PoinsotLele1992}.
+
+
+
+    \paragraph{}
+    L'avantage de ce code est qu'il utilise entièrement les structures de données offertes par PETSc, et donc profite au maximum des capacités de la librairie.
+    L'ajout d'un type de condition limite, d'un solveur de Riemann, ou d'
+
+  \subsection{PETSc}
+
+  \paragraph{}
+  La librairie PETSc (prononcé "pèt-si") regroupe un ensemble de structure de données et de fonctions pour la résolution parallèle d'équations aux dérivées partielles.
+  \cite{petsc-web-page, petsc-user-ref, petsc-efficient}
+
+
+
+, PETSc TS \cite{AbhyankarBrownConstantinescuEtAl2018}
+%
