@@ -1,0 +1,35 @@
+\chapter{Programmes et bibliothèques}
+
+\paragraph{}
+L'objectif de ma thèse est d'apporter des améliorations à l'intégration temporelle d'un code multiphysique.
+Dans cette partie sont présentés les différents codes et bibliothèques que je suis amené à développer et utiliser.
+
+\section{CEDRE}
+
+  \paragraph{}
+  Le code CEDRE est développé par le Département Multi-Physique pour l'Énergétique de l'ONERA.
+  C'est un code à visée industrielle, qui est aujourd'hui utilisé par des entreprises comme ArianeGroup, Safran, MBDA ou encore la DGA.
+  CEDRE est en réalité une plateforme logicielle comportant plusieurs solveurs associés à différents modèles physiques, et des outils numériques pour le maillage, la visualisation des résultats, ...
+
+  \paragraph{}
+  CEDRE permet de résoudre des simulations numériques de problèmes multiphysiques en couplant ses différents solveurs, tels que des écoulements réactifs, des gouttes et particules, du rayonnement, de la conduction thermique dans les solides ou encore des films liquides.
+  CEDRE utilise des maillages non-structurés, et permet même l'utilisation de maillages dynamiques pour simuler des déplacements et déformations de corps.
+
+  \paragraph{}
+  Si la simulation des problèmes instationnaires avec CEDRE est satisfaisante, ce n'est pas le cas de l'intégration implicite des problèmes stationnaires, et c'est ce qui motive ma thèse.
+  La résolution implicite est aujourd'hui basée sur une méthode d'Euler implicite, qui utilise un algorithme GMRES basique \cite{Selva1998}.
+  Nous voulons dire par basique que si des tentatives d'améliorations ont été faites, avec un préconditionneur polynomial par exemple, les utilisateurs aujourd'hui n'utilisent qu'un préconditionneur diagonal par bloc, et réalisent quelques itérations de GMRES, sans redémarrage ni préconditionnement supplémentaire.
+  \footnote{\PS{C'est un peu méchant, je dramatise un peu pour donner du rythme au récit, mais en vrai il y a quand même eu des choses de faites, le MG par exemple. Du coup est-ce que je peux laisser ou est-ce que je reformule ?}}
+
+  \paragraph{}
+  Parmi les solveurs de CEDRE, je m'intéresse tout particulièrement à celui des écoulements compressibles multifluides, réactifs et turbulents : CHARME.
+  CHARME utilise une formulation volumes finis, qui a brièvement été présentée dans l'introduction, et offre un choix de méthodes d'intégrations explicites et implicites.
+  De plus, CHARME prend avantage du modèle physique et propose un préconditionnement basé sur la physique : un préconditionnement bas Mach \cite{Turkel1987}.
+
+
+\section{PETSc}
+% 		\cite{petsc-web-page, petsc-user-ref, petsc-efficient}, PETSc TS \cite{AbhyankarBrownConstantinescuEtAl2018}
+
+
+\section{Code maquette}
+%     \cite{PoinsotLele1992}
