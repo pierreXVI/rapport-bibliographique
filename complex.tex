@@ -188,4 +188,46 @@ On peut envisager d'utiliser des méthodes et des techniques moins classiques po
 
     \paragraph{}
     Si ce rapport tente de rassembler les méthodes les plus connues il existe bien entendu d'autres méthodes pour l'intégration temporelle des équations.
-    On peut par exemple considérer l'intégration en temps parallèle 
+
+    \subsubsection{Intégration parallèle en temps}
+
+      \paragraph{}
+      Pour l'intégration parallèle en temps, le paradigme change quelque peu.
+      On cherche à intégrer notre équation différentielle sur un segment $\left[0, T\right]$, que l'on subdivise en $N$ segments $\left[t_n, t_{n+1}\right]$, avec $t_{n+1} - t_n = \Delta t$.
+      On définit ensuite la fonction $I_{\Delta t}$ associé à notre méthode d'intégration numérique, qui admet comme image de $U_n$ le résultat donné par la méthode lorsqu'on intègre l'équation différentielle sur un temps $\Delta t$ à partir de la condition initiale $U_n$.
+      Pour qu'il y ait continuité de la solution entre chaque segment temporel, il faut, en plus de la condition initiale $U_0 = W_0$,
+      \[\forall n\in  [\![0, N[\![\ ,\quad I_{\Delta t}\left(U_n\right) = U_{n+1}\ .\]
+
+      \paragraph{}
+      On peut alors reformuler le problème autrement, les valeurs aux extrémités des segments $\bar{U} = \transpose{\left(U_0, \dots, U_N\right)}$ forment la solution de :
+      \[F\left(\bar{U}\right) = \begin{pmatrix}U_0 - W_0 \\ \vdots \\ U_{n+1} - I_{\Delta t}\left(U_n\right) \\ \vdots\end{pmatrix} = 0\]
+      qui peut être résolue à l'aide d'une méthode de Newton, composante par composante, de manière parallèle.
+
+      \paragraph{}
+      Cette méthode inspirée du Multiple Shooting \cite{Nievergelt1964} donne la méthode Pararéel (Parareal en anglais) \cite{LionsMadayTurinici2001}.
+      La méthode Pararéel et le Multiple-Shooting sont en pratique équivalent, à une approximation près \cite{GanderVandewalle2007}.
+      La différence est qu'avec le Parareal on approche la jacobienne de $I_{\Delta t}$ intervenant dans la résolution de la méthode de Newton par une différence finie d'une méthode d'intégration moins précise, et très facile à calculer, utilisant un plus grand pas de temps.
+
+      \paragraph{}
+      D'autres algorithmes d'intégration parallèle en temps existent, et ont été utilisés pour résoudre des écoulements turbulents \cite{Lunet2018}.
+      Cependant, si de plus en plus de monde semble s'y intéresser, ils se basent sur une approche totalement différente des méthodes classiques, et nécessitent une refonte totale d'un solveur.
+      Ce n'est pas une option dans le cadre de ma thèse, l'objectif n'étant pas de créer un solveur de toute pièce mais d'améliorer un déjà existant.
+
+
+    \subsubsection{Méthodes spectrales en temps}
+
+      \paragraph{}
+      Après avoir traité l'intégration spatiale de manière parallèle, on s'est intéressé à l'intégration temporelle, comme décrit dans la section précédente.
+      Il en va de même avec l'analyse spectrale : après avoir développé des méthodes d'intégration spatiale se basant sur de l'analyse spectrale, on fait aujourd'hui de même avec l'intégration temporelle.
+      Au départ introduit pour des problèmes periodiques et testés sur des applications de dynamique des fluides \cite{GopinathJamesony2005, GopinathJameson2006}, cette méthode consiste à prendre la transformée de Fourier de l'équation aux dérivés partielles, de résoudre l'équation obtenue et de prendre la transformée de Fourier inverse de la solution.
+
+      \paragraph{}
+      Cette méthode est valable pour les problèmes periodiques dont la période est connue, mais au fil des développements on arrive à des méthodes applicables à des problèmes dont la période n'est pas connue, et même des problème apériodiques \cite{EkiciDjeddiLiEtAl2020}.
+      Cependant, tout comme pour les méthodes d'intégration parallèle en temps, l'utilisation de telles méthodes entraînerait une refonte du solveur, ce qui n'est pas souhaité dans le cadre de ma thèse.
+
+
+    \subsubsection{Modification de l'équation}
+
+      \paragraph{}
+      Une solution pour aider à l'obtention d'une solution stationnaire d'une équation aux dérivées partielle peut être de résoudre une autre équation, plus facile à résoudre, menant à la même solution.
+      Pour une équation d'advection diffusion, donc par exemple les équations de Navier-Stokes, on propose dans \cite{CouletteFranckHelluyEtAl2019} une méthode de relaxation permettant d'obtenir une méthode plus robuste et parallélisable qu'une méthode implicite classique.
