@@ -104,7 +104,7 @@ On peut envisager d'utiliser des méthodes et des techniques moins classiques po
 
 \section{Pour l'intégration temporelle}
 
-  \subsection{Méthodes ASIRK}
+  \subsection{Méthodes IMEX}
 
     \paragraph{}
     Dans la partie sur les méthodes d’intégration temporelle nous avons mis en évidence l'opposition entre les méthodes explicites et les méthodes implicites.
@@ -117,6 +117,75 @@ On peut envisager d'utiliser des méthodes et des techniques moins classiques po
     Considérons par exemple que le second membre de l'équation différentielle (\ref{eq:edo}) puisse se décomposer en une partie non raide $f$ et une partie raide $g$ :
     \[\frac{\partial W}{\partial t} = f\left(W\right) + g\left(W\right)\ .\]
     On peut envisager dans notre cas de prendre pour l'opérateur raide le flux associé à la turbulence visqueuse dans la couche limite, ou encore associé à la chimie réactive.
-    L'idée est alors d'intégrer $g$ implicitement, car la raideur nous l'oblige, et d'intégrer $f$ explicitement, car on peut le faire et qu
-    Introduit dans \cite{Zhong1996}.
-    Utilisé dans \cite{HuangPerssonZahr2019}.
+    L'idée est alors d'intégrer $g$ implicitement, car la raideur nous l'oblige, et d'intégrer $f$ explicitement, car on peut le faire et que c'est plus économe.
+    Autrement dit, pour reprendre les termes de l'analyse de stabilité des méthodes, on intègre avec une méthode explicite la partie de $F$ correspondant aux valeurs propres dans le domaine de stabilité, et on intègre les autres valeurs propres avec une méthode implicite.
+    Cette méthodologie est nommée IMEX, pour IMplicite-EXplicite.
+
+    \paragraph{paragraph name}
+    On peut par exemple utiliser une méthode de Runge-Kutta explicite, couplée à une méthode de Runge-Kutta implicite, pour obtenir une méthode ASIRK (Additive Semi-Implicit Runge-Kutta) \cite{Zhong1996}.
+    Le schéma devient alors une somme entre le schéma explicite (\ref{eq:rk}) et l'implicite (\ref{eq:rk_impl}) :
+    \[\left\{\begin{aligned}
+      W_{n+1} &= W_n + \Delta t\sum_{i = 1}^k\hat{b}_if\left(W_{n,i}\right) + \Delta t\sum_{i = 1}^kb_ig\left(W_{n,i}\right)\\
+      \;\textrm{avec}\quad W_{n,i} &= W_n + \Delta t\sum_{j = 1}^{i-1}\hat{a}_{ij}f\left(W_{n,j}\right) + \Delta t\sum_{j = 1}^{i}a_{ij}g\left(W_{n,j}\right) \\
+    \end{aligned}\right.\ .\]
+
+    \paragraph{}
+    On peut ensuite développer tout un ensemble de variantes, en utilisant pour le schéma implicite une méthode DIRK, ou encore de Rosenbrock.
+    Si pour ce genre de méthodes, les notions d'ordre et de stabilité doivent être approfondies, on peut développer des méthodes A-stable d'ordre arbitrairement élevé.
+    Cependant, comme pour les méthodes de Runge-Kutta implicites, plus l'ordre de la méthode augmente et moins celle ci est réalisable sur les ordinateurs d'aujourd'hui.
+
+    \paragraph{}
+    Aujourd'hui, ces méthodes ASIRK sont encore d'actualité, et on trouve des utilisations sur des cas concrets comme des calculs d'interactions fluide structure \cite{HuangPerssonZahr2019}.
+
+
+  \subsection{Méthode de Newton pour la multiphysique}
+
+    \paragraph{}
+    En suivant la même idée que pour les méthodes IMEX, on peut séparer l'opérateur autrement.
+    On cherche ici à obtenir la solution de l'équation stationnaire, soit
+    \[0 = F\left(W\right)\ .\]
+    On considère maintenant que le second membre $F$ correspond à un problème multiphysique et peut être décomposée sous la forme :
+    \[F\left(W\right) = \left(F_1\left(W\right), F_2\left(W\right)\right) \quad\textrm{avec}\quad W = \left(W_1, W_2\right)\ .\]
+
+    \paragraph{}
+    Une méthode classique pour résoudre l'équation stationnaire est d'utiliser une méthode de Newton sur $F$.
+    Cependant, comme mentionné lors de l'introduction, l'algorithme aura du mal à converger à cause de la forte non-linéarité de $F$.
+
+    \paragraph{}
+    Une autre idée est alors d'utiliser une méthode du point fixe :
+    À l'itération $k$, en connaissant $W_k = \left(W_{1,k}, W_{2,k}\right)$, on résout :
+    \[\left\{\begin{aligned}
+      F_1\left(W_{1*}, W_{2*}\right) &= 0 \\
+      b  \left(W_{1*}, W_{2*}\right) &= b\left(W_{1,k}, W_{1,k}\right)
+    \end{aligned}\right.\]
+    puis :
+    \[\left\{\begin{aligned}
+      F_2\left(W_{1,k+1}, W_{2,k+1}\right) &= 0 \\
+      c  \left(W_{1,k+1}, W_{2,k+1}\right) &= c\left(W_{1*}, W_{1*}\right)
+    \end{aligned}\right.\]
+    où $b$ et $c$ sont des contraintes sur la résolution, par exemple $b\left(x_1, x_2\right) = x_2$ et $c\left(x_1, x_2\right) = x_1$.
+    Cette méthode est désignée méthode SIFP (Sequential-Implicit Fixed Point), car on calcule séquentiellement des points fixes des différentes physiques.
+
+    \paragraph{}
+    On note $\transpose{\left(W_{1**}\left(W_k\right), W_{2**}\left(W_k\right)\right)}$ la valeur de l'état donnée par une étape de la méthode SIFP en partant de $W_k$.
+    Une troisième idée appelée méthode SIN (Sequantial-Implicit Newton) \cite{WongKwokHorneEtAl2019}, est d'appliquer une méthode de Newton pour résoudre :
+    \[G\left(W\right) = W - \begin{pmatrix}W_{1**}\left(W\right) \\ W_{2**}\left(W\right)\end{pmatrix} = 0\ .\]
+    L'origine de cette idée est que lorsque la méthode SIFP converge, alors l'équation précédente est vérifiée.
+    On résout donc à chaque itération :
+    \[\frac{\partial G}{\partial W}\left(W_k\right)\left(W_{k+1} - W_k\right) = -G\left(W_k\right)\ .\]
+
+    \paragraph{}
+    Dans \cite{WongKwokHorneEtAl2019}, l'idée est d'appliquer une méthode de Newton à $G$, et de résoudre les systèmes linéaires successifs avec GMRES.
+    Comme nous l'avons proposés précédemment dans ce rapport, ils utilisent le fait que GMRES n'a pas besoin de former explicitement la matrice à inverser, et utilisent la différenciation automatique pour obtenir l'effet de la jacobienne de $G$ sur un vecteur.
+    L'efficacité de la méthode SIN par rapport à la méthode SIFP à été démontrée sur un cas de couplage entre la mécanique des fluides et la thermique, et un cas de couplage entre la mécanique des fluides et la mécanique.
+
+
+  \subsection{Méthodes exponentielles}
+  % exponentiel \cite{BhattKhaliqWade2018} implicite \cite{NieZhangZhao2006}.
+
+
+  \subsection{Autre méthodes}
+
+    \paragraph{}
+    Si ce rapport tente de rassembler les méthodes les plus connues il existe bien entendu d'autres méthodes pour l'intégration temporelle des équations.
+    On peut par exemple considérer l'intégration en temps parallèle 

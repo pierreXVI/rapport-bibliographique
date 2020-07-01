@@ -189,7 +189,7 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
 
     \paragraph{}
     On peut montrer que l'ordre de la méthode $p$ est tel que $p \leq k$.
-    Jusqu'à $k = 4$ on a $k = p$.
+    Jusqu'à $k = 4$ on peut avoir $k = p$.
     Pour les ordres supérieurs, obtenir une borne entre l'ordre et la taille de la méthode est encore un problème ouvert.
     Pour une méthode de Runge-Kutta d'ordre $p$, la fonction $G$ de l'équation (\ref{eq:stab_req}) est telle que \cite{HairerWanner1996}:
     \[G\left(z\right) = 1 + z + \frac{z^2}{2} + \dots + \frac{z^p}{p!} + O\left(z^{p+1}\right)\ .\]
@@ -250,10 +250,6 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
   Nous avons pu mettre en évidence dans la section précédente le principal défaut des méthodes explicites.
   Si le coût numérique d'une itération de ces méthodes est faible, leur stabilité l'est également.
   Ces mauvaises propriétés de stabilités imposent l'utilisation de faibles pas de temps, ce qui s'avère contraignant lorsqu'on cherche la valeur de l'état convergé, après un temps relativement long.
-
-  \paragraph{}
-  \GP{Commentaires pour la suite : Opposé à... bof... et dans les 2 cas, on résoud une équation pour trouver la solution. Je changerais la formulation. Et toi?}
-  \PS{Changé.}
   Une solution est d'utiliser les méthodes implicites.
   Si les méthodes explicites expriment l'état suivant à partir de l'état actuel (et éventuellement des précédents), les méthodes implicites donnent cet état suivant comme solution d'une équation.
 
@@ -308,8 +304,10 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     \paragraph{}
     Malgré leur coût, les méthodes de Runge-Kutta implicites séduisent la communauté numérique.
     La principale raison est qu'elles permettent d'atteindre un ordre élevé.
-    Par exemple, les méthodes basées sur des quadratures de Gauss-Legendre de taille $k$ ont un ordre $2k$ \cite{Iserles2008}.
+    Par exemple, les méthodes basées sur des quadratures de Gauss-Legendre de taille $k$ ont un ordre $2k$.
+    On montre également qu'elles sont toutes A-stables \cite{Iserles2008}.
     On peut donc en théorie atteindre un ordre arbitrairement grand avec ces méthodes.
+    Cependant, on s’arrêtera en général à la méthode de taille 3 et d'ordre 6, car au delà le coût de la méthode devient trop important.
 
     \paragraph{}
     Si ces méthodes sont bien plus coûteuses que leur équivalents explicites, elle possèdent de meilleures propriétés de stabilité.
@@ -380,6 +378,13 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
 
 
   \subsection{Méthodes BDF}
+
+    \paragraph{}
+    Comme pour les méthodes de Runge-Kutta, les méthodes d'Adams-Bashforth peuvent être adaptées en une formulation implicite.
+    Il suffit d'interpoler le second membre en un point supplémentaire : le point à calculer.
+    La méthode obtenue est appelée méthode d'Adams-Moulton.
+    Cependant, le domaine de stabilité de ces méthodes n'est pas très étendu, car elles n'ont pas été développées pour les équations raides \cite{Iserles2008}.
+    C'est en revanche pour cela qu'ont été introduites les méthodes BDF.
 
     \paragraph{}
     Les méthodes BDF (Backward Differentiation Formula) sont des méthodes implicites de type multi-pas.

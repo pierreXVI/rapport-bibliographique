@@ -654,20 +654,21 @@ Ca suppose que l'erreur e_{i} = sol - x_{i} est approximée par x_{i} - x_{i-1},
 }
 
 @Misc{petsc-web-page,
-  author  = {Satish Balay and Shrirang Abhyankar and Mark~F. Adams and Jed Brownand Peter Brune and Kris Buschelman and Lisandro Dalcin and Alp Dener and Victor Eijkhoutand William~D. Gropp and Dinesh Kaushik and Matthew~G. Knepley and Dave~A. Mayand Lois Curfman McInnes and Richard Tran Mills and Todd Munson and Karl Ruppand Patrick Sanan and Barry~F. Smith and Stefano Zampini and Hong Zhang and Hong Zhang},
-  note    = {https://www.mcs.anl.gov/petsc},
+  author  = {Balay, Satish and Abhyankar, Shrirang and Adams, Mark F. and Brune, Jed Brownand Peter and Buschelman, Kris and Dalcin, Lisandro and Dener, Alp and Gropp, Victor Eijkhoutand William D. and Kaushik, Dinesh and Knepley, Matthew G. and McInnes, Dave A. Mayand Lois Curfman and Mills, Richard Tran and Munson, Todd and Sanan, Karl Ruppand Patrick and Smith, Barry F. and Zampini, Stefano and Zhang, Hong and Zhang, Hong},
   title   = {{PETS}c {W}eb page},
   year    = {2020},
   comment = {PETSc},
+  url     = {https://www.mcs.anl.gov/petsc},
 }
 
 @TechReport{petsc-user-ref,
-  author      = {Satish Balay and Shrirang Abhyankar and Mark~F. Adams and Jed Brownand Peter Brune and Kris Buschelman and Lisandro Dalcin and Alp Dener and Victor Eijkhoutand William~D. Gropp and Dinesh Kaushik and Matthew~G. Knepley and Dave~A. Mayand Lois Curfman McInnes and Richard Tran Mills and Todd Munson and Karl Ruppand Patrick Sanan and Barry~F. Smith and Stefano Zampini and Hong Zhang and Hong Zhang},
+  author      = {Balay, Satish and Abhyankar, Shrirang and Adams, Mark F. and Brune, Jed Brownand Peter and Buschelman, Kris and Dalcin, Lisandro and Dener, Alp and Gropp, Victor Eijkhoutand William D. and Kaushik, Dinesh and Knepley, Matthew G. and McInnes, Dave A. Mayand Lois Curfman and Mills, Richard Tran and Munson, Todd and Sanan, Karl Ruppand Patrick and Smith, Barry F. and Zampini, Stefano and Zhang, Hong and Zhang, Hong},
   institution = {Argonne National Laboratory},
   title       = {{PETS}c users manual},
   year        = {2020},
   number      = {ANL-95/11 - Revision 3.13},
   comment     = {PETSc},
+  url         = {https://www.mcs.anl.gov/petsc/petsc-current/docs/manual.pdf},
 }
 
 @InProceedings{petsc-efficient,
@@ -890,6 +891,22 @@ This chapter focuses on finite volume methods. The finite volume method is a dis
   doi        = {10.1017/CBO9780511995569},
   file       = {:books/A First Course in the Numerical Analysis of Differential Equations - Iserles.pdf:PDF},
   place      = {Cambridge},
+}
+
+@Article{Zhong1996,
+  author   = {Zhong, Xiaolin},
+  journal  = {Journal of Computational Physics},
+  title    = {Additive semi-implicit {R}unge-{K}utta methods for computing high-speed nonequilibrium reactive flows},
+  year     = {1996},
+  issn     = {0021-9991},
+  number   = {1},
+  pages    = {19--31},
+  volume   = {128},
+  abstract = {This paper is concerned with time-stepping numerical methods for computing stiff semi-discrete systems of ordinary differential equations for transient hypersonic flows with thermo-chemical nonequilibrium. The stiffness of the equations is mainly caused by the viscous flux terms across the boundary layers and by the source terms modeling finite-rate thermo-chemical processes. Implicit methods are needed to treat the stiff terms while more efficient explicit methods can still be used for the nonstiff terms in the equations. This paper studies three different semi-implicit Runge–Kutta methods for additively split differential equations in the form ofu′ =f(u) +g(u), wherefis treated by explicit Runge–Kutta methods andgis simultaneously treated by three implicit Runge–Kutta methods: a diagonally implicit Runge–Kutta method and two linearized implicit Runge–Kutta methods. The coefficients of up to third-order accurate additive semi-implicit Runge–Kutta methods have been derived such that the methods are both high-order accurate and strongly A-stable for the implicit terms. The results of two numerical tests on the stability and accuracy properties of these methods are also presented in the paper.},
+  comment  = {ASIRK},
+  doi      = {10.1006/jcph.1996.0193},
+  file     = {:Additive Semi Implicit Runge Kutta Methods for Computing High Speed Nonequilibrium Reactive Flows - Zhong.pdf:PDF},
+  url      = {http://www.sciencedirect.com/science/article/pii/S002199919690193X},
 }
 
 @Comment{jabref-meta: databaseType:bibtex;}
