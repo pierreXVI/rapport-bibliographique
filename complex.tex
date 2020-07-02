@@ -182,14 +182,46 @@ On peut envisager d'utiliser des méthodes et des techniques moins classiques po
 
   \subsection{Méthodes exponentielles}
 
-  \PS{TODO, j'ai oublié ça !!!}
-  % exponentiel \cite{BhattKhaliqWade2018} implicite \cite{NieZhangZhao2006}.
+    \paragraph{}
+    Les méthodes exponentielles apparaissent de plus en plus comme une alternative aux méthodes d'intégration classiques.
+    Ces méthodes possèdent elles aussi cette dualité explicite-implicite qu'ont les méthodes classiques, mais leur principe reste commun.
+
+    \paragraph{}
+    On considère toujours l'équation différentielle ordinaire (\ref{eq:edo}) qu'on cherche à intégrer entre $t_n$ et $t_{n+1}$ pour trouver la valeur de l'état $W_{n+1}$.
+    On décompose alors le second membre pour obtenir :
+    \[\frac{\mathrm{d}W}{\mathrm{d}t} = AW + f\left(W\right)\ ,\]
+    en prenant par exemple $A = \frac{\mathrm{d}F}{\mathrm{d}W}$ et $f\left(W\right) = F\left(W\right) - AW$ ou toute autre décomposition de cette forme.
+    On peut alors intégrer de manière exacte entre $t_n$ et $t_{n+1}$ pour obtenir :
+    \[W_{n+1} = e^{\Delta tA}W_n + \int_{t_n}^{t_{n+1}}e^{\left(t_{n+1}-t\right)A}f\left(W\left(t\right)\right)\mathrm{d}t\ .\]
+    On constate alors que la partie linéaire de l'équation à été intégrée exactement, et que la partie non-linéaire doit encore être approchée.
+
+    \paragraph{}
+    La manière dont l'intégrale de la partie non-linéaire est calculée dépend de la méthode choisie.
+    On peut par exemple calculer cette intégrale par une méthode de Runge-Kutta, une méthode de Taylor \cite{KoskelaOstermann2013}, ou bien avec une méthode de Rosenbrock.
+
+    \paragraph{}
+    Le grand intérêt de ces méthode est l'intégration exacte de la partie linéaire.
+    Cependant, cela se fait en échange du calcul de l'exponentielle d'une matrice.
+    C'est une opération coûteuse numériquement, mais il est possible d'utiliser des méthodes efficaces.
+
+    \paragraph{}
+    La décomposition de l'opérateur sur des espaces de Krylov permet de calculer l'effet de l'exponentielle d'une matrice contre un vecteur.
+    En effet, pour un vecteur donné $v$, en prenant la relation d'Arnoldi (\ref{eq:arnoldi}) après avoir construit la base de l'espace de Krylov $\krylov[A, v]{n}$, en notant $H_n$ la matrice carrée égale à $\widetilde{H}_n$ privée de sa dernière ligne, on peut approcher \cite{Saad1992} :
+    \[e^Av \approx \norm[2]{v} V_ne^{H_n}e_1\]
+    et même plus généralement pour tout $t$ réel :
+    \[e^{tA}v \approx \norm[2]{v} V_ne^{tH_n}e_1\ .\]
+
+    \paragraph{}
+    Ainsi, dans un solveur utilisant déjà une méthode de Krylov, le code peut être réutilisé pour calculer des produits $e^{tA}v$ et donc utiliser des méthodes exponentielles.
+    L'utilisation des méthodes exponentielles se fait de plus en plus connaître, et on trouve des applications à des problèmes de dynamique des fluides réactive avec des méthodes exponentielles explicite \cite{BhattKhaliqWade2018} comme implicite \cite{NieZhangZhao2006}.
+
 
 
   \subsection{Autre méthodes}
 
     \paragraph{}
-    Si ce rapport tente de rassembler les méthodes les plus connues il existe bien entendu d'autres méthodes pour l'intégration temporelle des équations.
+    Si ce rapport tente de rassembler les méthodes les plus connues il existe bien entendu d'autres méthodes pour l'intégration temporelle des équations différentielles.
+    Certaines de ces méthodes sont listées dans cette section.
 
     \subsubsection{Intégration parallèle en temps}
 

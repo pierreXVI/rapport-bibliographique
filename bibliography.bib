@@ -344,12 +344,12 @@ AMG},
 
 @Article{WongKwokHorneEtAl2019,
   author   = {Wong, Zhi Yang and Kwok, Felix and Horne, Roland N. and Tchelepi, Hamdi A.},
-  journal  = {Journal of Computational Physics},
   title    = {Sequential-implicit {N}ewton method for multiphysics simulation},
+  journal  = {Journal of Computational Physics},
   year     = {2019},
   issn     = {0021-9991},
   abstract = {Efficient simulation of multiphysics problems is a challenging task. This is often due to the multiscale nature of the physics and nonlinear coupling between the different processes. One approach to this problem is to solve the entire multiphysics problem simultaneously in a fully coupled manner. However, due to the strong coupling and multiphysics interactions, it is difficult to design and analyze fully coupled solvers, which often entail the construction and solution of global fully coupled Jacobian systems. Another approach is the sequential-implicit method, whereby the full multiphysics problem is split into different subproblems. Each subproblem is constructed and solved separately; then the solutions of the subproblems are stitched together in a specific sequence. Isolation of each subproblem allows for the design of specialized solvers that tackle the complexity of the particular subproblem efficiently. The sequential-implicit approach offers wide flexibility and extensibility. However, these advantages are often offset by slow convergence rates when there is strong coupling between the subproblems. This slow convergence rate of the overall coupled system is directly linked to the use of a fixed-point outer-loop iteration in sequential-implicit methods. We present a Sequential Implicit Newton (SIN) approach, whereby the sequence of implicit subproblems is wrapped with an outer full Newton scheme. We demonstrate that the SIN formulation improves the overall convergence rate from linear to quadratic. The SIN method uses the same sequential-implicit scheme as the fixed-point method, but after each sequential iteration a Newton update is computed. Wrapping a Newton loop around the traditional sequential-implicit scheme leads to significant improvements in the convergence rate. The SIN method allows for the ability to split a multiphysics problem into individual subproblems while taking advantage of the quadratic convergence rate of the Newton method. We demonstrate the effectiveness of SIN using two different multiphysics porous-media problems: flow-thermal in geothermal reservoir simulation and flow-mechanics in geomechanics reservoir simulation. Just as with the fixed-point iteration version of the sequential-implicit method, SIN benefits from careful design of the constraints used to stitch the sequence of the subproblems. Our numerical experiments show that the SIN approach improves the overall convergence rate for all the nonlinear multiphysics problems considered. For specific cases where there is strong nonlinear coupling between the subproblems, we see up to two orders of magnitude decrease in the number of sequential iterations when using SIN compared with the fixed-iteration scheme.},
-  comment  = {Implicite \& multiphysique},
+  comment  = {Implicite et multiphysique},
   doi      = {10.1016/j.jcp.2019.04.023},
   file     = {:Sequential Implicit Newton Method for Multiphysics Simulation - WongKwokHorneEtAl.pdf:PDF},
   keywords = {sequential-implicit, Newton's method, MSPIN, geothermal, geomechanics, reservoir simulation, multiphysics},
@@ -1069,9 +1069,42 @@ The purpose of this Note is to propose a time discretization of a partial differ
   url      = {http://www.sciencedirect.com/science/article/pii/0021999181901285},
 }
 
+@Article{Saad1992,
+  author  = {Saad, Y.},
+  title   = {Analysis of some {K}rylov subspace approximations to the matrix exponential operator},
+  journal = {SIAM Journal on Numerical Analysis},
+  year    = {1992},
+  volume  = {29},
+  number  = {1},
+  pages   = {209--228},
+  comment = {Approximation of exp(A)b},
+  doi     = {10.1137/0729014},
+  eprint  = {https://doi.org/10.1137/0729014},
+  file    = {:Analysis of Some Krylov Subspace Approximations to the Matrix Exponential Operator - Saad.pdf:PDF},
+}
+
+@Article{KoskelaOstermann2013,
+  author   = {Antti Koskela and Alexander Ostermann},
+  title    = {Exponential {T}aylor methods: analysis and implementation},
+  journal  = {Computers \& Mathematics with Applications},
+  year     = {2013},
+  volume   = {65},
+  number   = {3},
+  pages    = {487--499},
+  issn     = {0898-1221},
+  note     = {Efficient Numerical Methods for Scientific Applications},
+  abstract = {For the time integration of semilinear systems of differential equations, a class of multiderivative exponential integrators is considered. The methods are based on a Taylor series expansion of the semilinearity about the numerical solution, the required derivatives are computed by automatic differentiation. Inserting these derivatives into the variation-of-constants formula results in an exponential integrator which requires the action of the exponential of an augmented Jacobian only. The convergence properties of such exponential integrators are analyzed, and potential sources of numerical instabilities are identified. In particular, it is shown that local linearization gives rise to better stability for stiff problems. A number of numerical experiments illustrate the theoretical results.},
+  doi      = {10.1016/j.camwa.2012.06.004},
+  file     = {:Exponential Taylor Methods_ Analysis and Implementation - KoskelaOstermann.pdf:PDF},
+  keywords = {Exponential integrators, Taylor series methods, Multiderivative methods, Local linearization, Stability},
+  url      = {http://www.sciencedirect.com/science/article/pii/S0898122112004348},
+}
+
 @Comment{jabref-meta: databaseType:bibtex;}
 
 @Comment{jabref-meta: fileDirectoryLatex-pierre-ubuntu-XVI:/home/pierre/latex;}
+
+@Comment{jabref-meta: fileDirectoryLatex-pseize-ldmae404h:/d/pseize/latex;}
 
 @Comment{jabref-meta: grouping:
 0 AllEntriesGroup:;
