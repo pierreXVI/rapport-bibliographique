@@ -471,6 +471,7 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 		\paragraph{}
 		Certains préconditionnements sont un peu plus complexes qu'une simple décomposition de l'opérateur.
 		C'est le cas du préconditionnement flexible.
+    La thèorie du préconditionnement flexible concerne le préconditionnement à droite.
 		Un préconditionnement est dit flexible s'il change à chaque itération.
     Ainsi, pour un préconditionneur flexible, on notera $M_i$ sa variante à l'étape $i$.
     Lorsqu'on applique un préconditionneur flexible à une méthode de Krylov, la relation d'Arnoldi est à nouveau modifiée, et devient :
@@ -492,7 +493,7 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
     Nous avons parlé plus haut du fait qu'il est possible de préconditionner une méthode de résolution par une autre méthode de résolution.
     Cependant, cela s'applique directement pour les méthodes classiques, qui sont en fait linéaires en le vecteur à inverser.
     Puisque appliquer $k$ étapes de GMRES pour calculer $A^{-1}v$ n'est pas une application linéaire en $v$, le préconditionnement à utiliser se doit d'être flexible.
-    \footnote{\PS{Dois-je montrer que GMRES n'est pas linéaire ? Ça ne sort pas d'une référence, mais j'ai la preuve sauf que c'est un peu long.}}
+    \footnote{\PS{Dois-je montrer que GMRES n'est pas linéaire ? Ça ne sort pas d'une référence, mais j'ai la preuve sauf que c'est un peu long. En fait j'ai retrouvé dans mes dossiers à l'ONERA la preuve déjà rédigée en LaTeX}}
 
     \paragraph{}
     Concrètement, lorsqu'on applique l'itération $n$ du GMRES externe, plutôt que d'orthonormaliser $AM^{-1}v_n$ contre les $v_{i, 1\leq i\leq n}$ pour obtenir $v_{n+1}$, on préconditionne $v_n$ en résolvant $Az_n = v_n$ par $k$ itérations du GMRES interne, puis on orthonormalise $Az_n$.

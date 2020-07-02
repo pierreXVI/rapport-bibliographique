@@ -18,12 +18,12 @@ Dans cette partie sont présentés les différents codes et bibliothèques que j
   \paragraph{}
   Si la simulation des problèmes instationnaires avec CEDRE est satisfaisante, ce n'est pas le cas de l'intégration implicite des problèmes stationnaires, et c'est ce qui motive ma thèse.
   La résolution implicite est aujourd'hui basée sur une méthode d'Euler implicite, qui utilise un algorithme GMRES basique \cite{Selva1998}.
-  Nous voulons dire par basique que si des tentatives d'améliorations ont été faites, avec un préconditionneur polynomial par exemple, les utilisateurs aujourd'hui n'utilisent qu'un préconditionneur diagonal par bloc, et réalisent quelques itérations de GMRES, sans redémarrage ni préconditionnement supplémentaire.
-  \footnote{\PS{C'est un peu méchant, je dramatise un peu pour "donner du rythme au récit", mais en vrai il y a quand même eu des choses de faites, le MG par exemple. Du coup est-ce que je laisse ou est-ce que je reformule ?}}
+  On comprend par basique que si des tentatives d'améliorations ont été faites, avec un préconditionneur polynomial par exemple, les utilisateurs aujourd'hui n'utilisent qu'un préconditionneur diagonal par bloc, et réalisent quelques itérations de GMRES, sans redémarrage ni préconditionnement supplémentaire.
+  \footnote{\PS{"Basique" c'est un peu méchant, je dramatise un peu pour "donner du rythme au récit", mais en vrai il y a quand même eu des choses de faites, le MG par exemple. Du coup est-ce que je laisse ou est-ce que je reformule ?}}
 
   \paragraph{}
   Parmi les solveurs de CEDRE, je m'intéresse tout particulièrement à celui des écoulements compressibles multifluides, réactifs et turbulents : CHARME.
-  CHARME utilise une formulation volumes finis, qui a brièvement été présentée dans l'introduction, et offre un choix de méthodes d'intégrations explicites et implicites.
+  Ce solveur utilise une formulation volumes finis, qui a brièvement été présentée dans l'introduction, et offre un choix de méthodes d'intégrations explicites et implicites.
   De plus, CHARME prend avantage du modèle physique et propose un préconditionnement basé sur la physique : un préconditionnement bas Mach \cite{Turkel1987}.
 
   \paragraph{}
@@ -49,21 +49,26 @@ Dans cette partie sont présentés les différents codes et bibliothèques que j
     Puisque ce code est développé par mes soins, j'ai du me documenter sur certains aspects de la simulation numérique qui ne concernent pas directement ma thèse.
     Un travail de recherche à donc été mené pour le développement de la méthode d'intégration spatiale volumes finis \cite{EymardGallouetHerbin2000}, ou pour le traitement des conditions limites \cite{PoinsotLele1992}.
 
-
+    \paragraph{}
+    Le code maquette à pour objectif de résoudre les équatiions de Navier-Stokes.
+    La formulation volumes finis nécessite alors l'écriture d'un solveur de Riemann.
+    En partant des équations de la physique \cite{Masatsuka2013}, on peut écrire un solveur exact \cite{GottliebGroth1988} qui résout précisément le problème de Riemann, ou un solveur approché \cite{Roe1981} qui sera moins précis mais plus rapide.
 
     \paragraph{}
     L'avantage de ce code est qu'il utilise entièrement les structures de données offertes par PETSc, et donc profite au maximum des capacités de la librairie.
-    L'ajout d'un type de condition limite, d'un solveur de Riemann, ou d'
-
-    Riemann \cite{GottliebGroth1988}
+    L'ajout d'un type de condition limite ou d'un solveur de Riemann se fait par la simple écriture de la fonction associée, les "branchements" étant simplifiés par l'utilisation de la librairie.
+    Le choix de la méthode d'intégration temporelle, de la méthode de résolution de l'équation non-linéaire, de la méthode de résolution du système linéaire ou des préconditionneurs peut se faire à l'exécution du programme.
+    Ce code permet donc une grande flexibilité pour tester des méthodes d'intégratons.
 
   \subsection{PETSc}
 
-  \paragraph{}
-  La librairie PETSc (prononcé "pèt-si") regroupe un ensemble de structure de données et de fonctions pour la résolution parallèle d'équations aux dérivées partielles.
-  \cite{petsc-web-page, petsc-user-ref, petsc-efficient}
+    \paragraph{}
+    La librairie PETSc \cite{petsc-web-page, petsc-user-ref, petsc-efficient} regroupe un ensemble de structure de données et de fonctions pour la résolution parallèle d'équations aux dérivées partielles.
+    On compte parmi ces structures de données des structures classiques, comme les vecteurs ou les matrices, mais aussi des structures plus complexes, correspondant aux maillages non structurés avec les DMPLEX, ou au solveurs non-linéaires avec les SNES.
 
-
-
-, PETSc TS \cite{AbhyankarBrownConstantinescuEtAl2018}
+    \paragraph{}
+    L'intégration temporelle est entièrement gérée par PETSc avec la structure de données TS (Time-Stepper) \cite{AbhyankarBrownConstantinescuEtAl2018}.
+    En pratique, le TS est associé à un DMPLEX de manière à utiliser une formulation volumes finis.
+    Le TS utilise un solveur non-linéaire (SNES), qui utilise un solveur linéaire basé sur une méthode de Krylov (KSP) qui utilise un préconditionneur (PC).
+    L'ensemble de ces structures peuvent être paramétrées pour utiliser les méthodes souhaitées, et une force de PETSc est que ce paramétrage peut s'effectuer à l’exécution du programme.
 %
