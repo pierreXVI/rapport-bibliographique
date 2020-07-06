@@ -17,10 +17,8 @@ Dans cette partie sont présentés les différents codes et bibliothèques que j
 
   \paragraph{}
   Si la simulation des problèmes instationnaires avec CEDRE est satisfaisante, ce n'est pas le cas de l'intégration implicite des problèmes stationnaires, et c'est ce qui motive ma thèse.
-  La résolution implicite est aujourd'hui basée sur une méthode d'Euler implicite, qui utilise un algorithme GMRES 
-  \GP{très classique voire basique} \cite{Selva1998}.
+  La résolution implicite est aujourd'hui basée sur une méthode d'Euler implicite, qui utilise un algorithme GMRES très classique et même basique \cite{Selva1998}.
   On comprend par basique que si des tentatives d'améliorations ont été faites, avec un préconditionneur polynomial par exemple, les utilisateurs aujourd'hui n'utilisent qu'un préconditionneur diagonal par bloc, et réalisent quelques itérations de GMRES, sans redémarrage ni préconditionnement supplémentaire.
-  \footnote{\PS{"Basique" c'est un peu méchant, je dramatise un peu pour "donner du rythme au récit", mais en vrai il y a quand même eu des choses de faites, le MG par exemple. Du coup est-ce que je laisse ou est-ce que je reformule ?}}
 
   \paragraph{}
   Parmi les solveurs de CEDRE, je m'intéresse tout particulièrement à celui des écoulements compressibles multifluides, réactifs et turbulents : CHARME.

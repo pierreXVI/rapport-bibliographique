@@ -94,8 +94,7 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
   \subsection{Principe des méthodes}
 
     \paragraph{}
-    Les méthodes de Krylov \GP{semblent} s'imposer comme étant la norme dans le domaine de la dynamique des fluides numérique.
-    %\footnote{\GP{Qui l'a dit? Ou as-tu trouve la reference?}\PS{Je voulais dire par là que de ce que j'ai vu, beaucoup de monde les utilise. Personne n'a explicitement dit ça, est ce que je remplace par : Les méthodes de Krylov semblent s'imposer dans le domaine de la dynamique des fluides.}}
+    Les méthodes de Krylov semblent s'imposer comme étant la norme dans le domaine de la dynamique des fluides numérique.
     Le principe d'une méthode de Krylov est de projeter le système linéaire sur un espace restreint appelé espace de Krylov, et d'y résoudre le système maintenant qu'il est plus petit.
 		L'astuce va être dans le fait que ces espaces de Krylov sont emboîtés, et qu'à chaque nouvelle itération on utilise l'information accumulée lors des précédentes.
 
@@ -351,8 +350,7 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 		\paragraph{}
 		Cet exemple permet également d'établir une remarque intéressante.
 		En effet, déjà avant de préconditionner la matrice, son conditionnement n'est pas excessivement grand, et cependant GMRES n'arrive pas à converger.
-		C'est parce que puisque la matrice est non-normale, le conditionnement seul ne \GP{suffit pas à comprendre ce qui se passe}%veut rien dire
-		, et dans cet exemple en particulier c'est la disposition des valeurs propres qui importe.
+		C'est parce que puisque la matrice est non-normale, le conditionnement seul ne suffit pas à caractériser la convergence, et dans cet exemple en particulier c'est la disposition des valeurs propres qui importe.
 		Ainsi, l'étude du spectre de l'opérateur ne peut se faire en regardant simplement son conditionnement.
 		Il faut aussi regarder la répartition de ses valeurs propres dans le plan complexe, sa non-normalité, ...
 
@@ -494,7 +492,7 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
     Nous avons parlé plus haut du fait qu'il est possible de préconditionner une méthode de résolution par une autre méthode de résolution.
     Cependant, cela s'applique directement pour les méthodes classiques, qui sont en fait linéaires en le vecteur à inverser.
     Puisque appliquer $k$ étapes de GMRES pour calculer $A^{-1}v$ n'est pas une application linéaire en $v$, le préconditionnement à utiliser se doit d'être flexible.
-    \footnote{\PS{Dois-je montrer que GMRES n'est pas linéaire ? Ça ne sort pas d'une référence, mais j'ai la preuve sauf que c'est un peu long. En fait j'ai retrouvé dans mes dossiers à l'ONERA la preuve déjà rédigée en LaTeX}\GP{Perso, je pense que c'est cool de mettre la preuve, mais sans doute en annexe. Qu'en pensez-vous ?}}
+    \footnote{\PS{Dois-je montrer que GMRES n'est pas linéaire ? Ça ne sort pas d'une référence, mais j'ai la preuve sauf que c'est un peu long. En fait j'ai retrouvé dans mes dossiers à l'ONERA la preuve déjà rédigée en LaTeX}\GP{Perso, je pense que c'est cool de mettre la preuve, mais sans doute en annexe. Qu'en pensez-vous ?}\PS{OK pour l'annexe, donc TODO}}
 
     \paragraph{}
     Concrètement, lorsqu'on applique l'itération $n$ du GMRES externe, plutôt que d'orthonormaliser $AM^{-1}v_n$ contre les $v_{i, 1\leq i\leq n}$ pour obtenir $v_{n+1}$, on préconditionne $v_n$ en résolvant $Az_n = v_n$ par $k$ itérations du GMRES interne, puis on orthonormalise $Az_n$.
@@ -610,4 +608,6 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
     \subsubsection{Résolution successive du système linéaire}
     Les techniques d'augmentation et de déflation permettent de recycler l'information spectrale obtenue au cours d'un cycle afin d'améliorer les performances des cycles suivants.
     Cette idée de recyclage est encore aujourd'hui amplement étudiée \cite{JolivetTournier2016}.
-    \GP{On peut par exemple utiliser de telles méthodes de recyclage non pas entre les cycles d'une résolution GMRES, mais pourquoi au cours d'une résolution successive de plusieurs problèmes linéaires \cite{Gaul2014}, ce qui est précisément ce que l'on fait dans notre cas\footnote{phrase bizarre}.}
+    On peut par exemple utiliser de telles méthodes de recyclage non pas entre les cycles d'une résolution GMRES, mais par exemple entre les résolutions successives de plusieurs problèmes linéaires \cite{Gaul2014}.
+    On rappelle alors que résoudre successivement des systèmes linéaires est précisément ce que l'on fait pour résoudre des équations non-linéaires avec une méthode de Newton, ou pour réaliser une itération d'une méthode de Runge-Kutta implicite.
+    \footnote{\PS{En effet la phrase était bizarre, j'ai du perdre le fil en écrivant mais j'ai corrigé.}}

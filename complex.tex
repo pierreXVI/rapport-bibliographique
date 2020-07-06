@@ -44,10 +44,10 @@ On peut envisager d'utiliser des méthodes et des techniques moins classiques po
       Si cela permet de la former de manière très économe, nous verrons par la suite quels sont les inconvénients de ce choix.
 
       \paragraph{}
-      On peut calculer la jacobienne à partir de $F$\GP{autour de $W_O$ et dans la direction $e_i$, 
-      en utilisant la dérivée de Fréchet. Sans perdre de généralité, l'approximation utilisée peut être apparentée à 
-      un calcul de dérivée par la méthode des différences finies.}%des différences finies.
-      En effet, la $i$\textsuperscript{ème} colonne de la jacobienne de $F$ peut être approchée par :
+      Lorsqu'on dispose de l'expression de $F$, on peut calculer sa dérivée en un point $W_0$ dans la direction $e_i$.
+      Il suffit de prendre le développement de Taylor au premier ordre de $F\left(W_0 + \varepsilon e_i\right)$ :
+      \[F\left(W_0 + \varepsilon e_i\right) = F\left(W_0\right) + \varepsilon\frac{\partial F}{\partial W}\left(W_0\right)e_i + O\left(\varepsilon^2\right)\ .\]
+      La $i$\textsuperscript{ème} colonne de la jacobienne de $F$ peut alors être approchée par :
       \[\frac{\partial F}{\partial W}\left(W_0\right)_i = \frac{F\left(W_0 + \varepsilon e_i\right) - F\left(W_0\right)}{\varepsilon} + O\left(\varepsilon\right)\]
       pour un $\varepsilon$ suffisamment petit, avec $e_i$ le $i$\textsuperscript{ème} vecteur de la base canonique.
       On pourrait atteindre une meilleure précision avec des différences finies centrées, cependant on dispose déjà, en général, de la valeur de $F\left(W_0\right)$, et les différences finies décentrées permettent donc d'économiser une évaluation de $F$.
@@ -92,8 +92,10 @@ On peut envisager d'utiliser des méthodes et des techniques moins classiques po
     Un avantage de la différenciation automatique est que son coût n'est payé qu'à la compilation du code, au moment de sa différenciation.
     Après cela, le calcul de la jacobienne se fait par le simple appel à une fonction, qui a été automatiquement produite par l'outil.
     Un autre avantage est que le résultat obtenu est exact, et non approché.
-    La précision obtenue est alors bien meilleure qu'avec des différences finies. \GP{Toutefois, cette approche 
-    doit être traitée avec attention car de nombreuses fonctions (min ou max par exemple) ne sont pas différentiables.}
+    La précision obtenue est alors bien meilleure qu'avec des différences finies.
+    Cependant, la différenciation automatique d'un code doit se faire avec beaucoup de précautions.
+    En effet toutes les fonctions utilisées ne sont pas nécessairement dérivable, comme les fonctions $\min$ et $\max$ par exemple.
+    Il existe toutefois des techniques permettant de différencier un code utilisant de telles fonctions.
 
     \paragraph{}
     Une idée est alors d'utiliser les avantages de JFNK avec la précision de la différenciation automatique.
@@ -102,7 +104,7 @@ On peut envisager d'utiliser des méthodes et des techniques moins classiques po
 
     \paragraph{}
     Si la différenciation automatique n'est pas très largement utilisée par la communauté de CFD, elle séduit de plus en plus \cite{BilanceriBeuxElmahiEtAl2011, KenwayMaderHeEtAl2019}.
-    \footnote{\PS{Parler d'ELSA qui s'y met, ou alors on les aime pas donc on en parle pas ? Si oui je pense pouvoir trouver un doc où ils comparent les perfo avec/sans AD.} \GP{Oui, en parler ! Il faut être exhaustif !}}
+    \footnote{\PS{Parler d'ELSA qui s'y met ? Si oui j'espère pouvoir trouver un doc où ils comparent les perfo avec/sans AD.} \GP{Oui, en parler ! Il faut être exhaustif !}\PS{TODO}}
 
 
 \section{Pour l'intégration temporelle}
@@ -124,7 +126,6 @@ On peut envisager d'utiliser des méthodes et des techniques moins classiques po
     Autrement dit, pour reprendre les termes de l'analyse de stabilité des méthodes, on intègre avec une méthode explicite la partie de $F$ correspondant aux valeurs propres dans le domaine de stabilité, et on intègre les autres valeurs propres avec une méthode implicite.
     Cette méthodologie est nommée IMEX, pour IMplicite-EXplicite.
 
-    %\paragraph{paragraph name}
     \paragraph{}
     On peut par exemple utiliser une méthode de Runge-Kutta explicite, couplée à une méthode de Runge-Kutta implicite, pour obtenir une méthode ASIRK (Additive Semi-Implicit Runge-Kutta) \cite{Zhong1996}.
     Le schéma devient alors une somme entre le schéma explicite (\ref{eq:rk}) et l'implicite (\ref{eq:rk_impl}) :
