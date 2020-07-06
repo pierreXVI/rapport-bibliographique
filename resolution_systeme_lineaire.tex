@@ -257,7 +257,7 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 		\paragraph{}
 		Dans \cite{GreenbaumPtakStrakos1996}, on trouve un résultat surprenant.
 		Cet article montre en effet que pour un spectre donné et pour une courbe de convergence décroissante donnée, il est possible de construire une matrice avec ce spectre telle que GMRES suivra la courbe de convergence.
-		Autrement dit, on peut exhiber un exemple de matrice mal conditionnée qui converge rapidement, et à l'inverse trouver une matrice bien conditionnée pour laquelle GMRES aura du mal à faire décroitre le résidu.
+		Autrement dit, on peut exhiber un exemple de matrice mal conditionnée qui converge rapidement, et à l'inverse trouver une matrice bien conditionnée pour laquelle GMRES aura du mal à faire décroître le résidu.
 		En particulier, on peut concevoir une matrice avec le meilleur spectre possible, c'est à dire qui admet 1 comme seule valeur propre de multiplicité $N$, et pour qui GMRES convergerait aussi lentement que souhaité.
 		Ce phénomène est causé par la non-normalité de l'opérateur \cite{GreenbaumStrakos1994, GreenbaumPtakStrakos1996}.
 		Pour remédier à ce problème, on peut par exemple s'intéresser au pseudo-spectre de l'opérateur \cite{Trefethen1999}.
@@ -268,7 +268,7 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 		Puisque les matrices rencontrées dans les problèmes de CFD sont quelconques, ou au moins à priori non-normales, étudier précisément le spectre de l'opérateur ne semble pas être une bonne idée.
 
 		\paragraph{}
-		Si une étude précise du spectre de la matrice n'est pas recomandée, une rapide analyse peut toutefois s'avérer utile.
+		Si une étude précise du spectre de la matrice n'est pas recommandée, une rapide analyse peut toutefois s'avérer utile.
 		En effet, mathématiquement parlant, le spectre peut ne donner aucune information, d'après le paragraphe précédent.
 		Cependant, les matrices rencontrées en pratique ne sont pas des contres-exemples d'une preuve mathématique, mais de vraies matrices quelconques.
 		En faisant l'hypothèse qu'on ne tombera pas précisément sur un cas particulier, on peut continuer à regarder le spectre de $A$ pour se donner une idée de la convergence de l'algorithme.
@@ -295,7 +295,7 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 			Alors pour un polynôme $p$ on a $\norm{p\left(A\right)}\leq\norm{V}\norm{p\left(D\right)}\norm{V^{-1}}$
 			Ainsi, on a la relation :
 			\[\frac{\norm{r_n}}{\norm{r_0}} \leq \kappa\left(V\right)\inf_{p\in\textup{P}_n}\max_{1\leq i\leq N}\norm{p\left(\lambda_i\right)}\ .\]
-			On comprend alors la remarque faite précédemment : si la matrice $A$ n'est pas trop non-normale, c'est à dire si $\kappa\left(V\right)$ n'est pas trop grand, alors la convergence de GMRES est controlée par les valeurs propres de $A$.
+			On comprend alors la remarque faite précédemment : si la matrice $A$ n'est pas trop non-normale, c'est à dire si $\kappa\left(V\right)$ n'est pas trop grand, alors la convergence de GMRES est contrôlée par les valeurs propres de $A$.
 
 
 \section{Améliorations de l’algorithme}
@@ -312,7 +312,7 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 	\subsection{Préconditionnement}
 
 		\paragraph{}
-		Nous avons expliqué précedemment en quoi le conditionnement de l'opérateur linéaire joue sur la vitesse de convergence des algorithmes itératifs.
+		Nous avons expliqué précédemment en quoi le conditionnement de l'opérateur linéaire joue sur la vitesse de convergence des algorithmes itératifs.
 		On peut utiliser un préconditionnement pour jouer sur le spectre de la matrice afin d'améliorer son conditionnement.
 		Un préconditionnement, ou préconditionneur, est associé à une matrice $M$.
 		Le principe est de multiplier l'équation à résoudre par cette matrice, pour modifier l'opérateur à inverser.
@@ -321,7 +321,7 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 		ou bien un préconditionnement à droite :
 		\[\left\{\begin{aligned}AM^{-1}x' &= b \\	M^{-1}x' &= x\end{aligned}\right.\ .\]
 		Pour un préconditionnement à gauche, respectivement à droite, l'opérateur à inverser est alors $M^{-1}A$, respectivement $AM^{-1}$.
-    On notera qu'avec un préconditionneur à droite appliqué à une méthode de Krylov, la relation d'arnoldi (\ref{eq:arnoldi}) devient :
+    On notera qu'avec un préconditionneur à droite appliqué à une méthode de Krylov, la relation d'Arnoldi (\ref{eq:arnoldi}) devient :
     \begin{equation}\label{eq:arnoldi_pre}
       AM^{-1}V_n = V_{n+1}\widetilde{H}_n\ .
     \end{equation}
@@ -345,7 +345,7 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 		On y voit qu'il est étalé tout autour de l'origine.
 		En appliquant un préconditionneur de Jacobi, détaillé par la suite, on voit que le spectre préconditionné est rassemblé autour de 1.
 		L'effet du préconditionneur sur la convergence de GMRES se voit très nettement sur la figure.
-		Pour la matrice non préconditionnée, les itérations peinent à faire décroitre la norme du résidu, alors que celle-ci chute rapidement lorsqu'on applique le préconditionneur.
+		Pour la matrice non préconditionnée, les itérations peinent à faire décroître la norme du résidu, alors que celle-ci chute rapidement lorsqu'on applique le préconditionneur.
 
 		\paragraph{}
 		Cet exemple permet également d'établir une remarque intéressante.
@@ -408,7 +408,7 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 		si $A$ se décompose naturellement en somme de plusieurs opérateur, par exemple $A = A_{advection} + A_{diffusion} + \dots$, et que l'un de ces opérateurs est facilement inversible,
 		on peut prendre $M$ comme étant la matrice de cet opérateur.
 
-		\paragraph{Préconditionnement polynômial :}
+		\paragraph{Préconditionnement polynomial :}
 		on ne va pas chercher $M\simeq A$ mais $M^{-1} \approx A^{-1}$, en exprimant directement $M^{-1}$ comme un polynôme en $A$ \cite{DuboisGreenbaumRodrigue1979}.
 		L'idée est d'avoir $M^{-1} \approx A^{-1}$ comme les premiers termes de la série de Neumann de $\operatorname{Id} - A$ :
 		\[M^{-1}=\operatorname{Id}+\left(\operatorname{Id}-A\right)+\left(\operatorname{Id}-A\right)^2 + \dots+\left(\operatorname{Id}-A\right)^k\ .\]

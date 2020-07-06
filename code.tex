@@ -50,7 +50,7 @@ Dans cette partie sont présentés les différents codes et bibliothèques que j
     Un travail de recherche à donc été mené pour le développement de la méthode d'intégration spatiale volumes finis \cite{EymardGallouetHerbin2000}, ou pour le traitement des conditions limites \cite{PoinsotLele1992}.
 
     \paragraph{}
-    Le code maquette a pour objectif de résoudre les équatiions de Navier-Stokes.
+    Le code maquette a pour objectif de résoudre les équations de Navier-Stokes.
     La formulation volumes finis nécessite alors l'écriture d'un solveur de Riemann.
     En partant des équations de la physique \cite{Masatsuka2013}, on peut écrire un solveur exact \cite{GottliebGroth1988} qui résout précisément le problème de Riemann, ou un solveur approché \cite{Roe1981} qui sera moins précis mais plus rapide.
 
@@ -58,7 +58,7 @@ Dans cette partie sont présentés les différents codes et bibliothèques que j
     L'avantage de ce code est qu'il utilise entièrement les structures de données offertes par PETSc, et donc profite au maximum des capacités de la librairie.
     L'ajout d'un type de condition limite ou d'un solveur de Riemann se fait par la simple écriture de la fonction associée, les "branchements" étant simplifiés par l'utilisation de la librairie.
     Le choix de la méthode d'intégration temporelle, de la méthode de résolution de l'équation non-linéaire, de la méthode de résolution du système linéaire ou des préconditionneurs peut se faire à l'exécution du programme.
-    Ce code permet donc une grande flexibilité pour tester des méthodes d'intégratons.
+    Ce code permet donc une grande flexibilité pour tester des méthodes d’intégrations.
 
   \subsection{PETSc}
 
