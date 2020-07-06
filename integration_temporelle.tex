@@ -23,8 +23,9 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     \[\lim_{\Delta t \rightarrow 0} \frac{W_1 - W\left(t_0 + \Delta t\right)}{\Delta t} = 0\ .\]
 
     \paragraph{}
-    De plus, on dira que la méthode est d'ordre $p$ si l'erreur locale est en $\Delta t^{p+1}$ \cite{HairerNorsettWanner1993} :
-    \footnote{\GP{J'ai un doute... Ordre p+1 pour moi...}\PS{Voir citation}}
+    %De plus, on dira que la méthode est d'ordre $p$ si l'erreur locale est en $\Delta t^{p+1}$ \cite{HairerNorsettWanner1993} :
+    \GP{De plus, on dira que la méthode est $p$-exacte, c'est-à-dire capable de représenter un polynôme de degré $p$}, si l'erreur locale est en $\Delta t^{p+1}$ \cite{HairerNorsettWanner1993} :
+    \footnote{\GP{Cette phrase remplace l'initiale car je trouve que c'est plus clair...}}
     \[W_1 - W\left(t_0 + \Delta t\right) = O\left(\Delta t^{p+1}\right)\ .\]
 
 
@@ -347,8 +348,8 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
       Dans ce cas, la matrice à inverser à l'étape $i$ est : $\operatorname{Id} - \Delta ta_{ii}\frac{\partial F}{\partial W}$.
       On remarque alors que si les $a_{ii}$ sont tous égaux, alors la matrice à inverser est la même pour chaque étape de la méthode.
       En pratique, c'est un gros avantage car on peut alors factoriser la matrice une seule fois pour l'inverser à chaque étape.
-      \GP{Référence?}
-      \PS{Pas de "référence", c'est un constat immédiat : la matrice est la même pour chaque étape donc on la factorise une seule fois.}
+      %\GP{Référence?}
+      %\PS{Pas de "référence", c'est un constat immédiat : la matrice est la même pour chaque étape donc on la factorise une seule fois.}
       Cette variante est appelée SDIRK (Singly Diagonally Implicit) \cite{HairerWanner1996}.
 
 
@@ -362,7 +363,7 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
       \[F_{n,i} = F\left(g_i\right) + \Delta ta_{ii}\frac{\partial F}{\partial W}\left(g_i\right)F_{n,i}\ .\]
       Pour ne pas calculer la jacobienne de $F$ à chaque étape, on prendra $\frac{\partial F}{\partial W}\left(g_i\right) = \frac{\partial F}{\partial W}\left(W_n\right) = F'$.
       En pratique, pour permettre plus de liberté dans le choix de la méthode de Rosenbrock, on remplacera le terme $a_{ii}F'F_{n,i}$ par $F'\sum_{j=1}^i\gamma_jF_{n,j}$.
-      \footnote{\GP{Tu ne dis pas les conséquences mathématiques d'un tel changement}\PS{Pas non plus dans le texte de référence, je peux cependant remonter à la source pour trouver ça, mais est-ce que c'est pas un peu m'éloigner du sujet ?}}
+      \footnote{\GP{Tu ne dis pas les conséquences mathématiques d'un tel changement}\PS{Pas non plus dans le texte de référence, je peux cependant remonter à la source pour trouver ça, mais est-ce que c'est pas un peu m'éloigner du sujet ?}\GP{Si Lionel OK, on laisse comme cela...}}
       La méthode est donc :
       \begin{equation}\label{eq:rk_rosenbrock}
         \left\{\begin{aligned}

@@ -94,10 +94,10 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
   \subsection{Principe des méthodes}
 
     \paragraph{}
-    Les méthodes de Krylov s'imposent comme étant la norme dans le domaine de la dynamique des fluides numérique.
-    \footnote{\GP{Qui l'a dit? Ou as-tu trouve la reference?}\PS{Je voulais dire par là que de ce que j'ai vu, beaucoup de monde les utilise. Personne n'a explicitement dit ça, est ce que je remplace par : Les méthodes de Krylov semblent s'imposer dans le domaine de la dynamique des fluides.}}
+    Les méthodes de Krylov \GP{semblent} s'imposer comme étant la norme dans le domaine de la dynamique des fluides numérique.
+    %\footnote{\GP{Qui l'a dit? Ou as-tu trouve la reference?}\PS{Je voulais dire par là que de ce que j'ai vu, beaucoup de monde les utilise. Personne n'a explicitement dit ça, est ce que je remplace par : Les méthodes de Krylov semblent s'imposer dans le domaine de la dynamique des fluides.}}
     Le principe d'une méthode de Krylov est de projeter le système linéaire sur un espace restreint appelé espace de Krylov, et d'y résoudre le système maintenant qu'il est plus petit.
-		L'astuce va être dans le fait que ces espaces de Krylov sont emboîtés, et qu'a chaque nouvelle itération on utilise l'information accumulée lors des précédentes.
+		L'astuce va être dans le fait que ces espaces de Krylov sont emboîtés, et qu'à chaque nouvelle itération on utilise l'information accumulée lors des précédentes.
 
 		\paragraph{}
 		Dans ce qui suit, on notera à l'itération $n$ le résidu $r_n = b - Ax_n$, où $x_n$ est l'itéré produit par l'algorithme.
@@ -188,7 +188,7 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 		La condition de minimisation du résidu est remplie en résolvant un problème de minimisation de taille $n$.
 		En pratique ce problème est résolu par décomposition QR de la matrice de Hessenberg.
 		Pour ce faire, on suppose qu'on dispose d'une décomposition $\Omega_n\widetilde{H}_n = \begin{pmatrix}R_n \\ 0\end{pmatrix}$ avec $\Omega_n\in\orthogroup{n+1}{K}$ une matrice unitaire et $R_n\in\matrixsymb{n}{K}$ une matrice diagonale.
-		La décomposition QR de $\widetilde{H}_n$ à en effet cette forme de par sa structure de Hessenberg.
+		La décomposition QR de $\widetilde{H}_n$ a en effet cette forme de par sa structure de Hessenberg.
 		C'est le cas à l'itération 1 avec $\Omega_1 = \operatorname{Id}$ et $R_1 = 1$.
 		On note ensuite :
 		\[\begin{pmatrix}\Omega_n & 0 \\ 0 & 1\end{pmatrix}\widetilde{H}_{n+1} = \begin{pmatrix}R_n & r_{n+1} \\ 0 & \rho \\ 0 & \sigma\end{pmatrix} \quad\textrm{avec}\quad \begin{pmatrix}r_{n+1} \\ \rho\end{pmatrix} = \Omega_n\begin{pmatrix}h_{n,n+1} \\ \vdots \\ h_{n+1,n+1}\end{pmatrix} \quad\textrm{et}\quad \sigma = h_{n+2,n+1}\ .\]
@@ -205,7 +205,7 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 		\paragraph{}
 		Finalement, la décomposition QR de la matrice de Hessenberg se construit à mesure des itérations, de manière peu coûteuse.
 		Cette décomposition est cependant très intéressante.
-		Lorsqu'on cherche à minimiser le résidu, on à montré précédemment qu'on minimise :
+		Lorsqu'on cherche à minimiser le résidu, on a montré précédemment qu'on minimise :
 		\begin{align*}
 			\norm{r_n} &= \norm{\norm{r_0} e_1 - \widetilde{H}_ny_n} \\
 			&= \norm{\norm{r_0} \Omega_ne_1 - \begin{pmatrix}R_ny_n \\ 0\end{pmatrix}}\ .
@@ -271,7 +271,7 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 		\paragraph{}
 		Si une étude précise du spectre de la matrice n'est pas recomandée, une rapide analyse peut toutefois s'avérer utile.
 		En effet, mathématiquement parlant, le spectre peut ne donner aucune information, d'après le paragraphe précédent.
-		Cependant, les matrices rencontrées en pratiques ne sont pas des contres-exemples d'une preuve mathématique, mais de vraies matrices quelconque.
+		Cependant, les matrices rencontrées en pratique ne sont pas des contres-exemples d'une preuve mathématique, mais de vraies matrices quelconques.
 		En faisant l'hypothèse qu'on ne tombera pas précisément sur un cas particulier, on peut continuer à regarder le spectre de $A$ pour se donner une idée de la convergence de l'algorithme.
 
 		\subsubsection{Convergence de GMRES}
@@ -351,7 +351,8 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 		\paragraph{}
 		Cet exemple permet également d'établir une remarque intéressante.
 		En effet, déjà avant de préconditionner la matrice, son conditionnement n'est pas excessivement grand, et cependant GMRES n'arrive pas à converger.
-		C'est parce que puisque la matrice est non-normale, le conditionnement seul ne veut rien dire, et dans cet exemple en particulier c'est la disposition des valeurs propres qui importent.
+		C'est parce que puisque la matrice est non-normale, le conditionnement seul ne \GP{suffit pas à comprendre ce qui se passe}%veut rien dire
+		, et dans cet exemple en particulier c'est la disposition des valeurs propres qui importe.
 		Ainsi, l'étude du spectre de l'opérateur ne peut se faire en regardant simplement son conditionnement.
 		Il faut aussi regarder la répartition de ses valeurs propres dans le plan complexe, sa non-normalité, ...
 
@@ -471,7 +472,7 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 		\paragraph{}
 		Certains préconditionnements sont un peu plus complexes qu'une simple décomposition de l'opérateur.
 		C'est le cas du préconditionnement flexible.
-    La thèorie du préconditionnement flexible pour les méthodes de Krylov concerne le préconditionnement à droite.
+    La théorie du préconditionnement flexible pour les méthodes de Krylov concerne le préconditionnement à droite.
 		Un préconditionnement est dit flexible s'il change à chaque itération.
     Ainsi, pour un préconditionneur flexible, on notera $M_i$ sa variante à l'étape $i$.
     Lorsqu'on applique un préconditionneur flexible à une méthode de Krylov, la relation d'Arnoldi est à nouveau modifiée, et devient :
@@ -493,7 +494,7 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
     Nous avons parlé plus haut du fait qu'il est possible de préconditionner une méthode de résolution par une autre méthode de résolution.
     Cependant, cela s'applique directement pour les méthodes classiques, qui sont en fait linéaires en le vecteur à inverser.
     Puisque appliquer $k$ étapes de GMRES pour calculer $A^{-1}v$ n'est pas une application linéaire en $v$, le préconditionnement à utiliser se doit d'être flexible.
-    \footnote{\PS{Dois-je montrer que GMRES n'est pas linéaire ? Ça ne sort pas d'une référence, mais j'ai la preuve sauf que c'est un peu long. En fait j'ai retrouvé dans mes dossiers à l'ONERA la preuve déjà rédigée en LaTeX}}
+    \footnote{\PS{Dois-je montrer que GMRES n'est pas linéaire ? Ça ne sort pas d'une référence, mais j'ai la preuve sauf que c'est un peu long. En fait j'ai retrouvé dans mes dossiers à l'ONERA la preuve déjà rédigée en LaTeX}\GP{Perso, je pense que c'est cool de mettre la preuve, mais sans doute en annexe. Qu'en pensez-vous ?}}
 
     \paragraph{}
     Concrètement, lorsqu'on applique l'itération $n$ du GMRES externe, plutôt que d'orthonormaliser $AM^{-1}v_n$ contre les $v_{i, 1\leq i\leq n}$ pour obtenir $v_{n+1}$, on préconditionne $v_n$ en résolvant $Az_n = v_n$ par $k$ itérations du GMRES interne, puis on orthonormalise $Az_n$.
@@ -607,6 +608,6 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 
 
     \subsubsection{Résolution successive du système linéaire}
-    Les techniques d'augmentation et de déflation permettent de recycler l'information spectrale obtenu au cours d'un cycle afin d'améliorer les performances des cycles suivants.
-    Cette idée de recyclage sont encore aujourd'hui amplement étudiées \cite{JolivetTournier2016}.
-    On peut par exemple utiliser de telles méthodes de recyclage non pas entre les cycles d'une résolution GMRES, mais pourquoi au cours d'une résolution successive de plusieurs problèmes linéaires \cite{Gaul2014}, ce qui est précisément ce que l'on fait dans notre cas.
+    Les techniques d'augmentation et de déflation permettent de recycler l'information spectrale obtenue au cours d'un cycle afin d'améliorer les performances des cycles suivants.
+    Cette idée de recyclage est encore aujourd'hui amplement étudiée \cite{JolivetTournier2016}.
+    \GP{On peut par exemple utiliser de telles méthodes de recyclage non pas entre les cycles d'une résolution GMRES, mais pourquoi au cours d'une résolution successive de plusieurs problèmes linéaires \cite{Gaul2014}, ce qui est précisément ce que l'on fait dans notre cas\footnote{phrase bizarre}.}

@@ -44,7 +44,9 @@ On peut envisager d'utiliser des méthodes et des techniques moins classiques po
       Si cela permet de la former de manière très économe, nous verrons par la suite quels sont les inconvénients de ce choix.
 
       \paragraph{}
-      On peut calculer la jacobienne à partir de $F$, en utilisant des différences finies.
+      On peut calculer la jacobienne à partir de $F$\GP{autour de $W_O$ et dans la direction $e_i$, 
+      en utilisant la dérivée de Fréchet. Sans perdre de généralité, l'approximation utilisée peut être apparentée à 
+      un calcul de dérivée par la méthode des différences finies.}%des différences finies.
       En effet, la $i$\textsuperscript{ème} colonne de la jacobienne de $F$ peut être approchée par :
       \[\frac{\partial F}{\partial W}\left(W_0\right)_i = \frac{F\left(W_0 + \varepsilon e_i\right) - F\left(W_0\right)}{\varepsilon} + O\left(\varepsilon\right)\]
       pour un $\varepsilon$ suffisamment petit, avec $e_i$ le $i$\textsuperscript{ème} vecteur de la base canonique.
@@ -82,7 +84,7 @@ On peut envisager d'utiliser des méthodes et des techniques moins classiques po
 
     \paragraph{}
     Si les méthodes JFNK offrent de bonnes performances, elles ont un défaut qui est l'erreur induite sur l'approximation de la jacobienne.
-    Si la jacobienne est mal approximé, alors le système linéaire résolu n'est pas le bon, et donc la résolution de l'équation non-linéaire sera gênée.
+    Si la jacobienne est mal approximée, alors le système linéaire résolu n'est pas le bon, et donc la résolution de l'équation non-linéaire sera gênée.
     Une solution applicable est l'utilisation de la Différenciation Automatique (AD) \cite{Griewank2000}.
     Cela consiste à "dériver" à l'aide d'un programme externe \cite{HascoeetPascual2012} le code source de notre solveur.
 
@@ -90,7 +92,8 @@ On peut envisager d'utiliser des méthodes et des techniques moins classiques po
     Un avantage de la différenciation automatique est que son coût n'est payé qu'à la compilation du code, au moment de sa différenciation.
     Après cela, le calcul de la jacobienne se fait par le simple appel à une fonction, qui a été automatiquement produite par l'outil.
     Un autre avantage est que le résultat obtenu est exact, et non approché.
-    La précision obtenue est alors bien meilleure qu'avec des différences finies.
+    La précision obtenue est alors bien meilleure qu'avec des différences finies. \GP{Toutefois, cette approche 
+    doit être traitée avec attention car de nombreuses fonctions (min ou max par exemple) ne sont pas différentiables.}
 
     \paragraph{}
     Une idée est alors d'utiliser les avantages de JFNK avec la précision de la différenciation automatique.
@@ -99,7 +102,7 @@ On peut envisager d'utiliser des méthodes et des techniques moins classiques po
 
     \paragraph{}
     Si la différenciation automatique n'est pas très largement utilisée par la communauté de CFD, elle séduit de plus en plus \cite{BilanceriBeuxElmahiEtAl2011, KenwayMaderHeEtAl2019}.
-    \footnote{\PS{Parler d'ELSA qui s'y met, ou alors on les aime pas donc on en parle pas ? Si oui je pense pouvoir trouver un doc où ils comparent les perfo avec/sans AD.}}
+    \footnote{\PS{Parler d'ELSA qui s'y met, ou alors on les aime pas donc on en parle pas ? Si oui je pense pouvoir trouver un doc où ils comparent les perfo avec/sans AD.} \GP{Oui, en parler ! Il faut être exhaustif !}}
 
 
 \section{Pour l'intégration temporelle}
@@ -121,7 +124,8 @@ On peut envisager d'utiliser des méthodes et des techniques moins classiques po
     Autrement dit, pour reprendre les termes de l'analyse de stabilité des méthodes, on intègre avec une méthode explicite la partie de $F$ correspondant aux valeurs propres dans le domaine de stabilité, et on intègre les autres valeurs propres avec une méthode implicite.
     Cette méthodologie est nommée IMEX, pour IMplicite-EXplicite.
 
-    \paragraph{paragraph name}
+    %\paragraph{paragraph name}
+    \paragraph{}
     On peut par exemple utiliser une méthode de Runge-Kutta explicite, couplée à une méthode de Runge-Kutta implicite, pour obtenir une méthode ASIRK (Additive Semi-Implicit Runge-Kutta) \cite{Zhong1996}.
     Le schéma devient alors une somme entre le schéma explicite (\ref{eq:rk}) et l'implicite (\ref{eq:rk_impl}) :
     \[\left\{\begin{aligned}
@@ -241,7 +245,7 @@ On peut envisager d'utiliser des méthodes et des techniques moins classiques po
 
       \paragraph{}
       Cette méthode inspirée du Multiple Shooting \cite{Nievergelt1964} donne la méthode Pararéel (Parareal en anglais) \cite{LionsMadayTurinici2001}.
-      La méthode Pararéel et le Multiple-Shooting sont en pratique équivalent, à une approximation près \cite{GanderVandewalle2007}.
+      La méthode Pararéel et le Multiple-Shooting sont en pratique équivalents, à une approximation près \cite{GanderVandewalle2007}.
       La différence est qu'avec le Parareal on approche la jacobienne de $I_{\Delta t}$ intervenant dans la résolution de la méthode de Newton par une différence finie d'une méthode d'intégration moins précise, et très facile à calculer, utilisant un plus grand pas de temps.
 
       \paragraph{}

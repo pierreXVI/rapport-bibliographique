@@ -17,7 +17,8 @@ Dans cette partie sont présentés les différents codes et bibliothèques que j
 
   \paragraph{}
   Si la simulation des problèmes instationnaires avec CEDRE est satisfaisante, ce n'est pas le cas de l'intégration implicite des problèmes stationnaires, et c'est ce qui motive ma thèse.
-  La résolution implicite est aujourd'hui basée sur une méthode d'Euler implicite, qui utilise un algorithme GMRES basique \cite{Selva1998}.
+  La résolution implicite est aujourd'hui basée sur une méthode d'Euler implicite, qui utilise un algorithme GMRES 
+  \GP{très classique voire basique} \cite{Selva1998}.
   On comprend par basique que si des tentatives d'améliorations ont été faites, avec un préconditionneur polynomial par exemple, les utilisateurs aujourd'hui n'utilisent qu'un préconditionneur diagonal par bloc, et réalisent quelques itérations de GMRES, sans redémarrage ni préconditionnement supplémentaire.
   \footnote{\PS{"Basique" c'est un peu méchant, je dramatise un peu pour "donner du rythme au récit", mais en vrai il y a quand même eu des choses de faites, le MG par exemple. Du coup est-ce que je laisse ou est-ce que je reformule ?}}
 
@@ -41,6 +42,7 @@ Dans cette partie sont présentés les différents codes et bibliothèques que j
   \paragraph{}
   Pour se permettre de développer et d'analyser plus facilement de nouvelles méthodes de résolution, il a été décidé qu'il serait bon de disposer d'un code de calcul plus petit, qui servirait de maquette.
 
+  \GP{Je permuterais ici PETSc et structure du code...}
   \subsection{Structure du code}
 
     \paragraph{}
@@ -50,7 +52,7 @@ Dans cette partie sont présentés les différents codes et bibliothèques que j
     Un travail de recherche à donc été mené pour le développement de la méthode d'intégration spatiale volumes finis \cite{EymardGallouetHerbin2000}, ou pour le traitement des conditions limites \cite{PoinsotLele1992}.
 
     \paragraph{}
-    Le code maquette à pour objectif de résoudre les équatiions de Navier-Stokes.
+    Le code maquette a pour objectif de résoudre les équatiions de Navier-Stokes.
     La formulation volumes finis nécessite alors l'écriture d'un solveur de Riemann.
     En partant des équations de la physique \cite{Masatsuka2013}, on peut écrire un solveur exact \cite{GottliebGroth1988} qui résout précisément le problème de Riemann, ou un solveur approché \cite{Roe1981} qui sera moins précis mais plus rapide.
 
