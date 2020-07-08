@@ -445,14 +445,14 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
     Ainsi, pour des limitations de temps et d'espace mémoire, on ne peut pas réaliser un nombre trop grand d'itérations.
     Une astuce est alors de faire un redémarrage de l'algorithme.
     Après $n$ itérations, on a produit une valeur $x_n$ qui donne un résidu $r_n = b - Ax_n$.
-    Le redémarrage consiste à recommencer l'algorithme itératif en prenant $x_0\rightarrow 0$ et $b\rightarrow r_n$.
+    Le redémarrage consiste à recommencer l'algorithme itératif en prenant $x_0\leftarrow 0$ et $b\leftarrow r_n$.
 
     \paragraph{}
     L'intérêt du redémarrage est multiple.
     Tout d'abord, il permet de contrôler la taille nécessaire au fonctionnement de l'algorithme.
     Pour une méthode de Krylov, il fixe par exemple la taille maximale de l'espace de Krylov construit.
     En contrôlant la dimension de cet espace, on contrôle à la fois l'espace mémoire requis par l'algorithme, et dans le cas de GMRES le coût des itérations.
-    En pratique, on part de $r_0 = b - Ax_0$, on réalise $m$ itérations pour trouver $x_m$ et $r_m$, on pose alors $r_0 \rightarrow r_m$ et on commence un nouveau GMRES.
+    En pratique, on part de $r_0 = b - Ax_0$, on réalise $m$ itérations pour trouver $x_m$ et $r_m$, on pose alors $r_0 \leftarrow r_m$ et on commence un nouveau GMRES.
     Le redémarrage peut être réalisé plusieurs fois, et on utilisera un critère d'arrêt basé sur le nombre total d'itérations ou sur la norme du résidu.
 
     \paragraph{}
@@ -491,8 +491,7 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
     \[M_i^{-1}v = \textrm{le vecteur donné par $k$ étapes de GMRES appliqué à l'équation $Ax = v$.}\]
     Nous avons parlé plus haut du fait qu'il est possible de préconditionner une méthode de résolution par une autre méthode de résolution.
     Cependant, cela s'applique directement pour les méthodes classiques, qui sont en fait linéaires en le vecteur à inverser.
-    Puisque appliquer $k$ étapes de GMRES pour calculer $A^{-1}v$ n'est pas une application linéaire en $v$, le préconditionnement à utiliser se doit d'être flexible.
-    \footnote{\PS{Dois-je montrer que GMRES n'est pas linéaire ? Ça ne sort pas d'une référence, mais j'ai la preuve sauf que c'est un peu long. En fait j'ai retrouvé dans mes dossiers à l'ONERA la preuve déjà rédigée en LaTeX}\GP{Perso, je pense que c'est cool de mettre la preuve, mais sans doute en annexe. Qu'en pensez-vous ?}\PS{OK pour l'annexe, donc TODO}}
+    Puisque appliquer $k$ étapes de GMRES pour calculer $A^{-1}v$ n'est pas une application linéaire en $v$ \footnote{Voir annexe \ref{annexe:gmres_non-linear}.}, le préconditionnement à utiliser se doit d'être flexible.
 
     \paragraph{}
     Concrètement, lorsqu'on applique l'itération $n$ du GMRES externe, plutôt que d'orthonormaliser $AM^{-1}v_n$ contre les $v_{i, 1\leq i\leq n}$ pour obtenir $v_{n+1}$, on préconditionne $v_n$ en résolvant $Az_n = v_n$ par $k$ itérations du GMRES interne, puis on orthonormalise $Az_n$.

@@ -1,0 +1,124 @@
+\newcommand{\D}{\vphantom{\ddots}}
+\renewcommand{\thesection}{\Alph{section}}
+
+\chapter*{Annexe}
+\addcontentsline{toc}{chapter}{Annexe}
+\section{GMRES n'est pas une application linéaire}\label{annexe:gmres_non-linear}
+
+\subsection*{Contexte :}
+  \paragraph{}
+  On se place dans $\mathbb{K}^n$ avec $\mathbb{K} = \mathbb{R}\textrm{ ou }\mathbb{C}$ et $n \in \mathbb{N^*}$.
+  On considère une matrice carrée $A\in\matrixsymb{n}{K}$ inversible, un vecteur $b\in\mathbb{K}^n$, et on cherche à résoudre le système linéaire :
+  \[Ax = b\]
+  pour obtenir le vecteur solution $x\in\mathbb{K}^n$.
+  On utilise pour cela une méthode itérative de type GMRES.
+  On utilise par exemple $k$-étapes de GMRES avec un itéré initial nul.
+
+  \paragraph{}
+  Pour $n \in \mathbb{N^*}$, $k \in [\![1, n[\![$ et $A\in\operatorname{GL}_n\left(\mathbb{K}\right)$, on défini l'application correspondante
+  \begin{align*}
+    \operatorname{GMRES}_{A, k}\quad : \quad \mathbb{K}^n &\to \mathbb{K}^n \\
+    b \;&\mapsto x_k\textrm{, l'itéré produit à l'itération k.}
+  \end{align*}
+  Cette application est bien définie, car si la solution est atteinte en $k' < k$ on considère que GMRES stagne en $x_k = x_{k'} = A^{-1}b$.
+
+
+\subsection*{Non-linéarité :}
+
+  \paragraph{}
+  Montrons par un contre-exemple que pour $k < n$, $\operatorname{GMRES}_{A, k}$ n'est pas nécessairement linéaire en sa deuxième variable.
+  On note que si $k = n$, GMRES donne la solution exacte, donc peut être représenté par la matrice $A^{-1}$, et donc est linéaire.
+
+  \paragraph{}
+  Posons
+  \[A = \begin{bmatrix}
+    1 &        & \D     &        & 1 \\
+    1 & 0      & \D     &        &   \\
+      & \ddots & \ddots &        &   \\
+    \D& \D     & \ddots & \ddots & \D\\
+      &        & \D     & 1      & 0
+  \end{bmatrix} \in \matrixsymb{n}{K}\ .\]
+  On a alors :
+  \begin{align*}
+    Ae_1 &= e_1 + e_2 \\
+    Ae_i &= e_{i+1} \qquad \left(i = 2, \dots, n-1\right) \\
+    Ae_n &= e_1
+  \end{align*}
+  où les $e_i$ sont les vecteurs de la base canonique de $\mathbb{K}^n$.
+  La matrice $A$ est bien inversible, de déterminant $\left(-1\right)^{n+1} \neq 0$.
+
+
+\subsection*{\underline{$b = e_1$} :}
+
+  \paragraph{}
+  On remarque que : pour $0 \le i < k,\; A^ib = \sum_{j=1}^{i+1} e_j$.
+  Alors, l'espace de Krylov construit par l'itération d'Arnoldi est : $\krylov[A, b]{k} = \operatorname{Vect}\left(e_1, \dots, e_k\right)$.
+  Ainsi, on peut écrire pour $x\in\krylov[A, b]{k} : x = \sum_{i=1}^k \lambda_i e_i$.
+  GMRES minimise la norme du résidu :
+  \begin{align*}
+    \norm{r_k}^2 &= \norm{b - Ax}^2 \\
+                 &= \norm{e_1 - \sum_{i=1}^k \lambda_i Ae_i}^2 \\
+                 &= \norm{e_1 - \lambda_1 \left(e_1 + e_2\right) - \sum_{i=2}^k \lambda_i e_{i+1}}^2 \\
+                 &= \left|1 - \lambda_1\right|^2 + \left|\lambda_1\right|^2 + \sum_{i=2}^k \left|\lambda_i\right|^2
+  \end{align*}
+
+  \paragraph{}
+  On voit que la norme du résidu est minimisée sur l'espace de Krylov si $\lambda_{i\geq 2} = 0$ et $\lambda_1 = 1/2$.
+  Ainsi, $\operatorname{GMRES}_{A, k}\left(e_1\right) = \frac{1}{2}e_1$.
+
+\subsection*{\underline{$b = e_2$} :}
+
+  \paragraph{}
+  On remarque que : pour $0 \le i < k,\quad A^ib = e_{i + 2}$.
+  Alors, l'espace de Krylov construit par l'itération d'Arnoldi est : $\krylov[A, b]{k} = \operatorname{Vect}\left(e_2, \dots, e_{k+1}\right)$.
+  Ainsi, on peut écrire pour $x\in\krylov[A, b]{k} : x = \sum_{i=2}^{k+1} \lambda_i e_i$.
+  GMRES minimise la norme du résidu :
+  \begin{align*}
+    \norm{r_k}^2 &= \norm{b - Ax}^2 \\
+                 &= \norm{e_2 - \sum_{i=2}^{k+1} \lambda_i Ae_i}^2 \\
+                 &= \norm{e_2 - \sum_{i=2}^{k+1} \lambda_i e_{i+1}}^2 \qquad\textrm{en notant $e_{n+1} = e_1$, si nécessaire (si $k = n-1$)}\\
+                 &= 1 + \sum_{i=2}^{k+1} \left|\lambda_i\right|^2
+  \end{align*}
+
+  \paragraph{}
+  On voit que la norme du résidu est minimisée sur l'espace de Krylov si les $\lambda_{i}$ sont nuls.
+  Ainsi, $\operatorname{GMRES}_{A, k}\left(e_2\right) = 0$.
+
+\subsection*{\underline{$b = e_1 + e_2$} :}
+
+  \paragraph{}
+  On remarque que : pour $0 \le i < k,\; A^ib = \sum_{j=1}^{i+2} e_j$.
+  Alors, l'espace de Krylov construit par l'itération d'Arnoldi est : $\krylov[A, b]{k} = \operatorname{Vect}\left(e_1 + e_2, e_3,\dots, e_{k+1}\right)$.
+  Ainsi, on peut écrire pour $x\in\krylov[A, b]{k} : x = \lambda_1\left(e_1 + e_2\right) + \sum_{i=3}^{k+1} \lambda_i e_i$.
+  GMRES minimise la norme du résidu :
+  \begin{align*}
+    \norm{r_k}^2 &= \norm{b - Ax}^2 \\
+                 &= \norm{e_1 + e_2 - \lambda_1 A\left(e_1 + e_2\right) - \sum_{i=3}^{k+1} \lambda_i Ae_i}^2
+  \end{align*}
+  On distingue alors deux cas :
+  \begin{itemize}
+    \item si $k < n-1$ :
+      \begin{align*}
+        \norm{r_k}^2 &= \norm{\left(1 - \lambda_1\right)\left(e_1 + e_2\right) - \lambda_1 e_3 - \sum_{i=3}^{k+1} \lambda_ie_{i+1}}^2 \\
+                     &= 2\left|1 - \lambda_1\right|^2 + \left|\lambda_1\right|^2 + \sum_{i=3}^{k+1} \left|\lambda_i\right|^2
+      \end{align*}
+
+      \paragraph{}
+      On voit que la norme du résidu est minimisée sur l'espace de Krylov si $\lambda_{i\ge 3} = 0$ et $\lambda_1 = 2/3$.
+      Ainsi, $\operatorname{GMRES}_{A, k}\left(e_1 + e_2\right) = \frac{2}{3}e_1 + \frac{2}{3}e_2$.
+    \vspace{\baselineskip}
+    \item si $k = n-1$ :
+      \begin{align*}
+        \norm{r_k}^2 &= \norm{\left(1 - \lambda_1\right)\left(e_1 + e_2\right) - \lambda_1 e_3 - \sum_{i=3}^{n-1} \lambda_ie_{i+1} - \lambda_n e_1}^2 \\
+                     &= \left|1 - \lambda_1 - \lambda_n\right|^2 + \left|1 - \lambda_1\right|^2 + \left|\lambda_1\right|^2 + \sum_{i=3}^{n-1} \left|\lambda_i\right|^2
+      \end{align*}
+
+      \paragraph{}
+      On voit que la norme du résidu est minimisée sur l'espace de Krylov si $\lambda_{3\le i < n} = 0$ et $\lambda_1 = \lambda_n = 1/2$.
+      Ainsi, $\operatorname{GMRES}_{A, k}\left(e_1 + e_2\right) = \frac{1}{2}e_1 + \frac{1}{2}e_2 + \frac{1}{2}e_n$.
+  \end{itemize}
+
+
+\paragraph{}
+En conclusion, on voit que $\operatorname{GMRES}_{A, k}\left(e_1 + e_2\right) \neq \operatorname{GMRES}_{A, k}\left(e_1\right) + \operatorname{GMRES}_{A, k}\left(e_2\right)$, ce qui prouve que $\operatorname{GMRES}_{A, k}$ n'est pas une application linéaire, et n'admet pas de représentaion matricielle.
+Pour cette raison, la théorit développée autour du préconditionnement "classique" ne s'applique pas, et on utilisera GMRES comme un préconditionnement flexible.
