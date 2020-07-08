@@ -18,7 +18,7 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 		Ainsi, les matrices présentent cette caractéristique notable qu'est la creusité et que l'on peut observer sur la figure \ref{fig:sparse}.
 		On y voit en effet que la majorité des coefficients du système linéaire est 0.
 		En pratique, les matrices rencontrées sont tellement grandes qu'il n'est pas possible de les stocker et de les utiliser sous leur forme dense.
-		La propriété de creusité permettra d'utiliser des représentation astucieuses pour stocker les matrices en mémoire, telle que le format CSR (Compressed Sparse Row) \cite{Saad2003}.
+		La propriété de creusité permettra d'utiliser des représentations astucieuses pour stocker les matrices en mémoire, telle que le format CSR (Compressed Sparse Row) \cite{Saad2003}.
 		Ces formats permettent à la fois d'économiser de l'espace en mémoire lors du stockage de la matrice, mais également de réaliser des opérations telles que le produit matrice vecteur plus efficacement qu'avec une matrice dense de même taille.
 
 		\begin{figure}
@@ -52,7 +52,7 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 
 		\paragraph{}
 		Il existe un grand nombre de méthodes pour inverser un problème linéaire.
-		Cependant, en simulation numérique de la dynamique des fluides, la taille des maillage est souvent très importante (\PS{PAR EXEMPLE ?}), ce qui engendre des systèmes de très grande taille.
+		Cependant, en simulation numérique de la dynamique des fluides, la taille des maillages est souvent très importante, ce qui engendre des systèmes de très grande taille.
 		Certaines méthodes de résolution ne sont alors plus compatibles, comme en particulier les méthodes directes.
 		Cette famille de méthodes, dont fait partie par exemple la méthode du pivot de Gauss, calcule exactement la solution du système linéaire, mais nécessite un temps de calcul très important et un espace mémoire déraisonnable pour les tailles de nos problèmes.
 		À l'inverse, les méthodes itératives produisent une suite de vecteurs qui convergent vers la solution du système linéaire.
@@ -77,7 +77,7 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 		\paragraph{}
 		Les méthodes itératives sont encore aujourd'hui très étudiées dans la communauté des mathématiques appliquées \cite{OlshanskiiTyrtyshnikov2014, Saad2003, TrefethenBau1997}.
 		Une première classe de méthode intervient : les méthodes itératives classiques.
-		Ce sont des méthodes de relaxation, parmi lesquelles on compte les méthode de Jacobi, Gauss-Seidel ou encore SOR (Successive Over Relaxation).
+		Ce sont des méthodes de relaxation, parmi lesquelles on compte les méthodes de Jacobi, Gauss-Seidel ou encore SOR (Successive Over Relaxation).
 		Leur fonctionnement réside dans une décomposition $A = M - N$ avec $M$ une matrice relativement facile à inverser, où le choix de la décomposition est propre à la méthode.
 		Pour la méthode de Jacobi on prendra pour $M$ la diagonale de $A$.
 		Il suffit ensuite, à partir d'un itéré initial $x_0$ d'appliquer la formule de récurrence $x_{n+1} = M^{-1}\left(Nx_n + b\right)$.
@@ -234,7 +234,7 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 		En effet, si une méthode itérative fait converger la norme de l'erreur ou celle du résidu vers 0, la vitesse de convergence dépend à la fois de la méthode et de la matrice à inverser.
 
 		\paragraph{}
-		On se rend compte en parcourant la littérature \cite{Nevanlinna1994} que la convergence des méthode itératives est très fortement liée au conditionnement de l'opérateur $A$.
+		On se rend compte en parcourant la littérature \cite{Nevanlinna1994} que la convergence des méthodes itératives est très fortement liée au conditionnement de l'opérateur $A$.
 		Le conditionnement d'une matrice inversible $A$ est :
 		\[\kappa\left(A\right) = \norm{A}\norm{A^{-1}}\]
 		et dépend donc de la norme choisie.
@@ -264,13 +264,13 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 		Cependant, cette analyse est relativement complexe et ne sera pas présentée ici.
 
 		\paragraph{}
-		L'utilisation des méthodes de Krylov avec ces matrices non-normales, et l'analyse de la convergence des algorithmes pour ces matrice ne sont pas triviales \cite{LiesenTichy2004, Huhtanen2005}.
+		L'utilisation des méthodes de Krylov avec ces matrices non-normales, et l'analyse de la convergence des algorithmes pour ces matrices ne sont pas triviales \cite{LiesenTichy2004, Huhtanen2005}.
 		Puisque les matrices rencontrées dans les problèmes de CFD sont quelconques, ou au moins à priori non-normales, étudier précisément le spectre de l'opérateur ne semble pas être une bonne idée.
 
 		\paragraph{}
 		Si une étude précise du spectre de la matrice n'est pas recommandée, une rapide analyse peut toutefois s'avérer utile.
 		En effet, mathématiquement parlant, le spectre peut ne donner aucune information, d'après le paragraphe précédent.
-		Cependant, les matrices rencontrées en pratique ne sont pas des contres-exemples d'une preuve mathématique, mais de vraies matrices quelconques.
+		Cependant, les matrices rencontrées en pratique ne sont pas des contre-exemples d'une preuve mathématique, mais de vraies matrices quelconques.
 		En faisant l'hypothèse qu'on ne tombera pas précisément sur un cas particulier, on peut continuer à regarder le spectre de $A$ pour se donner une idée de la convergence de l'algorithme.
 
 		\subsubsection{Convergence de GMRES}
@@ -495,7 +495,7 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 
     \paragraph{}
     Concrètement, lorsqu'on applique l'itération $n$ du GMRES externe, plutôt que d'orthonormaliser $AM^{-1}v_n$ contre les $v_{i, 1\leq i\leq n}$ pour obtenir $v_{n+1}$, on préconditionne $v_n$ en résolvant $Az_n = v_n$ par $k$ itérations du GMRES interne, puis on orthonormalise $Az_n$.
-    Ce choix de préconditionnement fait sens car en prenant un $k$ raisonnablement petit, le calcul du préconditionnement est peu coûteux, et l'effet du préconditionneur est tout de même proche de l'effet de $A$.
+    Ce choix de préconditionnement a du sens car en prenant un $k$ raisonnablement petit, le calcul du préconditionnement est peu coûteux, et l'effet du préconditionneur est tout de même proche de l'effet de $A$.
     Un autre avantage de ce préconditionneur est qu'il ne nécessite peu de choix de la part de l'utilisateur, et peu de travail de la part du développeur.
     En effet, dans un code pour lequel la méthode GMRES est déjà implémentée, le travail pour écrire cette méthode FGMRES sera simple.
 
@@ -546,7 +546,7 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
       Par exemple, pour un opérateur ayant des valeurs propres de petits modules, puisqu'elles ralentissent la convergence, on peut calculer l'information de Ritz harmonique pour les estimer.
       Il en irait de même si la matrice avait des valeurs propres de grand module, et on calculerait l'information de Ritz.
       On peut ensuite prendre pour $\mathcal{W}$ le sous espace propre associé à ces valeurs.
-      C'est le principe des méthode de type "Deflated Restart" \cite{Vasseur2016, Morgan2002, Pinel2010}.
+      C'est le principe des méthodes de type "Deflated Restart" \cite{Vasseur2016, Morgan2002, Pinel2010}.
       Malgré son nom, cette méthode utilise bien l'augmentation et pas la déflation.
 
 

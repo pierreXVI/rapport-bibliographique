@@ -75,7 +75,7 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
       On remarque que l'argument de $G$ n'est pas $J$ mais $\Delta tJ$.
       Si une valeur propre $\Delta t\alpha_i$ de $\Delta tJ$ n'est pas dans le domaine de stabilité de la méthode, la direction propre associée sera amplifiée et une instabilité d'origine numérique entraînera la divergence du calcul.
       On va donc jouer sur la valeur de $\Delta t$ : en la prenant assez faible, on arrivera à faire rentrer toutes les valeurs propres dans le domaine de stabilité, et donc à garantir la stabilité du calcul.
-      Cependant, comme nous le verrons par la suite, cela impose l'utilisation de pas de temps relativement faible, ce qui s'avère contraignant pour nos application.
+      Cependant, comme nous le verrons par la suite, cela impose l'utilisation de pas de temps relativement faible, ce qui s'avère contraignant pour nos applications.
 
     \subsubsection{Méthodes multi-pas}
 
@@ -95,9 +95,9 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
 
     \paragraph{}
     La propriété clef découlant de cette étude de stabilité est la "A-stabilité" \cite{Dahlquist1963}.
-    Une méthode d'intégration temporelle est dite A-stable si son domaine de stabilité inclut le demi-plan des complexe à partie réelle négative.
+    Une méthode d'intégration temporelle est dite A-stable si son domaine de stabilité inclut le demi-plan des complexes à partie réelle négative.
     Autrement dit, une méthode est A-stable si elle converge bien vers 0 lorsqu'elle le devrait, et ne fait donc pas diverger l'erreur numérique.
-    La propriété de A-stabilité nous intéresse beaucoup, car on dit d'une méthode A-stable qu'elle est inconditionnellement stable, alors qu'une méthode qui ne l'est pas est conditionnellement stable.
+    La propriété d'A-stabilité nous intéresse beaucoup, car on dit d'une méthode A-stable qu'elle est inconditionnellement stable, alors qu'une méthode qui ne l'est pas est conditionnellement stable.
     Cette appellation signifie qu'une méthode non A-stable nécessite de respecter certains critères, notamment sur le pas de temps, pour qu'elle soit stable, alors qu'une méthode A-stable reste stable quelque soit le pas de temps.
 
 
@@ -184,7 +184,7 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     \end{tabular}\caption{}\label{tab:rk_butcher}\end{table}
 
     \paragraph{}
-    On rappelle dans la table \ref{tab:rk_butcher} les tableau de Butcher des méthodes les plus connues.
+    On rappelle dans la table \ref{tab:rk_butcher} les tableaux de Butcher des méthodes les plus connues.
     La méthode RK1 est équivalente à la méthode Euler explicite présentée précédemment.
     Cette méthode RK2 est également appelée méthode du point milieu.
     Cette méthode RK4 est d'ordre 4, et est l'une des plus utilisées pour l'intégration explicite des équations différentielles.
@@ -241,7 +241,7 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     \paragraph{}
     L'analyse de la stabilité des méthodes d'Adams-Bashforth est plus complexe \cite{HairerNorsettWanner1993, HairerWanner1996}, et le développement des calculs ne sera donc pas détaillé ici.
     On peut toutefois tracer numériquement les domaines de stabilité des premières méthodes sur la figure \ref{fig:ab_stab}.
-    On y constate que la stabilité de ces méthode décroît avec l'ordre, et qu'elles ne sont pas adaptées pour les problèmes raides que l'on cherche à résoudre.
+    On y constate que la stabilité de ces méthodes décroît avec l'ordre, et qu'elles ne sont pas adaptées pour les problèmes raides que l'on cherche à résoudre.
     La stabilité de ces méthodes s'avère donc décevante.
     De manière générale, il n'existe pas de méthodes multi-pas explicites qui sont A-stables.
 
@@ -278,7 +278,7 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
   \subsection{Méthodes de Runge-Kutta}
 
     \paragraph{}
-    Les méthodes de Runge-Kutta ont elles aussi leur équivalent implicite.
+    Les méthodes de Runge-Kutta ont elles aussi leurs équivalents implicites.
     La différence avec la version explicite est qu'à chaque étape, la quadrature de l'intégrale est approchée par l'ensemble des étapes intermédiaires :
     \[\int_0^{c_i}F\left(W\left(t_n + s\Delta t\right)\right)\mathrm{d}s \approx \sum_{j = 1}^ka_{ij}F\left(W\left(t_{n,j}\right)\right)\ .\]
 
@@ -312,7 +312,7 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     Cependant, on s’arrêtera en général à la méthode de taille 3 et d'ordre 6, car au delà le coût de la méthode devient trop important.
 
     \paragraph{}
-    Si ces méthodes sont bien plus coûteuses que leur équivalents explicites, elle possèdent de meilleures propriétés de stabilité.
+    Si ces méthodes sont bien plus coûteuses que leurs équivalents explicites, elles possèdent de meilleures propriétés de stabilité.
     On applique la méthode à l'équation (\ref{eq:stab}).
     Pour simplifier l'étude, on se place dans le cas scalaire ou de manière équivalente sur une direction propre de $J$ associée à la valeur propre $\alpha$.
     On a alors :
@@ -337,7 +337,7 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
 
       \paragraph{}
       Les méthodes DIRK \cite{Alexander1977}, ou Diagonally Implicit Runge-Kutta methods, consistent à prendre la matrice $A$ du tableau de Butcher comme étant triangulaire inférieure.
-      Ainsi, seul les termes $a_{ii}$ sur la diagonale de $A$ donnent le caractère implicite à la méthode.
+      Ainsi, seuls les termes $a_{ii}$ sur la diagonale de $A$ donnent le caractère implicite à la méthode.
       À chaque itération, plutôt que de résoudre simultanément $k$ équations implicites de taille $N$ et non-linéaires, on propose ici de les résoudre successivement.
       L'équation (\ref{eq:rk_impl}) donnant l'intermédiaire de calcul devient :
       \begin{equation}\label{eq:rk_dirk}
@@ -422,8 +422,8 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
 \paragraph{}
 Cette étude des méthodes d'intégration classiques permet d'orienter le domaine de recherche.
 En effet, comme nous le disions au début, nous cherchons à intégrer une équation différentielle ordinaire afin d'obtenir la valeur de l'état après un temps long.
-Ainsi, une méthode explicite et ses contraintes sur le pas de temps ne serait pas adaptée.
-Si ces méthodes sont en général bien moins coûteuse au niveau informatique, les méthodes implicites restent le meilleur choix pour nos problèmes raides.
+Ainsi, une méthode explicite et ses contraintes sur le pas de temps ne seraient pas adaptées.
+Si ces méthodes sont en général bien moins coûteuses au niveau informatique, les méthodes implicites restent le meilleur choix pour nos problèmes raides.
 Il est souvent plus rentable d'effectuer une unique itération, coûteuse mais sur un grand pas de temps, d'une méthode implicite, que d'effectuer tout un ensemble d'itérations, peu coûteuses mais sur un petit pas de temps, d'une méthode explicite.
 
 

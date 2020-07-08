@@ -3,7 +3,7 @@
 \paragraph{}
 Dans les chapitres précédents, nous avons présentés des outils extraits de la littérature permettant de résoudre des équations différentielles.
 Nous avons expliqué comment, en partant d'une équation aux dérivées partielles issue du modèle physique, nous arrivions après une étape de discrétisation numérique à une équation différentielle ordinaire.
-Des méthodes d'intégration temporelle ont été présentée afin de résoudre cette équation, et nous avons mis en avant une classe d'intégrateurs : les méthode implicites.
+Des méthodes d'intégration temporelle ont été présentée afin de résoudre cette équation, et nous avons mis en avant une classe d'intégrateurs : les méthodes implicites.
 Ces méthodes permettent de calculer l'état du système en résolvant des équations non-linéaires, qui sont elles même résolue avec la solution de systèmes linéaires.
 Enfin, nous avons identifié une méthode de Krylov, GMRES, et certaines de ses améliorations, pour pouvoir résoudre un système linéaire.
 
@@ -53,13 +53,13 @@ On peut envisager d'utiliser des méthodes et des techniques moins classiques po
       On pourrait atteindre une meilleure précision avec des différences finies centrées, cependant on dispose déjà, en général, de la valeur de $F\left(W_0\right)$, et les différences finies décentrées permettent donc d'économiser une évaluation de $F$.
       Le choix du paramètre $\varepsilon$ doit être fait avec beaucoup de vigilance.
       Une valeur trop grande donnerait une mauvaise approximation de la jacobienne, alors qu'une valeur trop faible entraînerait des erreurs d'arrondis numériques.
-      On pourrait envisager d'utiliser la méthode du "Complex-Step Differentiation" \footnote{\PS{J'ai une ref mais ça doit être à l'ONERA, donc TODO}} dans un code de calcul travaillant sur des nombres complexes, mais ce n'est pas notre cas a priori.
+      On pourrait envisager d'utiliser la méthode du "Complex-Step Differentiation" dans un code de calcul travaillant sur des nombres complexes, mais ce n'est pas notre cas a priori.
 
       \paragraph{}
       Calculer la jacobienne avec des différences finies donnerait une approximation à l'ordre 1 pour un coût de calcul important : cela nécessite $N$ évaluations de la fonction $F$.
       Pour éviter ces opérations coûteuses, on peut utiliser un coloriage de la jacobienne \cite{GebremedhinMannePothen2005}.
       Cela consiste à identifier des colonnes "indépendantes", auxquelles on associe une couleur, qu'on va calculer par une unique différence finie.
-      On peut calculer un coloration de la jacobienne car on peut en général obtenir son pattern de creusité facilement puisqu'un connaît le schéma de discrétisation du code.
+      On peut calculer une coloration de la jacobienne car on peut en général obtenir son pattern de creusité facilement puisqu'un connaît le schéma de discrétisation du code.
 
     \subsubsection{JFNK}
 
@@ -181,7 +181,7 @@ On peut envisager d'utiliser des méthodes et des techniques moins classiques po
 
     \paragraph{}
     Dans \cite{WongKwokHorneEtAl2019}, l'idée est d'appliquer une méthode de Newton à $G$, et de résoudre les systèmes linéaires successifs avec GMRES.
-    Comme nous l'avons proposés précédemment dans ce rapport, ils utilisent le fait que GMRES n'a pas besoin de former explicitement la matrice à inverser, et utilisent la différenciation automatique pour obtenir l'effet de la jacobienne de $G$ sur un vecteur.
+    Comme nous l'avons proposé précédemment dans ce rapport, ils utilisent le fait que GMRES n'a pas besoin de former explicitement la matrice à inverser, et utilisent la différenciation automatique pour obtenir l'effet de la jacobienne de $G$ sur un vecteur.
     L'efficacité de la méthode SIN par rapport à la méthode SIFP à été démontrée sur un cas de couplage entre la mécanique des fluides et la thermique, et un cas de couplage entre la mécanique des fluides et la mécanique.
 
 
@@ -205,7 +205,7 @@ On peut envisager d'utiliser des méthodes et des techniques moins classiques po
     On peut par exemple calculer cette intégrale par une méthode de Taylor \cite{KoskelaOstermann2013}, ou bien avec une méthode de Runge-Kutta ou de Rosenbrock \cite{HochbruckOstermann2010}.
 
     \paragraph{}
-    Le grand intérêt de ces méthode est l'intégration exacte de la partie linéaire.
+    Le grand intérêt de ces méthodes est l'intégration exacte de la partie linéaire.
     Cependant, cela se fait en échange du calcul de l'exponentielle d'une matrice.
     C'est une opération coûteuse numériquement, mais il est possible d'utiliser des méthodes efficaces.
 
@@ -218,7 +218,7 @@ On peut envisager d'utiliser des méthodes et des techniques moins classiques po
 
     \paragraph{}
     Ainsi, dans un solveur utilisant déjà une méthode de Krylov, le code peut être réutilisé pour calculer des produits $e^{tA}v$ et donc utiliser des méthodes exponentielles.
-    Ces méthodes d'intégration sont depuis longtemps utilisée pour les problèmes qui concernent ma thèse, comme pour la résolution des équations de Navier-Stokes \cite{EdwardsTuckermanFriesnerEtAl1994}.
+    Ces méthodes d'intégration sont depuis longtemps utilisées pour les problèmes qui concernent ma thèse, comme pour la résolution des équations de Navier-Stokes \cite{EdwardsTuckermanFriesnerEtAl1994}.
     Toutefois l'utilisation des méthodes exponentielles se fait de plus en plus connaître, et on trouve des applications à des problèmes de dynamique des fluides réactive avec des méthodes exponentielles explicite \cite{BhattKhaliqWade2018} comme implicite \cite{NieZhangZhao2006}.
 
     \PS{J'ai d'autres références sur les méthodes exponentielles, mais est-ce que ça vaut le coup de les mettre ?}
@@ -261,10 +261,10 @@ On peut envisager d'utiliser des méthodes et des techniques moins classiques po
       \paragraph{}
       Après avoir traité l'intégration spatiale de manière parallèle, on s'est intéressé à l'intégration temporelle, comme décrit dans la section précédente.
       Il en va de même avec l'analyse spectrale : après avoir développé des méthodes d'intégration spatiale se basant sur de l'analyse spectrale, on fait aujourd'hui de même avec l'intégration temporelle.
-      Au départ introduit pour des problèmes periodiques et testés sur des applications de dynamique des fluides \cite{GopinathJameson2005, GopinathJameson2006}, cette méthode consiste à prendre la transformée de Fourier de l'équation aux dérivés partielles, de résoudre l'équation obtenue et de prendre la transformée de Fourier inverse de la solution.
+      Au départ introduit pour des problèmes périodiques et testés sur des applications de dynamique des fluides \cite{GopinathJameson2005, GopinathJameson2006}, cette méthode consiste à prendre la transformée de Fourier de l'équation aux dérivés partielles, de résoudre l'équation obtenue et de prendre la transformée de Fourier inverse de la solution.
 
       \paragraph{}
-      Cette méthode est valable pour les problèmes periodiques dont la période est connue, mais au fil des développements on arrive à des méthodes applicables à des problèmes dont la période n'est pas connue, et même des problème apériodiques \cite{EkiciDjeddiLiEtAl2020}.
+      Cette méthode est valable pour les problèmes périodiques dont la période est connue, mais au fil des développements on arrive à des méthodes applicables à des problèmes dont la période n'est pas connue, et même des problèmes apériodiques \cite{EkiciDjeddiLiEtAl2020}.
       Cependant, tout comme pour les méthodes d'intégration parallèle en temps, l'utilisation de telles méthodes entraînerait une refonte du solveur, ce qui n'est pas souhaité dans le cadre de ma thèse.
 
 
