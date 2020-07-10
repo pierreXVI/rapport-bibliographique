@@ -40,11 +40,24 @@ Dans cette partie sont présentés les différents codes et bibliothèques que j
   \paragraph{}
   Pour se permettre de développer et d'analyser plus facilement de nouvelles méthodes de résolution, il a été décidé qu'il serait bon de disposer d'un code de calcul plus petit, qui servirait de maquette.
 
-  \GP{Je permuterais ici PETSc et structure du code...}
+  \subsection{PETSc}
+
+    \paragraph{}
+    La librairie PETSc \cite{petsc-web-page, petsc-user-ref, petsc-efficient} regroupe un ensemble de structure de données et de fonctions pour la résolution parallèle d'équations aux dérivées partielles.
+    On compte parmi ces structures de données des structures classiques, comme les vecteurs ou les matrices, mais aussi des structures plus complexes, correspondant aux maillages non structurés avec les DMPLEX, ou au solveurs non-linéaires avec les SNES.
+
+    \paragraph{}
+    Le code maquette va utiliser un maximum les fonctionnalités de PETSc pour hériter de ses performances.
+    L'intégration temporelle est donc entièrement gérée par PETSc avec la structure de données TS (Time-Stepper) \cite{AbhyankarBrownConstantinescuEtAl2018}.
+    En pratique, le TS est associé à un DMPLEX de manière à utiliser une formulation volumes finis.
+    Le TS utilise un solveur non-linéaire (SNES), qui utilise un solveur linéaire basé sur une méthode de Krylov (KSP) qui utilise un préconditionneur (PC).
+    L'ensemble de ces structures peuvent être paramétrées pour utiliser les méthodes souhaitées, et une force de PETSc est que ce paramétrage peut s'effectuer à l’exécution du programme.
+
+
   \subsection{Structure du code}
 
     \paragraph{}
-    Ce code réalisé en C se base sur la librairie PETSc, présentée dans la suite.
+    Le code maquette réalisé en C se base donc sur la librairie PETSc.
     Pour garder une cohérence avec CEDRE, il utilise des maillages non-structurés, et une formulation volumes finis.
     Puisque ce code est développé par mes soins, j'ai du me documenter sur certains aspects de la simulation numérique qui ne concernent pas directement ma thèse.
     Un travail de recherche à donc été mené pour le développement de la méthode d'intégration spatiale volumes finis \cite{EymardGallouetHerbin2000}, ou pour le traitement des conditions limites \cite{PoinsotLele1992}.
@@ -59,16 +72,3 @@ Dans cette partie sont présentés les différents codes et bibliothèques que j
     L'ajout d'un type de condition limite ou d'un solveur de Riemann se fait par la simple écriture de la fonction associée, les "branchements" étant simplifiés par l'utilisation de la librairie.
     Le choix de la méthode d'intégration temporelle, de la méthode de résolution de l'équation non-linéaire, de la méthode de résolution du système linéaire ou des préconditionneurs peut se faire à l'exécution du programme.
     Ce code permet donc une grande flexibilité pour tester des méthodes d’intégrations.
-
-  \subsection{PETSc}
-
-    \paragraph{}
-    La librairie PETSc \cite{petsc-web-page, petsc-user-ref, petsc-efficient} regroupe un ensemble de structure de données et de fonctions pour la résolution parallèle d'équations aux dérivées partielles.
-    On compte parmi ces structures de données des structures classiques, comme les vecteurs ou les matrices, mais aussi des structures plus complexes, correspondant aux maillages non structurés avec les DMPLEX, ou au solveurs non-linéaires avec les SNES.
-
-    \paragraph{}
-    L'intégration temporelle est entièrement gérée par PETSc avec la structure de données TS (Time-Stepper) \cite{AbhyankarBrownConstantinescuEtAl2018}.
-    En pratique, le TS est associé à un DMPLEX de manière à utiliser une formulation volumes finis.
-    Le TS utilise un solveur non-linéaire (SNES), qui utilise un solveur linéaire basé sur une méthode de Krylov (KSP) qui utilise un préconditionneur (PC).
-    L'ensemble de ces structures peuvent être paramétrées pour utiliser les méthodes souhaitées, et une force de PETSc est que ce paramétrage peut s'effectuer à l’exécution du programme.
-%

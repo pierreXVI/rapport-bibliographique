@@ -104,7 +104,6 @@ On peut envisager d'utiliser des méthodes et des techniques moins classiques po
 
     \paragraph{}
     Si la différenciation automatique n'est pas très largement utilisée par la communauté de CFD, elle séduit de plus en plus \cite{BilanceriBeuxElmahiEtAl2011, KenwayMaderHeEtAl2019}.
-    \footnote{\PS{Parler d'ELSA qui s'y met ? Si oui j'espère pouvoir trouver un doc où ils comparent les perfo avec/sans AD.} \GP{Oui, en parler ! Il faut être exhaustif !}\PS{TODO}}
 
 
 \section{Pour l'intégration temporelle}
@@ -220,8 +219,6 @@ On peut envisager d'utiliser des méthodes et des techniques moins classiques po
     Ainsi, dans un solveur utilisant déjà une méthode de Krylov, le code peut être réutilisé pour calculer des produits $e^{tA}v$ et donc utiliser des méthodes exponentielles.
     Ces méthodes d'intégration sont depuis longtemps utilisées pour les problèmes qui concernent ma thèse, comme pour la résolution des équations de Navier-Stokes \cite{EdwardsTuckermanFriesnerEtAl1994}.
     Toutefois l'utilisation des méthodes exponentielles se fait de plus en plus connaître, et on trouve des applications à des problèmes de dynamique des fluides réactive avec des méthodes exponentielles explicite \cite{BhattKhaliqWade2018} comme implicite \cite{NieZhangZhao2006}.
-
-    \PS{J'ai d'autres références sur les méthodes exponentielles, mais est-ce que ça vaut le coup de les mettre ?}
 
 
   \subsection{Autre méthodes}
