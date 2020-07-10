@@ -23,11 +23,21 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     \[\lim_{\Delta t \rightarrow 0} \frac{W_1 - W\left(t_0 + \Delta t\right)}{\Delta t} = 0\ .\]
 
     \paragraph{}
-    De plus, on dira que la méthode est d'ordre $p$ si l'erreur locale est en $\Delta t^{p+1}$ \cite{HairerNorsettWanner1993} :
-    \footnote{\GP{Cette phrase remplace l'initiale car je trouve que c'est plus clair...}\PS{Guillaume propose "\GP{De plus, on dira que la méthode est $p$-exacte, c'est-à-dire capable de représenter un polynôme de degré $p$}" mais j'aimerai bien laisser le terme "ordre" qui est plus précis, c'est le terme employé dans la littérature. Je propose donc de rajouter les deux phrases d'après.}}
+    De plus, on dira que la méthode est d'ordre $p$ si l'erreur locale est en $\Delta t^{p+1}$ \cite{Iserles2008} :
     \[W_1 - W\left(t_0 + \Delta t\right) = O\left(\Delta t^{p+1}\right)\ .\]
     Concrètement, une méthode d'ordre $p$ peut représenter exactement une solution qui s'exprime comme un polynôme d'ordre inférieur ou égal à $p$.
     On parle également de méthode $p$-exacte.
+
+    \paragraph{Remarque :}
+    L'ordre d'une méthode d'intégration temporelle caractérise son comportement "local", c'est à dire sur un unique pas de temps, pourvu qu'il soit assez petit.
+    Dans le domaîne de l'intégration spatiale des équations aux dérivées partielles, on appelle $p$ l'ordre d'une méthode telle que :
+    \[\norm{u - u_{exact}} = O\left(h^p\right)\]
+    où $h$ est le pas de discrétisation spatial.
+    On remarque alors une différence dans la définition : l'ordre de l'erreur est $p+1$ pour la méthode temporelle et $p$ pour la méthode spatiale.
+    C'est parce que l'erreur regardée pour la méthode spatiale est globale, c'est à dire sur tous les $u_i$.
+    Cela reviendrait à regarder l'erreur sur tous les $W_n$ pour l'intégration spatiale.
+    On peut alors se dire naïvement que si on prend la solution sur un intervalle $\left[0, T\right]$ avec $T = k\Delta t$, l'erreur globale d'une méthode d'ordre $p$ sera en $O\left(h^p\right)$, et on retrouve une cohérence avec la définition de l'ordre des méthodes d'intégration spatiale.
+    Cependant, s'il permet de faire une analogie, ce résultat n'est pas immédiat et nécessite des hypothèses supplémentaires sur la méthode \cite{Iserles2008}.
 
 
   \section{Stabilité}
