@@ -1,9 +1,12 @@
 \chapter{Intégration temporelle}
 
 \paragraph{}
-Nous avons vu dans l'introduction que lorsqu'on résout un problème de simulation numérique de la dynamique des fluides, on se ramène à résoudre une équation différentielle ordinaire de la forme :\footnote{\LM{Euh, du coup $Ax=b$ c'est pas vraiment une EDO, tu anticipes un peu la résolution du système linéaire du à l'implicite, non?}}
+Nous avons vu dans l'introduction que lorsqu'on résout un problème de simulation numérique de la dynamique des fluides, on se ramène à résoudre une équation différentielle ordinaire de la forme :
 \begin{equation}\label{eq:edo_2}
-  Ax = b\ .
+  \left\{\begin{aligned}
+    &\frac{\mathrm{d}W}{\mathrm{d}t}\left(t\right) = F\left(W\right) \\
+    &W\left(t_0\right) = W_0\in\mathbb{R}^{N\times n}
+  \end{aligned}\right.\ .
 \end{equation}
 Il existe différents algorithmes permettant de résoudre une telle équation, et la plupart de ces algorithmes se rangent dans deux catégories : les méthodes explicites, et les méthodes implicites.
 
@@ -75,11 +78,14 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
       \[y_n = \sum_{i=1}^N\lambda_iG\left(\Delta t\alpha_i\right)^nv_i\ .\]
 
       \paragraph{}
-      Il découle de l'équation précédente que si $G\left(\Delta t\alpha_i\right)^n$\footnote{\LM{tend vers 0, ou $\vert G\left(\Delta t \alpha_i\right)\vert < 1$}}, alors $y_n$ tend vers 0.
+      Il découle de l'équation précédente que si $\left|G\left(\Delta t\alpha_i\right)\right| < 1$, alors $y_n$ tend vers 0.
       C'est ainsi qu'on définit le domaine de stabilité d'une méthode d'intégration temporelle :
       \[\left\{\,z\in\mathbb{C}\;\mid\;\left|G\left(z\right)\right| < 1\,\right\}\ .\]
-      Si toutes les valeurs propres de $J$ sont à partie réelle négatives, alors la solution de l'équation (\ref{eq:stab}) converge vers 0.
-      On comprend alors tout de suite que pour que l'algorithme soit stable, il faut que les valeurs propres de $J$ soient toutes dans le domaine de stabilité de la méthode.\footnote{\LM{Je suis un peu pointilleux peut-être, mais il me semble que ces deux phrases abordent deux aspects assez différents; il y a tout d'abord, et indépendamment de la méthode d'intégration, une propriété intrinsèque de l'équation linéarisée qui rend la solution $\tilde{W}$ "attractive" (il me manque le terme exact, Guillaume complétera), propriété qui peut se traduire par les parties entières négatives des valeurs propres de J. Et d'autre part, il y a la capacité de la méthode à préserver cette "attractivité" et d'éviter que son imperfection ne finisse par faire diverger $y$ et donc mener la solution reconstruite dans les choux. C'est pourquoi j'aurais tendance à aborder le premier point avant la subsubsection "monopas"  }}
+      Lorsque toutes les valeurs propres de $J$ sont à partie réelle négatives, alors la solution de l'équation (\ref{eq:stab}) converge vers 0.
+      On comprend alors tout de suite que pour que l'algorithme soit stable, il faut que les valeurs propres de $J$ soient toutes dans le domaine de stabilité de la méthode.
+      \footnote{\LM{Je suis un peu pointilleux peut-être, mais il me semble que ces deux phrases abordent deux aspects assez différents; il y a tout d'abord, et indépendamment de la méthode d'intégration, une propriété intrinsèque de l'équation linéarisée qui rend la solution $\tilde{W}$ "attractive" (il me manque le terme exact, Guillaume complétera), propriété qui peut se traduire par les parties entières négatives des valeurs propres de J. Et d'autre part, il y a la capacité de la méthode à préserver cette "attractivité" et d'éviter que son imperfection ne finisse par faire diverger $y$ et donc mener la solution reconstruite dans les choux. C'est pourquoi j'aurais tendance à aborder le premier point avant la subsubsection "monopas"  }
+      \PS{Je ne suis pas sur de comprendre ce que tu dis : la raison pour laquelle on linéarise n'est pas du tout pour qu'on résolve nous en CFD l'équation, c'est pour que les gens des mathématiques appliquées fassent leur analyse de stabilité. Dans cet exemple J est quelconque, c'est pas la jacobienne d'un vrai flux. L'équation linéarisée c'est juste pour expliquer pourquoi on regarde la stabilité sur l'équation de Dahlquist.}
+      }
 
       \paragraph{}
       On remarque que l'argument de $G$ n'est pas $J$ mais $\Delta tJ$.
@@ -371,13 +377,14 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
       En prenant l'image par $F$ de l'équation (\ref{eq:rk_dirk}), puis en linéarisant autour de $g_i = W_n + \Delta t\sum_{j = 1}^{i-1}a_{ij}F_{n,j}$, on cherche $F_{n,i} \approx F\left(W_{n,i}\right)$ sous la forme :
       \[F_{n,i} = F\left(g_i\right) + \Delta ta_{ii}\frac{\partial F}{\partial W}\left(g_i\right)F_{n,i}\ .\]
       Pour ne pas calculer la jacobienne de $F$ à chaque étape, on prendra $\frac{\partial F}{\partial W}\left(g_i\right) = \frac{\partial F}{\partial W}\left(W_n\right) = F'$.
-      En pratique, pour permettre plus de liberté dans le choix de la méthode de Rosenbrock, on remplacera le terme $a_{ii}F'F_{n,i}$ par $F'\sum_{j=1}^i\gamma_jF_{n,j}$.
-      \footnote{\GP{Tu ne dis pas les conséquences mathématiques d'un tel changement}\PS{Pas non plus dans le texte de référence, je peux cependant remonter à la source pour trouver ça, mais est-ce que c'est pas un peu m'éloigner du sujet ?}\GP{Si Lionel OK, on laisse comme cela...}\LM{Ben, excusez ma naïveté, je ne connais pas bien les subtilités de la méthode, mais, de loin, dans le brouillard, on a l'impression qu'on est pas loin d'avoir simplement linéarisé autour de $W_n$... Il y a des versions de la méthode dans lesquelles on franchit le pas et on pose $a_{ij} \equiv 0$ pour tout faire porter sur les $\gamma_{ij}$?}}
+      En pratique, pour permettre plus de liberté dans le choix de la méthode de Rosenbrock, on remplacera le terme $a_{ii}F'F_{n,i}$ par $F'\sum_{j=1}^i\gamma_{i,j}F_{n,j}$.
+      \footnote{\GP{Tu ne dis pas les conséquences mathématiques d'un tel changement}\PS{Pas non plus dans le texte de référence, je peux cependant remonter à la source pour trouver ça, mais est-ce que c'est pas un peu m'éloigner du sujet ?}\GP{Si Lionel OK, on laisse comme cela...}\LM{Ben, excusez ma naïveté, je ne connais pas bien les subtilités de la méthode, mais, de loin, dans le brouillard, on a l'impression qu'on est pas loin d'avoir simplement linéarisé autour de $W_n$... Il y a des versions de la méthode dans lesquelles on franchit le pas et on pose $a_{ij} \equiv 0$ pour tout faire porter sur les $\gamma_{ij}$?}
+      \PS{Ah après libre à toi de choisir tes coefficients comme tu le souhaites, il y a des conditions à respecter pour garantir l'ordre mais c'est tout. Là j'ai juste voulu mettre la définition "générale".}}
       La méthode est donc :
       \begin{equation}\label{eq:rk_rosenbrock}
         \left\{\begin{aligned}
           W_{n+1} &= W_n + \Delta t\sum_{i = 1}^kb_iF_{n,i} \\
-          \;\textrm{avec}\quad F_{n,i} &= F\left(W_n + \Delta t\sum_{j = 1}^{i-1}a_{ij}F_{n,j}\right) + \Delta tF'\sum_{j=1}^i\gamma_{ij}F_{n,j}
+          \;\textrm{avec}\quad F_{n,i} &= F\left(W_n + \Delta t\sum_{j = 1}^{i-1}a_{ij}F_{n,j}\right) + F'\sum_{j=1}^i\gamma_{ij}F_{n,j}
         \end{aligned}\right.\ .
       \end{equation}
 

@@ -59,7 +59,8 @@ On peut envisager d'utiliser des méthodes et des techniques moins classiques po
       Calculer la jacobienne avec des différences finies donnerait une approximation à l'ordre 1 pour un coût de calcul important : cela nécessite $N$ évaluations de la fonction $F$.
       Pour éviter ces opérations coûteuses, on peut utiliser un coloriage de la jacobienne \cite{GebremedhinMannePothen2005}.
       Cela consiste à identifier des colonnes "indépendantes", auxquelles on associe une couleur, qu'on va calculer par une unique différence finie.
-      On peut calculer une coloration de la jacobienne car on peut en général obtenir son pattern de creusité facilement puisqu'on connaît le schéma de discrétisation du code.\footnote{\LM{ok en structuré, mais dans le cas général, c'est toujours aussi simple?}}
+      On peut calculer une coloration de la jacobienne car on peut en général obtenir son pattern de creusité facilement puisqu'on connaît le schéma de discrétisation du code.
+      \footnote{\LM{ok en structuré, mais dans le cas général, c'est toujours aussi simple?}\PS[Simple non mais tu peux quand même extraire un patern, peut être un peu moins creux que la vraie matrice, mais tu peux. Non ?]}
 
     \subsubsection{JFNK}
 
@@ -160,12 +161,12 @@ On peut envisager d'utiliser des méthodes et des techniques moins classiques po
     À l'itération $k$, en connaissant $W_k = \left(W_{1,k}, W_{2,k}\right)$, on résout :
     \[\left\{\begin{aligned}
       F_1\left(W_{1*}, W_{2*}\right) &= 0 \\
-      b  \left(W_{1*}, W_{2*}\right) &= b\left(W_{1,k}, W_{1,k}\right)
+      b  \left(W_{1*}, W_{2*}\right) &= b\left(W_{1,k}, W_{2,k}\right)
     \end{aligned}\right.\]
-    puis :\footnote{\LM{c'est bien $b\left(W_{1,k},W_{1,k} \right)$ et non pas $b\left( W_{1,k},W_{2,k}\right)$? Même chose pour $c\left( W_{1 \ast}, W_{1\ast}\right)$}}
+    puis :
     \[\left\{\begin{aligned}
       F_2\left(W_{1,k+1}, W_{2,k+1}\right) &= 0 \\
-      c  \left(W_{1,k+1}, W_{2,k+1}\right) &= c\left(W_{1*}, W_{1*}\right)
+      c  \left(W_{1,k+1}, W_{2,k+1}\right) &= c\left(W_{1*}, W_{2*}\right)
     \end{aligned}\right.\]
     où $b$ et $c$ sont des contraintes sur la résolution, par exemple $b\left(x_1, x_2\right) = x_2$ et $c\left(x_1, x_2\right) = x_1$.
     Cette méthode est désignée méthode SIFP (Sequential-Implicit Fixed Point), car on calcule séquentiellement des points fixes des différentes physiques.
