@@ -1,0 +1,24 @@
+\chapter{Conclusion et perspectives}
+
+\paragraph{}
+En se basant sur l'analyse de la bibliographie synthétisée dans ce rapport, je peux avancer plus sereinement sur mon sujet de thèse.
+Cet état de l'art aura donc résumé les différents points clefs intervenant dans ma problématique de thèse, et présenté des solutions et des pistes de recherches existant dans la littérature d'aujourd'hui.
+
+\paragraph{}
+La première conclusion qui peut être tirée de cette analyse bibliographique concerne le choix du type de méthode d'intégration temporelle.
+Pour une résolution des équations stationnaires et raides qui sont au cœur de mon sujet, les méthodes d'intégration explicites ne sont pas adaptées car leurs conditions de stabilité imposent l'utilisation de petits pas de temps.
+Pour un calcul plus performant, il faudra donc employer des méthodes implicites, ou éventuellement des méthodes moins classiques présentées en fin de rapport.
+
+\paragraph{}
+Nous avons également présenté les grands enjeux de la résolution du système linéaire, et il apparait clairement que les méthodes de Krylov sont l'outil le plus adapté pour leur résolution.
+Tout particulièrement, pour des raisons exprimées dans ce rapport, la méthode GMRES sera privilégiée.
+Cela ouvre ensuite la porte à toutes les améliorations qui peuvent lui être apportées.
+
+\paragraph{}
+L'objectif de la thèse est de travailler sur le code CEDRE.
+Ainsi, je compte développer certaines méthodes issues de la bibliographie et présentées dans ce rapport dans ce solveur.
+Après avoir ajouté un préconditionnement flexible à l'algorithme GMRES déjà existant, je m'intéresse désormais à la formulation JFNK.
+
+\paragraph{}
+Pour pouvoir analyser d'avantage les méthodes disponibles, je développerai en parallèle le code maquette basé sur la librairie PETSc.
+Ce code permettra de tester différentes méthodes avec plus de flexibilité, avant de se lancer dans l'implémentation de ces méthodes dans CEDRE.
