@@ -59,7 +59,7 @@ On peut envisager d'utiliser des méthodes et des techniques moins classiques po
       Calculer la jacobienne avec des différences finies donnerait une approximation à l'ordre 1 pour un coût de calcul important : cela nécessite $N$ évaluations de la fonction $F$.
       Pour éviter ces opérations coûteuses, on peut utiliser un coloriage de la jacobienne \cite{GebremedhinMannePothen2005}.
       Cela consiste à identifier des colonnes "indépendantes", auxquelles on associe une couleur, qu'on va calculer par une unique différence finie.
-      On peut calculer une coloration de la jacobienne car on peut en général obtenir son pattern de creusité facilement puisqu'un connaît le schéma de discrétisation du code.
+      On peut calculer une coloration de la jacobienne car on peut en général obtenir son pattern de creusité facilement puisqu'on connaît le schéma de discrétisation du code.\footnote{\LM{ok en structuré, mais dans le cas général, c'est toujours aussi simple?}}
 
     \subsubsection{JFNK}
 
@@ -163,7 +163,7 @@ On peut envisager d'utiliser des méthodes et des techniques moins classiques po
       F_1\left(W_{1*}, W_{2*}\right) &= 0 \\
       b  \left(W_{1*}, W_{2*}\right) &= b\left(W_{1,k}, W_{1,k}\right)
     \end{aligned}\right.\]
-    puis :
+    puis :\footnote{\LM{c'est bien $b\left(W_{1,k},W_{1,k} \right)$ et non pas $b\left( W_{1,k},W_{2,k}\right)$? Même chose pour $c\left( W_{1 \ast}, W_{1\ast}\right)$}}
     \[\left\{\begin{aligned}
       F_2\left(W_{1,k+1}, W_{2,k+1}\right) &= 0 \\
       c  \left(W_{1,k+1}, W_{2,k+1}\right) &= c\left(W_{1*}, W_{1*}\right)

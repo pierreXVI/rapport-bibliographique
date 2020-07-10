@@ -382,7 +382,7 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 		L'avantage de ces préconditionneurs est à nouveau qu'ils sont naturellement parallélisables.
 
 		\paragraph{Factorisation incomplète :}
-		quand on dispose d'une factorisation de $A$ et que la matrice $A$ est creuse, les matrices intervenant dans ces décomposition perdent la creusité.
+		quand on dispose d'une factorisation de $A$ et que la matrice $A$ est creuse, les matrices intervenant dans ces décompositions perdent la creusité.
 		On va donc garder ces matrices en leur imposant le pattern de creusité de $A$.
     Par exemple, pour une décomposition LU, $A = LU$ avec $L$ et $U$ des matrices triangulaire, respectivement inférieure et supérieure.
 		On prend alors $M=\widetilde{L}\widetilde{U}$ avec $\widetilde{L}_{ij}=L_{ij}$ et $\widetilde{U}_{ij}=U_{ij}$ si $A_{ij}\neq0$ et $\widetilde{L}_{ij}=\widetilde{U}_{ij}=0$ sinon.

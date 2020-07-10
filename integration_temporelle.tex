@@ -1,7 +1,7 @@
 \chapter{Intégration temporelle}
 
 \paragraph{}
-Nous avons vu dans l'introduction que lorsqu'on résout un problème de simulation numérique de la dynamique des fluides, on se ramène à résoudre une équation différentielle ordinaire de la forme :
+Nous avons vu dans l'introduction que lorsqu'on résout un problème de simulation numérique de la dynamique des fluides, on se ramène à résoudre une équation différentielle ordinaire de la forme :\footnote{\LM{Euh, du coup $Ax=b$ c'est pas vraiment une EDO, tu anticipes un peu la résolution du système linéaire du à l'implicite, non?}}
 \begin{equation}\label{eq:edo_2}
   Ax = b\ .
 \end{equation}
@@ -18,7 +18,7 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     Une méthode de résolution d'équations différentielles doit respecter certaines propriétés pour être "correcte".
     Notamment elle se doit d'être consistante.
     Pour définir cette notion, on se place dans le cadre de l'équation (\ref{eq:edo_2}).
-    Après un pas, la méthode numérique donne une valeur $W_1$ que l'on souhaite proche de la valeur exacte $W\left(t_0 + \Delta\right)$.
+    Après un pas, la méthode numérique donne une valeur $W_1$ que l'on souhaite proche de la valeur exacte $W\left(t_0 + \Delta t\right)$.
     La méthode est dite consistante si :
     \[\lim_{\Delta t \rightarrow 0} \frac{W_1 - W\left(t_0 + \Delta t\right)}{\Delta t} = 0\ .\]
 
@@ -65,11 +65,11 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
       \[y_n = \sum_{i=1}^N\lambda_iG\left(\Delta t\alpha_i\right)^nv_i\ .\]
 
       \paragraph{}
-      Il découle de l'équation précédente que si $G\left(\Delta t\alpha_i\right)^n$, alors $y_n$ tend vers 0.
+      Il découle de l'équation précédente que si $G\left(\Delta t\alpha_i\right)^n$\footnote{\LM{tend vers 0, ou $\vert G\left(\Delta t \alpha_i\right)\vert < 1$}}, alors $y_n$ tend vers 0.
       C'est ainsi qu'on définit le domaine de stabilité d'une méthode d'intégration temporelle :
       \[\left\{\,z\in\mathbb{C}\;\mid\;\left|G\left(z\right)\right| < 1\,\right\}\ .\]
       Si toutes les valeurs propres de $J$ sont à partie réelle négatives, alors la solution de l'équation (\ref{eq:stab}) converge vers 0.
-      On comprend alors tout de suite que pour que l'algorithme soit stable, il faut que les valeurs propres de $J$ soient toutes dans le domaine de stabilité de la méthode.
+      On comprend alors tout de suite que pour que l'algorithme soit stable, il faut que les valeurs propres de $J$ soient toutes dans le domaine de stabilité de la méthode.\footnote{\LM{Je suis un peu pointilleux peut-être, mais il me semble que ces deux phrases abordent deux aspects assez différents; il y a tout d'abord, et indépendamment de la méthode d'intégration, une propriété intrinsèque de l'équation linéarisée qui rend la solution $\tilde{W}$ "attractive" (il me manque le terme exact, Guillaume complétera), propriété qui peut se traduire par les parties entières négatives des valeurs propres de J. Et d'autre part, il y a la capacité de la méthode à préserver cette "attractivité" et d'éviter que son imperfection ne finisse par faire diverger $y$ et donc mener la solution reconstruite dans les choux. C'est pourquoi j'aurais tendance à aborder le premier point avant la subsubsection "monopas"  }}
 
       \paragraph{}
       On remarque que l'argument de $G$ n'est pas $J$ mais $\Delta tJ$.
@@ -362,12 +362,12 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
       \[F_{n,i} = F\left(g_i\right) + \Delta ta_{ii}\frac{\partial F}{\partial W}\left(g_i\right)F_{n,i}\ .\]
       Pour ne pas calculer la jacobienne de $F$ à chaque étape, on prendra $\frac{\partial F}{\partial W}\left(g_i\right) = \frac{\partial F}{\partial W}\left(W_n\right) = F'$.
       En pratique, pour permettre plus de liberté dans le choix de la méthode de Rosenbrock, on remplacera le terme $a_{ii}F'F_{n,i}$ par $F'\sum_{j=1}^i\gamma_jF_{n,j}$.
-      \footnote{\GP{Tu ne dis pas les conséquences mathématiques d'un tel changement}\PS{Pas non plus dans le texte de référence, je peux cependant remonter à la source pour trouver ça, mais est-ce que c'est pas un peu m'éloigner du sujet ?}\GP{Si Lionel OK, on laisse comme cela...}}
+      \footnote{\GP{Tu ne dis pas les conséquences mathématiques d'un tel changement}\PS{Pas non plus dans le texte de référence, je peux cependant remonter à la source pour trouver ça, mais est-ce que c'est pas un peu m'éloigner du sujet ?}\GP{Si Lionel OK, on laisse comme cela...}\LM{Ben, excusez ma naïveté, je ne connais pas bien les subtilités de la méthode, mais, de loin, dans le brouillard, on a l'impression qu'on est pas loin d'avoir simplement linéarisé autour de $W_n$... Il y a des versions de la méthode dans lesquelles on franchit le pas et on pose $a_{ij} \equiv 0$ pour tout faire porter sur les $\gamma_{ij}$?}}
       La méthode est donc :
       \begin{equation}\label{eq:rk_rosenbrock}
         \left\{\begin{aligned}
           W_{n+1} &= W_n + \Delta t\sum_{i = 1}^kb_iF_{n,i} \\
-          \;\textrm{avec}\quad F_{n,i} &= F\left(W_n + \Delta t\sum_{j = 1}^{i-1}a_{ij}F_{n,j}\right) + \Delta tF'\sum_{j=1}^i\gamma_jF_{n,j}
+          \;\textrm{avec}\quad F_{n,i} &= F\left(W_n + \Delta t\sum_{j = 1}^{i-1}a_{ij}F_{n,j}\right) + \Delta tF'\sum_{j=1}^i\gamma_{ij}F_{n,j}
         \end{aligned}\right.\ .
       \end{equation}
 
@@ -396,7 +396,7 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
 
     \paragraph{}
     Le nom de cette méthode vient du fait qu'on peut la reformuler en utilisant la différenciation vers l'arrière (backward differenciation).
-    En définissant par récurrence l'opérateur de différenciation $\nabla^0W_i = W_i$ et $\nabla^j+1W_i = \nabla^jW_i - \nabla^jW_{i-1}$, on peut alors réécrire la méthode BDF sous la forme :
+    En définissant par récurrence l'opérateur de différenciation $\nabla^0W_i = W_i$ et $\nabla^{j+1}W_i = \nabla^jW_i - \nabla^jW_{i-1}$, on peut alors réécrire la méthode BDF sous la forme :
     \[\sum_{i=1}^k\frac{1}{i}\nabla^iW_{n+1} = \Delta tF\left(W_{n+1}\right)\ .\]
 
     \paragraph{}
@@ -432,7 +432,7 @@ Il est souvent plus rentable d'effectuer une unique itération, coûteuse mais s
 	\paragraph{}
 	Nous cherchons à résoudre l'équation (\ref{eq:edo}) en utilisant une méthode d'intégration numérique de type implicite.
   Pour ces méthodes, on recherche l'état, ou de manière équivalente l'incrément de l'état $\Delta W = W_{n+1} - W_n$, en l'exprimant comme le zéro d'une fonction.
-  Par exemple, pour la méthode d'Euler appliquée à (\ref{eq:edo}), on cherche à chaque itération le zéro de $\delta W \mapsto \delta W - \Delta t F\left(W_n + \delta W\right)$.
+  Par exemple, pour la méthode d'Euler implicite appliquée à (\ref{eq:edo}), on cherche à chaque itération le zéro de $\delta W \mapsto \delta W - \Delta t F\left(W_n + \delta W\right)$.
 	En notant $G$ cette fonction, on obtient l'équation non-linéaire :
 	\begin{equation}\label{eq:non_linear}
 		G\left(\delta W\right) = 0
