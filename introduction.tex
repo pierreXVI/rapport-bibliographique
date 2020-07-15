@@ -109,7 +109,7 @@
 		Puisque la résolution des équations est numérique, il faut pouvoir représenter les données dans la mémoire d'un ordinateur.
 		La discrétisation spatiale consiste ainsi à diviser le domaine d'étude $\mathcal{D}$ en un ensemble de cellules qui forment un maillage.
 		Les grandeurs physiques étudiées comme la vitesse du fluide, sa température, sa densité, ..., sont alors représentées dans chaque cellule, par leur valeur moyenne, ou leur valeur sur chaque interface, ou de manière plus complexe en fonction du choix de discrétisation pris par l'utilisateur.
-		L'état physique dans l'ensemble du domaine est représenté non plus par une fonction de l'espace $\textup{w} : \mathcal{D} \to \mathbb{R}^n$ mais par un vecteur d'états $W \in \mathbb{R}^{N\times n}$, en notant $n$ le nombre de degrés de liberté et $N$ le nombre de cellules du maillage.
+		L'état physique dans l'ensemble du domaine est représenté non plus par une fonction de l'espace $\textup{w} : \mathcal{D} \to \mathbb{R}^n$ mais par un vecteur d'états $W \in \mathbb{R}^{N\times d}$, en notant $d\in\mathbb{N}^*$ le nombre de degrés de liberté et $N$ le nombre de cellules du maillage.
 		Ce vecteur est en fait constitué de l'ensemble des vecteurs d'états en l'ensemble des points du maillage.
 
 		\paragraph{}
@@ -131,14 +131,14 @@
 		L'important est que l'équation aux dérivées partielles est maintenant une équation différentielle ordinaire \cite{TrefethenBirkissonDriscoll2017}.
 		Si on regroupe dans un seul grand vecteur les vecteurs d'états de chaque cellule, on peut de même regrouper les seconds membres ensemble pour n'avoir qu'une équation.
 		Ainsi l'équation aux dérivées partielles (\ref{eq:edp}) peut se réécrire comme une équation différentielle ordinaire :
-		\begin{equation}\label{eq:edo}
+		\begin{equation}\label{eq:edo_1}
 			\left\{\begin{aligned}
 				&\frac{\mathrm{d}W}{\mathrm{d}t}\left(t\right) = F\left(W\right) \\
-				&W\left(t_0\right) = W_0\in\mathbb{R}^{N\times n}
+				&W\left(t_0\right) = W_0\in\mathbb{R}^{N\times d}
 			\end{aligned}\right.\ .
 		\end{equation}
-		Il est important de préciser que cette nouvelle équation (\ref{eq:edo}) est purement numérique, contrairement à l'équation (\ref{eq:edp_0}) qui découlait de la physique.
-		Puisque ma thèse ne s'intéresse pas à la discrétisation spatiale, nous nous placerons dans ce cas général et chercherons à résoudre l'équation (\ref{eq:edo}).
+		Il est important de préciser que cette nouvelle équation (\ref{eq:edo_1}) est purement numérique, contrairement à l'équation (\ref{eq:edp_0}) qui découlait de la physique.
+		Puisque ma thèse ne s'intéresse pas à la discrétisation spatiale, nous nous placerons dans ce cas général et chercherons à résoudre l'équation (\ref{eq:edo_1}).
 
 	\subsection{Discrétisation temporelle}
 

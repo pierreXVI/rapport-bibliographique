@@ -5,7 +5,7 @@ Nous avons vu dans l'introduction que lorsqu'on résout un problème de simulati
 \begin{equation}\label{eq:edo_2}
   \left\{\begin{aligned}
     &\frac{\mathrm{d}W}{\mathrm{d}t}\left(t\right) = F\left(W\right) \\
-    &W\left(t_0\right) = W_0\in\mathbb{R}^{N\times n}
+    &W\left(t_0\right) = W_0\in\mathbb{R}^{N}
   \end{aligned}\right.\ .
 \end{equation}
 Il existe différents algorithmes permettant de résoudre une telle équation, et la plupart de ces algorithmes se rangent dans deux catégories : les méthodes explicites, et les méthodes implicites.
@@ -48,13 +48,13 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     \paragraph{}
     Un critère important dans le choix d'une méthode d'intégration est la stabilité.
     En fonction de notre cas d'application, on exigera certains niveaux de stabilité pour éviter une divergence d'origine numérique du calcul.
-    Nous cherchons dans cette section à analyser la stabilité d'une méthode d'intégration de l'équation (\ref{eq:edo}).
+    Nous cherchons dans cette section à analyser la stabilité d'une méthode d'intégration de l'équation (\ref{eq:edo_2}).
     Pour simplifier, on considère ici que le pas de temps $\Delta t = t_{n+1} - t_n$ ne dépend pas du numéro de l'itération $n$.
     La taille du problème est notée $N$.
 
     \paragraph{}
     Pour étudier la stabilité d'une méthode, on utilise en général l'équation différentielle ordinaire avec un second membre linéaire \cite{HairerWanner1996}.
-    En effet, si on dispose d'une solution $\tilde{W}$ de (\ref{eq:edo}), on peut linéariser $F$ en $\tilde{W}$ :
+    En effet, si on dispose d'une solution $\tilde{W}$ de (\ref{eq:edo_2}), on peut linéariser $F$ en $\tilde{W}$ :
     \[\frac{\mathrm{d}W}{\mathrm{d}t} = F\left(\tilde{W}\right) + \frac{\partial F}{\partial W}\left(\tilde{W}\right)\cdot\left(W - \tilde{W}\right)\ .\]
     Si on note ensuite $y = W - \tilde{W}$ et $J = \frac{\partial F}{\partial W}\left(\tilde{W}\right)$, on obtient :
     \begin{equation}\label{eq:stab}
@@ -62,6 +62,23 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     \end{equation}
     C'est donc avec cette équation, également appelée équation de Dahlquist, que l'on étudie la stabilité de la méthode.
     Nous l'étudions dans $\mathbb{C}$.
+
+    \paragraph{Remarque :}
+    Lorsqu'on étudiera le comportement d'une méthode sur l'équation de Dahlquist (\ref{eq:stab}), on considèrera que les valeurs propres de $J$ sont toutes négatives.
+    Ce qui motive ce choix peut se voir avec l'exemple suivant.
+    On se place dans $\mathbb{C}^2$, avec
+    \[F\left(W\right) = \begin{pmatrix}-1 & 0 \\ 0 & 10^3\end{pmatrix}W = JW\ .\]
+    On cherche à résoudre l'équation différentielle (\ref{eq:edo_2}) à partir de la condition initiale $W_0 = \transpose{\left(1, 0\right)}$.
+    La solution analytique est alors $W\left(t\right) = \transpose{\left(e^{-t}, 0\right)}$.
+    On suppose maintenant qu'on dispose d'une méthode d'intégration temporelle, utilisant un pas de temps $\Delta t = 10^{-2}$, et qui donne le résultat exact pour tout $t_n = n\Delta t$.
+    Puisque le calcul est réalisé par un ordinateur, la représentation des réels en mémoire introduit une erreur numérique.
+    Typiquement, on notera $\epsilon = 10^{-15}$ la précision machine, et on peut alors s'attendre à ce que l'état initial représenté par l'ordinateur ne soit pas $W_0$ mais $\widetilde{W}_0 = \transpose{\left(1, \epsilon\right)}$.
+    La méthode d'intégration étant exacte, on aura $W\left(t_n\right) = \transpose{\left(e^{-t_n}, \epsilon e^{10^3 t_n}\right)}$.
+    L'erreur entre la solution analytique et la valeur calculée par la méthode d'intégration numérique est alors $\epsilon e^{10^3 n\Delta t}$.
+    Pour les valeurs numériques proposées, dès $n = 5$ on a une erreur de l'ordre de $10^6$ et pour $n = 10$ de $10^{28}$.
+    La divergence de l'erreur vient du fait que la valeur propre positive de $J$ amplifie l'erreur de représentation des nombres.
+    Ce phénomène n'est donc pas lié à la méthode d'intégration numérique, mais à l'équation que l'on cherche à intégrer.
+    C'est pour cela qu'on étudie la stabilité des méthodes numériques sur l'équation (\ref{eq:stab}) avec les valeurs propres de $J$ négatives.
 
 
     \subsubsection{Méthodes mono-pas}
@@ -83,9 +100,6 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
       \[\left\{\,z\in\mathbb{C}\;\mid\;\left|G\left(z\right)\right| < 1\,\right\}\ .\]
       Lorsque toutes les valeurs propres de $J$ sont à partie réelle négatives, alors la solution de l'équation (\ref{eq:stab}) converge vers 0.
       On comprend alors tout de suite que pour que l'algorithme soit stable, il faut que les valeurs propres de $J$ soient toutes dans le domaine de stabilité de la méthode.
-      \footnote{\LM{Je suis un peu pointilleux peut-être, mais il me semble que ces deux phrases abordent deux aspects assez différents; il y a tout d'abord, et indépendamment de la méthode d'intégration, une propriété intrinsèque de l'équation linéarisée qui rend la solution $\tilde{W}$ "attractive" (il me manque le terme exact, Guillaume complétera), propriété qui peut se traduire par les parties entières négatives des valeurs propres de J. Et d'autre part, il y a la capacité de la méthode à préserver cette "attractivité" et d'éviter que son imperfection ne finisse par faire diverger $y$ et donc mener la solution reconstruite dans les choux. C'est pourquoi j'aurais tendance à aborder le premier point avant la subsubsection "monopas"  }
-      \PS{Je ne suis pas sur de comprendre ce que tu dis : la raison pour laquelle on linéarise n'est pas du tout pour qu'on résolve nous en CFD l'équation, c'est pour que les gens des mathématiques appliquées fassent leur analyse de stabilité. Dans cet exemple J est quelconque, c'est pas la jacobienne d'un vrai flux. L'équation linéarisée c'est juste pour expliquer pourquoi on regarde la stabilité sur l'équation de Dahlquist.}
-      }
 
       \paragraph{}
       On remarque que l'argument de $G$ n'est pas $J$ mais $\Delta tJ$.
@@ -130,7 +144,7 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
 
     \paragraph{}
     La méthode d'Euler, ou Euler explicite, est la méthode la plus simple qui soit.
-    Elle consiste à intégrer (\ref{eq:edo}) entre $t_n$ et $t_{n+1} = t_n + \Delta t$ en supposant le second membre constant égal à $F\left(W_n\right)$, ou de manière équivalente à remplacer la dérivée dans (\ref{eq:edo}) par le taux d'accroissement : $\frac{\mathrm{d}W}{\mathrm{d}t}\approx\frac{W_{n+1}-W_n}{\Delta t}$.
+    Elle consiste à intégrer (\ref{eq:edo_2}) entre $t_n$ et $t_{n+1} = t_n + \Delta t$ en supposant le second membre constant égal à $F\left(W_n\right)$, ou de manière équivalente à remplacer la dérivée dans (\ref{eq:edo_2}) par le taux d'accroissement : $\frac{\mathrm{d}W}{\mathrm{d}t}\approx\frac{W_{n+1}-W_n}{\Delta t}$.
     Ainsi, cette méthode donne la relation de récurrence explicite :
     \[W_{n+1} = W_n + \Delta t F\left(W_n\right)\ .\]
 
@@ -149,12 +163,12 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     \paragraph{}
     Le principe général est le suivant.
     En supposant qu'en $t_n$ on dispose d'une valeur de la solution $W_n$, on introduit les étapes intermédiaires $t_{n,i} = t_n + c_i\Delta t$ pour $1\leq i\leq k$, avec $k$ fixé.
-    On peut intégrer entre $t_n$ et $t_{n,i}$ l'équation (\ref{eq:edo}) de manière exacte :
+    On peut intégrer entre $t_n$ et $t_{n,i}$ l'équation (\ref{eq:edo_2}) de manière exacte :
     \[W\left(t_{n,i}\right) = W\left(t_n\right) + \Delta t \int_0^{c_i}F\left(W\left(t_n + s\Delta t\right)\right)\mathrm{d}s\ .\]
     L'intégrale est ensuite approchée par une quadrature sur les points $j<i$ :
     \[\int_0^{c_i}F\left(W\left(t_n + s\Delta t\right)\right)\mathrm{d}s \approx \sum_{j = 1}^{i-1}a_{ij}F\left(W\left(t_{n,j}\right)\right)\ .\]
     Les étapes déjà calculées permettent donc de calculer la quadrature afin d'obtenir l'étape suivante.
-    Une fois qu'on a obtenu toutes les étapes intermédiaires, on intègre (\ref{eq:edo}) entre $t_n$ et $t_{n+1}$ :
+    Une fois qu'on a obtenu toutes les étapes intermédiaires, on intègre (\ref{eq:edo_2}) entre $t_n$ et $t_{n+1}$ :
     \[W_{n+1} = W_n + \Delta t \int_0^1F\left(W\left(t_n + s\Delta t\right)\right)\mathrm{d}s\]
     que l'on approche de nouveau par la quadrature :
     \[\int_0^1F\left(W\left(t_n + s\Delta t\right)\right)\mathrm{d}s \approx \sum_{i = 1}^kb_iF\left(W\left(t_{n,i}\right)\right)\ .\]
@@ -186,7 +200,7 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     \end{array}
     \ .\]
 
-    \begin{table}[h]\begin{tabular}{P{.15\textwidth}P{.3\textwidth}P{.4\textwidth}}
+    \begin{table}\begin{tabular}{P{.15\textwidth}P{.3\textwidth}P{.4\textwidth}}
       \begin{tabular}{c|c}
         0 \RKBar 1
       \end{tabular} &
@@ -236,14 +250,14 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     On peut en effet vérifier que pour ces méthodes, l'indice $k$ désignant la méthode est égal à l'ordre de la méthode \cite{HairerNorsettWanner1993}.
 
     \paragraph{}
-    L'idée est d'interpoler le second membre de (\ref{eq:edo}) en ces $k$ points calculés précédemment.
+    L'idée est d'interpoler le second membre de (\ref{eq:edo_2}) en ces $k$ points calculés précédemment.
     Il existe en effet un unique polynôme $F_k$ tel que pour $0 \leq i < k$ on ait $F_k\left(t_{n-i}\right) = F\left(W_{n-i}\right)$.
     On fait ensuite l'hypothèse $F_k\left(t\right) \approx F\left(W\left(t\right)\right)$.
-    On peut intégrer l'équation (\ref{eq:edo}) :
+    On peut intégrer l'équation (\ref{eq:edo_2}) :
     \[W_{n+1} = W_n + \int_{t_n}^{t_{n+1}}F_k\left(t\right)\mathrm{d}t\ .\]
 
     \paragraph{}
-    Contrairement aux méthodes de Runge-Kutta, puisqu'on réutilise les pas précédents, une unique évaluation du second membre de (\ref{eq:edo}) est nécessaire à chaque itération.
+    Contrairement aux méthodes de Runge-Kutta, puisqu'on réutilise les pas précédents, une unique évaluation du second membre de (\ref{eq:edo_2}) est nécessaire à chaque itération.
     Le coût de calcul est donc très faible pour de telles méthodes.
     Cependant, les propriétés de stabilité de ces méthodes sont moindres, ce qui explique le fait qu'elles ne sont pas souvent utilisées en pratique dans des codes de calcul pour la dynamique des fluides.
 
@@ -275,7 +289,7 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
 
     \paragraph{}
     Pour bien comprendre le fonctionnement d'une méthode implicite, on prend à nouveau la méthode d'Euler, mais cette fois sa version implicite.
-    On intègre à nouveau (\ref{eq:edo}) entre $t_n$ et $t_{n+1}$ en supposant le second membre constant, mais cette fois on le prend égal à $F\left(W_{n+1}\right)$.
+    On intègre à nouveau (\ref{eq:edo_2}) entre $t_n$ et $t_{n+1}$ en supposant le second membre constant, mais cette fois on le prend égal à $F\left(W_{n+1}\right)$.
     On obtient alors l'équation :
     \[W_{n+1} - W_n = \Delta tF\left(W_{n+1}\right)\ .\]
     L'état suivant est donc donné comme étant un zéro de la fonction $z\mapsto z - W_n - \Delta tF\left(z\right)$.
@@ -378,8 +392,6 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
       \[F_{n,i} = F\left(g_i\right) + \Delta ta_{ii}\frac{\partial F}{\partial W}\left(g_i\right)F_{n,i}\ .\]
       Pour ne pas calculer la jacobienne de $F$ à chaque étape, on prendra $\frac{\partial F}{\partial W}\left(g_i\right) = \frac{\partial F}{\partial W}\left(W_n\right) = F'$.
       En pratique, pour permettre plus de liberté dans le choix de la méthode de Rosenbrock, on remplacera le terme $a_{ii}F'F_{n,i}$ par $F'\sum_{j=1}^i\gamma_{i,j}F_{n,j}$.
-      \footnote{\GP{Tu ne dis pas les conséquences mathématiques d'un tel changement}\PS{Pas non plus dans le texte de référence, je peux cependant remonter à la source pour trouver ça, mais est-ce que c'est pas un peu m'éloigner du sujet ?}\GP{Si Lionel OK, on laisse comme cela...}\LM{Ben, excusez ma naïveté, je ne connais pas bien les subtilités de la méthode, mais, de loin, dans le brouillard, on a l'impression qu'on est pas loin d'avoir simplement linéarisé autour de $W_n$... Il y a des versions de la méthode dans lesquelles on franchit le pas et on pose $a_{ij} \equiv 0$ pour tout faire porter sur les $\gamma_{ij}$?}
-      \PS{Ah après libre à toi de choisir tes coefficients comme tu le souhaites, il y a des conditions à respecter pour garantir l'ordre mais c'est tout. Là j'ai juste voulu mettre la définition "générale".}}
       La méthode est donc :
       \begin{equation}\label{eq:rk_rosenbrock}
         \left\{\begin{aligned}
@@ -407,7 +419,7 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     Les méthodes BDF (Backward Differentiation Formula) sont des méthodes implicites de type multi-pas.
     Pour une méthode d'indice $k$, on dispose des valeurs de la solution $W_{n-k+1}, \dots, W_n$, calculées en $t_{n-k+1}, \dots, t_n$.
     On forme alors le polynôme $p$ de degré $k$ qui est l'interpolation de Lagrange en les points $\left(\left(t_{n-k+1}, W_{n-k+1}\right), \dots, \left(t_n, W_n\right), \left(t_{n+1}, W_{n+1}\right)\right)$.
-    Le principe de la méthode d'évaluer (\ref{eq:edo}) en $t_{n+1}$, en remplaçant $\frac{\mathrm{d}W}{\mathrm{d}t}\left(t_{n+1}\right)$ par $p'\left(t_{n+1}\right)$ et $W\left(t_{n+1}\right)$ par $W_{n+1}$.
+    Le principe de la méthode d'évaluer (\ref{eq:edo_2}) en $t_{n+1}$, en remplaçant $\frac{\mathrm{d}W}{\mathrm{d}t}\left(t_{n+1}\right)$ par $p'\left(t_{n+1}\right)$ et $W\left(t_{n+1}\right)$ par $W_{n+1}$.
     En utilisant la formule de l'interpolation de Lagrange, et le fait que $t_i = t_0 + i\Delta t$, on peut exprimer analytiquement la méthode BDF :
     \[\left(\sum_{i=1}^k\frac{1}{i}\right)W_{n+1} + \sum_{i=1}^k\frac{\left(-1\right)^i}{i}\binom{k}{i}W_{n-i} = \Delta tF\left(W_{n+1}\right)\ .\]
 
@@ -447,9 +459,9 @@ Il est souvent plus rentable d'effectuer une unique itération, coûteuse mais s
 \section{Étapes du calcul}
 
 	\paragraph{}
-	Nous cherchons à résoudre l'équation (\ref{eq:edo}) en utilisant une méthode d'intégration numérique de type implicite.
+	Nous cherchons à résoudre l'équation (\ref{eq:edo_2}) en utilisant une méthode d'intégration numérique de type implicite.
   Pour ces méthodes, on recherche l'état, ou de manière équivalente l'incrément de l'état $\Delta W = W_{n+1} - W_n$, en l'exprimant comme le zéro d'une fonction.
-  Par exemple, pour la méthode d'Euler implicite appliquée à (\ref{eq:edo}), on cherche à chaque itération le zéro de $\delta W \mapsto \delta W - \Delta t F\left(W_n + \delta W\right)$.
+  Par exemple, pour la méthode d'Euler implicite appliquée à (\ref{eq:edo_2}), on cherche à chaque itération le zéro de $\delta W \mapsto \delta W - \Delta t F\left(W_n + \delta W\right)$.
 	En notant $G$ cette fonction, on obtient l'équation non-linéaire :
 	\begin{equation}\label{eq:non_linear}
 		G\left(\delta W\right) = 0
