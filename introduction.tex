@@ -115,12 +115,12 @@
 		\paragraph{}
 		La discrétisation spatiale donne également un moyen de calculer les dérivées spatiales de l'état en fonction de l'état.
 		Pour mieux décrire ceci, prenons le cas utilisé dans ma thèse : la formulation volumes finis \cite{EymardGallouetHerbin2000}.
-		Cette formulation ne s'applique que lorsque l'équation (\ref{eq:edp_0}) est une loi de conservation, c'est à dire que le second membre s'exprime comme la divergence d'un flux :
-		\[\operatorname{f}\left(\textup{w}\right) = \nabla\operatorname{g}\left(\textup{w}\right)\ .\]
+		Cette formulation ne s'applique que lorsque l'équation (\ref{eq:edp_0}) est une loi de conservation, c'est-à-dire que le second membre s'exprime comme la divergence d'un flux :
+		\[\operatorname{f}\left(\textup{w}\right) = \nabla\cdot\operatorname{g}\left(\textup{w}\right)\ .\]
 		La méthode des volumes finis consiste à intégrer l'équation (\ref{eq:edp}) pour chaque cellule du maillage.
 		En notant $\mathcal{V}_i$ le volume et $\mathcal{S}_i$ la surface de la cellule $i$:
 		\begin{align*}
-			&&\int_{\mathcal{V}_i}\frac{\partial\textup{w}}{\partial t}\mathrm{d}v &= \int_{\mathcal{V}_i}\nabla\operatorname{g}\left(\textup{w}\right)\mathrm{d}v \\
+			&&\int_{\mathcal{V}_i}\frac{\partial\textup{w}}{\partial t}\mathrm{d}v &= \int_{\mathcal{V}_i}\nabla\cdot\operatorname{g}\left(\textup{w}\right)\mathrm{d}v \\
 			\Rightarrow&&\frac{\mathrm{d}}{\mathrm{d}t}\int_{\mathcal{V}_i}\textup{w}\mathrm{d}v &= \oint_{\mathcal{S}_i}\operatorname{g}\left(\textup{w}\right)\cdot\mathrm{d}s\quad\textrm{d'après le théorème de Stokes.}
 		\end{align*}
 		Si on note $\bar{\textup{w}}_i = \frac{1}{\mathcal{V}_i}\int_{\mathcal{V}_i}\textup{w}\mathrm{d}v$ la moyenne de l'état dans la cellule $i$, alors :

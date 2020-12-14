@@ -32,12 +32,12 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
     On parle également de méthode $p$-exacte.
 
     \paragraph{Remarque :}
-    L'ordre d'une méthode d'intégration temporelle caractérise son comportement "local", c'est à dire sur un unique pas de temps, pourvu qu'il soit assez petit.
-    Dans le domaîne de l'intégration spatiale des équations aux dérivées partielles, on appelle $p$ l'ordre d'une méthode telle que :
+    L'ordre d'une méthode d'intégration temporelle caractérise son comportement "local", c'est-à-dire sur un unique pas de temps, pourvu qu'il soit assez petit.
+    Dans le domaine de l'intégration spatiale des équations aux dérivées partielles, on appelle $p$ l'ordre d'une méthode telle que :
     \[\norm{u - u_{exact}} = O\left(h^p\right)\]
     où $h$ est le pas de discrétisation spatial.
     On remarque alors une différence dans la définition : l'ordre de l'erreur est $p+1$ pour la méthode temporelle et $p$ pour la méthode spatiale.
-    C'est parce que l'erreur regardée pour la méthode spatiale est globale, c'est à dire sur tous les $u_i$.
+    C'est parce que l'erreur regardée pour la méthode spatiale est globale, c'est-à-dire sur tous les $u_i$.
     Cela reviendrait à regarder l'erreur sur tous les $W_n$ pour l'intégration spatiale.
     On peut alors se dire naïvement que si on prend la solution sur un intervalle $\left[0, T\right]$ avec $T = k\Delta t$, l'erreur globale d'une méthode d'ordre $p$ sera en $O\left(h^p\right)$, et on retrouve une cohérence avec la définition de l'ordre des méthodes d'intégration spatiale.
     Cependant, s'il permet de faire une analogie, ce résultat n'est pas immédiat et nécessite des hypothèses supplémentaires sur la méthode \cite{Iserles2008}.
@@ -91,7 +91,7 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
       la relation qui donne l'état suivant en fonction de l'état actuel.
       Pour la plupart des méthodes d'intégration temporelle, et en particulier pour les méthodes de Runge-Kutta présentées ici, on peut se ramener à cette écriture avec $G$ une fonction analytique.
       On peut choisir une base de vecteurs propres de $J$ $v_1, \dots, v_N$ associés aux valeurs propres $\alpha_1, \dots, \alpha_N$.
-      Si on décompose l'itéré initial sur cette base, c'est à dire $y_0 = \sum_{i=1}^N\lambda_iv_i$, on voit que puisque $G$ est une fonction analytique :
+      Si on décompose l'itéré initial sur cette base, c'est-à-dire $y_0 = \sum_{i=1}^N\lambda_iv_i$, on voit que puisque $G$ est une fonction analytique :
       \[y_n = \sum_{i=1}^N\lambda_iG\left(\Delta t\alpha_i\right)^nv_i\ .\]
 
       \paragraph{}
@@ -244,7 +244,7 @@ Il existe différents algorithmes permettant de résoudre une telle équation, e
   \subsection{Méthodes d'Adams-Bashforth}
 
     \paragraph{}
-    Les méthodes d'Adams-Bashforth sont des méthodes de type "multi-pas" (multi-step), c'est à dire qu'elles utilisent plusieurs états précédents pour déterminer l'état suivant.
+    Les méthodes d'Adams-Bashforth sont des méthodes de type "multi-pas" (multi-step), c'est-à-dire qu'elles utilisent plusieurs états précédents pour déterminer l'état suivant.
     À la différence des méthodes de Runge-Kutta qui utilisent des pas intermédiaires entre $t_n$ et $t_{n+1}$, ces méthodes utilisent les $t_{i\leq n}$ précédents.
     Pour une méthode d'ordre $k$, on utilise donc les états $W_n, \dots, W_{n-k+1}$ pour déterminer $W_{n+1}$.
     On peut en effet vérifier que pour ces méthodes, l'indice $k$ désignant la méthode est égal à l'ordre de la méthode \cite{HairerNorsettWanner1993}.

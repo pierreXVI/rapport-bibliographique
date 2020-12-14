@@ -150,7 +150,7 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 		\paragraph{}
 		On peut maintenant décrire l'algorithme :
 		Puisque $\krylov{1} = \operatorname{Vect}\left(r_0\right)$, on pose $v_1 = \frac{r_0}{\norm{r_0}}$.
-		On itère ensuite sur $n$ : en connaissant $V_n$, la relation (\ref{eq:arnoldi_n+1}) permet de trouver le nouveau vecteur de base et la $n$\textsuperscript{ième} colonne de $H$, c'est à dire de trouver $V_{n+1}$ et $\widetilde{H}_n$.
+		On itère ensuite sur $n$ : en connaissant $V_n$, la relation (\ref{eq:arnoldi_n+1}) permet de trouver le nouveau vecteur de base et la $n$\textsuperscript{ième} colonne de $H$, c'est-à-dire de trouver $V_{n+1}$ et $\widetilde{H}_n$.
 		Les espaces vectoriels $\operatorname{Im}\left(V_n\right)$ sont alors par construction les espaces de Krylov $\krylov{n}$.
 
 		\paragraph{}
@@ -258,7 +258,7 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 		Dans \cite{GreenbaumPtakStrakos1996}, on trouve un résultat surprenant.
 		Cet article montre en effet que pour un spectre donné et pour une courbe de convergence décroissante donnée, il est possible de construire une matrice avec ce spectre telle que GMRES suivra la courbe de convergence.
 		Autrement dit, on peut exhiber un exemple de matrice mal conditionnée qui converge rapidement, et à l'inverse trouver une matrice bien conditionnée pour laquelle GMRES aura du mal à faire décroître le résidu.
-		En particulier, on peut concevoir une matrice avec le meilleur spectre possible, c'est à dire qui admet 1 comme seule valeur propre de multiplicité $N$, et pour qui GMRES convergerait aussi lentement que souhaité.
+		En particulier, on peut concevoir une matrice avec le meilleur spectre possible, c'est-à-dire qui admet 1 comme seule valeur propre de multiplicité $N$, et pour qui GMRES convergerait aussi lentement que souhaité.
 		Ce phénomène est causé par la non-normalité de l'opérateur \cite{GreenbaumStrakos1994, GreenbaumPtakStrakos1996}.
 		Pour remédier à ce problème, on peut par exemple s'intéresser au pseudo-spectre de l'opérateur \cite{Trefethen1999}.
 		Cependant, cette analyse est relativement complexe et ne sera pas présentée ici.
@@ -295,7 +295,7 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 			Alors pour un polynôme $p$ on a $\norm{p\left(A\right)}\leq\norm{V}\norm{p\left(D\right)}\norm{V^{-1}}$
 			Ainsi, on a la relation :
 			\[\frac{\norm{r_n}}{\norm{r_0}} \leq \kappa\left(V\right)\inf_{p\in\textup{P}_n}\max_{1\leq i\leq N}\norm{p\left(\lambda_i\right)}\ .\]
-			On comprend alors la remarque faite précédemment : si la matrice $A$ n'est pas trop non-normale, c'est à dire si $\kappa\left(V\right)$ n'est pas trop grand, alors la convergence de GMRES est contrôlée par les valeurs propres de $A$.
+			On comprend alors la remarque faite précédemment : si la matrice $A$ n'est pas trop non-normale, c'est-à-dire si $\kappa\left(V\right)$ n'est pas trop grand, alors la convergence de GMRES est contrôlée par les valeurs propres de $A$.
 
 
 \section{Améliorations de l’algorithme}
@@ -330,7 +330,7 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 		L'idée principale du préconditionnement est de transformer $A$ en une matrice plus facile à inverser.
 		On prend donc pour $M$ une matrice qui ressemble à $A$.
 		Si $M$ est trop proche de $A$, par exemple $M=A$, l'équation préconditionnée devient triviale.
-		Cependant appliquer le préconditionnement, c'est à dire calculer $M^{-1}$ est aussi dur que de résoudre le problème initial.
+		Cependant appliquer le préconditionnement, c'est-à-dire calculer $M^{-1}$ est aussi dur que de résoudre le problème initial.
 		À l'inverse, si on prend un préconditionneur facile à inverser mais trop éloigné de $A$, typiquement $M = \operatorname{Id}$, alors le calcul du préconditionnement est trivial, mais il n'aide pas à résoudre le problème.
 		On va donc faire un compromis pour trouver un opérateur $M$ qui ressemble à $A$, mais qu'il est relativement facile d'inverser.
 
