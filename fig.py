@@ -5,7 +5,7 @@ import numpy as np
 import scipy.linalg
 import scipy.special
 
-matplotlib.rcParams.update({
+plt.rcParams.update({
     'xtick.labelsize': 15,
     'ytick.labelsize': 15,
     'xtick.major.width': 1.5,
@@ -21,7 +21,7 @@ matplotlib.rcParams.update({
     'lines.markeredgewidth': 15,
     'lines.markersize': 3,
     'lines.linewidth': 3,
-    'text.latex.preamble': [r"\usepackage{amsmath}"],
+    'text.latex.preamble': r"\usepackage{amsmath}",
     'text.usetex': True
 })
 
@@ -49,13 +49,16 @@ def fig_rk():
     ax.xaxis.tick_bottom()
     for (i, c) in zip((4, 3, 2, 1), ([.8, .0, .0, 1], [.0, .8, .0, 1], [.0, .0, .8, 1], [.5, .5, .5, 1])):
         rk_i = abs(r(i)(x + 1j * y)) < 1
-        ax.pcolormesh(x, y, np.ma.masked_array(rk_i, mask=1 - rk_i), cmap=clr.ListedColormap([c]))
+        ax.pcolormesh(x, y, np.ma.masked_array(rk_i, mask=1 - rk_i), cmap=clr.ListedColormap([c]), shading='auto')
         ax.plot([None], '--', c=c, lw=20, label='RK{0}'.format(i))
 
     handles, labels = ax.get_legend_handles_labels()
     ax.legend(handles[::-1], labels[::-1], loc='upper left')
     ax.grid()
-    plt.show()
+    fig.set_size_inches(6.28, 8.11)
+    plt.subplots_adjust(0.00, 0.02, 1.0, 0.99)
+    # plt.show()
+    plt.savefig("images/rk_stab.png", transparent=True)
 
 
 def fig_bdf():
@@ -93,12 +96,15 @@ def fig_bdf():
         ax.yaxis.tick_left()
         ax.xaxis.tick_bottom()
         rk_i = r(i)(x + 1j * y)
-        ax.pcolormesh(x, y, np.ma.masked_array(rk_i, mask=1 - rk_i), cmap=clr.ListedColormap([c]))
+        ax.pcolormesh(x, y, np.ma.masked_array(rk_i, mask=1 - rk_i), cmap=clr.ListedColormap([c]), shading='auto')
         ax.plot([None], '--', c=c, lw=20)
         ax.set_title('BDF{0}'.format(i), y=-.1)
         ax.grid()
 
-    plt.show()
+    fig.set_size_inches(19.20, 10.00)
+    plt.subplots_adjust(0.00, 0.05, 1.0, 0.99, 0.05, 0.2)
+    # plt.show()
+    plt.savefig("images/bdf_stab.png", transparent=True)
 
 
 def fig_ab():
@@ -149,12 +155,15 @@ def fig_ab():
     ax.xaxis.tick_bottom()
     for (i, c) in zip((1, 2, 3, 4), ([.5, .5, .5, 1], [.0, .0, .8, 1], [.0, .8, .0, 1], [.8, .0, .0, 1],)):
         rk_i = r(i)(x + 1j * y)
-        ax.pcolormesh(x, y, np.ma.masked_array(rk_i, mask=1 - rk_i), cmap=clr.ListedColormap([c]))
+        ax.pcolormesh(x, y, np.ma.masked_array(rk_i, mask=1 - rk_i), cmap=clr.ListedColormap([c]), shading='auto')
         ax.plot([None], '--', c=c, lw=20, label='AB{0}'.format(i))
     ax.legend(loc='upper left')
     ax.grid()
 
-    plt.show()
+    fig.set_size_inches(8.40, 8.20)
+    plt.subplots_adjust(0.00, 0.02, 1.0, 0.99)
+    # plt.show()
+    plt.savefig("images/ab_stab.png", transparent=True)
 
 
 def fig_precond():
@@ -217,4 +226,7 @@ def fig_precond():
 
 
 if __name__ == '__main__':
-    fig_rk()
+    # fig_rk()
+    # fig_bdf()
+    # fig_ab()
+    pass
