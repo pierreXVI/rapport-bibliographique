@@ -112,7 +112,7 @@ Dans le cadre de l'énergétique et de la multi-physique, les équations sont r�
 		On constate alors que par définition $\krylov{1}\subset\krylov{2}\subset\dots\subset\krylov{n-1}\subset\krylov{n}$.
 		On cherche ensuite l'itéré sur $\krylov{n}$ qui garantit une condition de Petrov-Galerkin \cite{SimonciniSzyld2007} :
 		\begin{equation}\label{eqn:x_n}
-			x_n \in x_0 + \krylov[A, r_0]{n}\quad\textrm{tel que}\quad x_n \perp \mathcal{L}_n
+			x_n \in x_0 + \krylov[A, r_0]{n}\quad\textrm{tel que}\quad r_n \perp \mathcal{L}_n
 		\end{equation}
 		où $\mathcal{L}_n$ est un sous-espace vectoriel de dimension $n$.
 		Pour $\mathcal{L}_n = \krylov{n}$ on parle de condition de Galerkin, et pour $\mathcal{L}_n = A\krylov{n}$ de minimisation du résidu.
